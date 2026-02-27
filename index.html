@@ -1351,55 +1351,67 @@
     </div>
     
     <div class="paradigm-diagram reveal">
-      <!-- OLD MODEL -->
+      <!-- OLD MODEL: 3 clustered ADs → 1 AUDIENCE (spray and pray) -->
       <div class="diagram-side">
         <div class="diagram-label" data-en="Old Model" data-es="Modelo Viejo">Old Model</div>
-        <svg width="220" height="340" viewBox="0 0 220 340" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Ad circle -->
-          <circle cx="110" cy="70" r="50" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
-          <text x="110" y="78" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="18" font-weight="bold" letter-spacing="0.1em">AD</text>
+        <svg width="240" height="320" viewBox="0 0 240 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 3 clustered/overlapping AD circles with muted blue -->
+          <circle cx="90" cy="55" r="40" fill="rgba(90,140,200,0.1)" stroke="rgba(90,140,200,0.5)" stroke-width="2"/>
+          <text x="90" y="62" text-anchor="middle" fill="rgba(90,140,200,0.8)" font-family="Space Mono, monospace" font-size="14" font-weight="bold" letter-spacing="0.08em">AD</text>
           
-          <!-- Arrow -->
-          <line x1="110" y1="125" x2="110" y2="205" stroke="#5A6478" stroke-width="3"/>
-          <polygon points="110,220 100,200 120,200" fill="#5A6478"/>
+          <circle cx="150" cy="55" r="40" fill="rgba(90,140,200,0.12)" stroke="rgba(90,140,200,0.5)" stroke-width="2"/>
+          <text x="150" y="62" text-anchor="middle" fill="rgba(90,140,200,0.8)" font-family="Space Mono, monospace" font-size="14" font-weight="bold" letter-spacing="0.08em">AD</text>
           
-          <!-- Audience square -->
-          <rect x="55" y="235" width="110" height="70" rx="6" fill="rgba(255,80,80,0.12)" stroke="rgba(255,80,80,0.5)" stroke-width="2.5"/>
-          <text x="110" y="278" text-anchor="middle" fill="rgba(255,80,80,0.8)" font-family="Space Mono, monospace" font-size="14" letter-spacing="0.08em">AUDIENCE</text>
+          <circle cx="120" cy="95" r="40" fill="rgba(90,140,200,0.15)" stroke="rgba(90,140,200,0.6)" stroke-width="2"/>
+          <text x="120" y="102" text-anchor="middle" fill="rgba(90,140,200,0.9)" font-family="Space Mono, monospace" font-size="14" font-weight="bold" letter-spacing="0.08em">AD</text>
+          
+          <!-- Arrows from each AD converging to single AUDIENCE -->
+          <line x1="90" y1="98" x2="105" y2="175" stroke="#5A6478" stroke-width="2" stroke-opacity="0.6"/>
+          <line x1="120" y1="138" x2="120" y2="175" stroke="#5A6478" stroke-width="2" stroke-opacity="0.8"/>
+          <line x1="150" y1="98" x2="135" y2="175" stroke="#5A6478" stroke-width="2" stroke-opacity="0.6"/>
+          
+          <!-- Arrow point -->
+          <polygon points="120,195 110,178 130,178" fill="#5A6478"/>
+          
+          <!-- Single AUDIENCE rectangle (red) -->
+          <rect x="60" y="210" width="120" height="65" rx="6" fill="rgba(255,80,80,0.1)" stroke="rgba(255,80,80,0.5)" stroke-width="2.5"/>
+          <text x="120" y="250" text-anchor="middle" fill="rgba(255,80,80,0.8)" font-family="Space Mono, monospace" font-size="13" letter-spacing="0.08em">AUDIENCE</text>
         </svg>
       </div>
       
-      <!-- NEW MODEL - Vertically Stacked Concepts -->
+      <!-- NEW MODEL: Each CONCEPT → its own AUDIENCE (3 rows) -->
       <div class="diagram-side">
         <div class="diagram-label new-label" data-en="New Model (Andromeda)" data-es="Nuevo Modelo (Andromeda)">New Model (Andromeda)</div>
-        <svg width="220" height="420" viewBox="0 0 220 420" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Concept 1 (top) -->
-          <circle cx="110" cy="45" r="38" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
-          <text x="110" y="52" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="11" font-weight="bold" letter-spacing="0.06em">CONCEPT</text>
+        <svg width="340" height="320" viewBox="0 0 340 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Row 1: CONCEPT → AUDIENCE -->
+          <circle cx="60" cy="50" r="38" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
+          <text x="60" y="57" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="10" font-weight="bold" letter-spacing="0.05em">CONCEPT</text>
           
-          <!-- Concept 2 (middle) -->
-          <circle cx="110" cy="130" r="38" fill="rgba(200,255,0,0.2)" stroke="#C8FF00" stroke-width="2.5"/>
-          <text x="110" y="137" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="11" font-weight="bold" letter-spacing="0.06em">CONCEPT</text>
+          <line x1="102" y1="50" x2="155" y2="50" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.7"/>
+          <polygon points="168,50 155,44 155,56" fill="#C8FF00" fill-opacity="0.8"/>
           
-          <!-- Concept 3 (bottom) -->
-          <circle cx="110" cy="215" r="38" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
-          <text x="110" y="222" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="11" font-weight="bold" letter-spacing="0.06em">CONCEPT</text>
+          <rect x="180" y="22" width="120" height="56" rx="5" fill="rgba(200,255,0,0.08)" stroke="#C8FF00" stroke-width="2"/>
+          <text x="240" y="57" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="11" letter-spacing="0.06em">AUDIENCE</text>
           
-          <!-- Lines from each concept converging -->
-          <line x1="110" y1="86" x2="110" y2="92" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.5"/>
-          <line x1="110" y1="171" x2="110" y2="177" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.5"/>
-          <line x1="110" y1="256" x2="110" y2="280" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.8"/>
+          <!-- Row 2: CONCEPT → AUDIENCE -->
+          <circle cx="60" cy="145" r="38" fill="rgba(200,255,0,0.2)" stroke="#C8FF00" stroke-width="2.5"/>
+          <text x="60" y="152" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="10" font-weight="bold" letter-spacing="0.05em">CONCEPT</text>
           
-          <!-- Convergence point -->
-          <circle cx="110" cy="290" r="10" fill="#C8FF00" fill-opacity="0.4"/>
+          <line x1="102" y1="145" x2="155" y2="145" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.8"/>
+          <polygon points="168,145 155,139 155,151" fill="#C8FF00"/>
           
-          <!-- Arrow down to audience -->
-          <line x1="110" y1="303" x2="110" y2="325" stroke="#C8FF00" stroke-width="3"/>
-          <polygon points="110,340 100,323 120,323" fill="#C8FF00"/>
+          <rect x="180" y="117" width="120" height="56" rx="5" fill="rgba(200,255,0,0.1)" stroke="#C8FF00" stroke-width="2"/>
+          <text x="240" y="152" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="11" letter-spacing="0.06em">AUDIENCE</text>
           
-          <!-- Audience square -->
-          <rect x="55" y="352" width="110" height="60" rx="6" fill="rgba(200,255,0,0.1)" stroke="#C8FF00" stroke-width="2.5"/>
-          <text x="110" y="390" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="14" font-weight="bold" letter-spacing="0.08em">AUDIENCE</text>
+          <!-- Row 3: CONCEPT → AUDIENCE -->
+          <circle cx="60" cy="240" r="38" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
+          <text x="60" y="247" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="10" font-weight="bold" letter-spacing="0.05em">CONCEPT</text>
+          
+          <line x1="102" y1="240" x2="155" y2="240" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.7"/>
+          <polygon points="168,240 155,234 155,246" fill="#C8FF00" fill-opacity="0.8"/>
+          
+          <rect x="180" y="212" width="120" height="56" rx="5" fill="rgba(200,255,0,0.08)" stroke="#C8FF00" stroke-width="2"/>
+          <text x="240" y="247" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="11" letter-spacing="0.06em">AUDIENCE</text>
         </svg>
       </div>
     </div>
