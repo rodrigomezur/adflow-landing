@@ -481,8 +481,82 @@
 
   .solution-statement .lime { color: var(--lime); font-weight: 600; }
 
+  /* PARADIGM SHIFT (Andromeda) */
+  .paradigm {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(200,255,0,0.07);
+    border-bottom: 1px solid rgba(200,255,0,0.07);
+  }
+
+  .paradigm-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    margin-top: 56px;
+  }
+
+  .paradigm-text p {
+    font-size: 17px;
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+
+  .paradigm-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .paradigm-highlight {
+    color: var(--lime);
+    font-weight: 600;
+  }
+
+  .paradigm-diagram {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+  }
+
+  .diagram-side {
+    text-align: center;
+  }
+
+  .diagram-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted-light);
+    margin-bottom: 24px;
+  }
+
+  .diagram-label.new-label {
+    color: var(--lime);
+  }
+
+  .diagram-visual {
+    position: relative;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 900px) {
+    .paradigm-content {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .paradigm-diagram {
+      flex-direction: column;
+      gap: 40px;
+      align-items: center;
+    }
+  }
+
   /* SYSTEM */
-  .system { background: var(--navy-mid); border-top: 1px solid rgba(200,255,0,0.07); }
+  .system { background: var(--navy); border-top: 1px solid rgba(200,255,0,0.07); }
 
   .system-steps { margin-top: 60px; }
 
@@ -588,44 +662,6 @@
   .d-body {
     font-size: 15px;
     color: rgba(239,242,236,0.55);
-    line-height: 1.65;
-  }
-
-  /* WHY */
-  .why { background: var(--navy-mid); border-top: 1px solid rgba(200,255,0,0.07); }
-
-  .why-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    margin-top: 56px;
-  }
-
-  .why-card {
-    background: var(--navy-card);
-    border: 1px solid rgba(200,255,0,0.07);
-    padding: 40px 32px;
-  }
-
-  .why-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: var(--lime);
-    margin-bottom: 16px;
-  }
-
-  .why-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 24px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .why-body {
-    font-size: 15px;
-    color: rgba(239,242,236,0.5);
     line-height: 1.65;
   }
 
@@ -1143,7 +1179,6 @@
     .deliverable-grid { grid-template-columns: 1fr; }
     .deliverable-card.highlight { grid-column: span 1; }
 
-    .why-grid { grid-template-columns: 1fr; }
     .fit-grid { grid-template-columns: 1fr; }
     .sprint-weeks { grid-template-columns: 1fr 1fr; }
 
@@ -1296,6 +1331,80 @@
   </div>
 </section>
 
+<!-- PARADIGM SHIFT -->
+<section class="paradigm">
+  <div class="container">
+    <div class="section-tag" data-en="The Shift" data-es="El Cambio">The Shift</div>
+    <h2 data-en="Meta Changed.<br>Most Brands Didn't." data-es="Meta Cambió.<br>La Mayoría No.">Meta Changed.<br>Most Brands Didn't.</h2>
+    
+    <div class="paradigm-content reveal">
+      <div class="paradigm-text">
+        <p data-en="The <span class='paradigm-highlight'>Andromeda update</span> flipped how ads find buyers. The old model was simple: you created an ad, defined an audience, and Meta showed your ad to that audience." data-es="La <span class='paradigm-highlight'>actualización Andromeda</span> cambió cómo los ads encuentran compradores. El modelo viejo era simple: creabas un ad, definías una audiencia, y Meta mostraba tu ad a esa audiencia.">
+          The <span class="paradigm-highlight">Andromeda update</span> flipped how ads find buyers. The old model was simple: you created an ad, defined an audience, and Meta showed your ad to that audience.
+        </p>
+        <p data-en="Now? <span class='paradigm-highlight'>Creative IS the targeting.</span> Meta's AI finds buyers based on what resonates — not who you tell it to target. More concepts = more signals = more buyers found." data-es="¿Ahora? <span class='paradigm-highlight'>El creativo ES el targeting.</span> La IA de Meta encuentra compradores basándose en qué resuena — no en a quién le dices que apunte. Más conceptos = más señales = más compradores encontrados.">
+          Now? <span class="paradigm-highlight">Creative IS the targeting.</span> Meta's AI finds buyers based on what resonates — not who you tell it to target. More concepts = more signals = more buyers found.
+        </p>
+        <p data-en="Brands still running 3-5 ads per month are playing the old game. The winners are flooding the algorithm with concepts and letting Meta's AI do what it does best." data-es="Las marcas que siguen corriendo 3-5 ads por mes están jugando el juego viejo. Los ganadores están inundando el algoritmo con conceptos y dejando que la IA de Meta haga lo que mejor sabe hacer.">
+          Brands still running 3-5 ads per month are playing the old game. The winners are flooding the algorithm with concepts and letting Meta's AI do what it does best.
+        </p>
+      </div>
+      
+      <div class="paradigm-diagram">
+        <!-- OLD MODEL -->
+        <div class="diagram-side">
+          <div class="diagram-label" data-en="Old Model" data-es="Modelo Viejo">Old Model</div>
+          <svg width="140" height="180" viewBox="0 0 140 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Ad circle -->
+            <circle cx="70" cy="40" r="28" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2"/>
+            <text x="70" y="45" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="11" letter-spacing="0.1em">AD</text>
+            
+            <!-- Arrow -->
+            <line x1="70" y1="72" x2="70" y2="108" stroke="#5A6478" stroke-width="2"/>
+            <polygon points="70,118 64,108 76,108" fill="#5A6478"/>
+            
+            <!-- Audience square -->
+            <rect x="42" y="128" width="56" height="40" rx="4" fill="rgba(255,80,80,0.12)" stroke="rgba(255,80,80,0.5)" stroke-width="2"/>
+            <text x="70" y="153" text-anchor="middle" fill="rgba(255,80,80,0.8)" font-family="Space Mono, monospace" font-size="9" letter-spacing="0.08em">AUDIENCE</text>
+          </svg>
+        </div>
+        
+        <!-- NEW MODEL -->
+        <div class="diagram-side">
+          <div class="diagram-label new-label" data-en="New Model (Andromeda)" data-es="Nuevo Modelo (Andromeda)">New Model (Andromeda)</div>
+          <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Concept circles -->
+            <circle cx="50" cy="28" r="22" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2"/>
+            <text x="50" y="32" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="8" letter-spacing="0.08em">CONCEPT</text>
+            
+            <circle cx="90" cy="28" r="22" fill="rgba(200,255,0,0.2)" stroke="#C8FF00" stroke-width="2"/>
+            <text x="90" y="32" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="8" letter-spacing="0.08em">CONCEPT</text>
+            
+            <circle cx="130" cy="28" r="22" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2"/>
+            <text x="130" y="32" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="8" letter-spacing="0.08em">CONCEPT</text>
+            
+            <!-- Arrows converging -->
+            <line x1="50" y1="52" x2="80" y2="105" stroke="#C8FF00" stroke-width="1.5" stroke-opacity="0.6"/>
+            <line x1="90" y1="52" x2="90" y2="105" stroke="#C8FF00" stroke-width="1.5" stroke-opacity="0.8"/>
+            <line x1="130" y1="52" x2="100" y2="105" stroke="#C8FF00" stroke-width="1.5" stroke-opacity="0.6"/>
+            
+            <!-- Convergence point -->
+            <circle cx="90" cy="110" r="6" fill="#C8FF00" fill-opacity="0.3"/>
+            
+            <!-- Arrow down -->
+            <line x1="90" y1="116" x2="90" y2="125" stroke="#C8FF00" stroke-width="2"/>
+            <polygon points="90,135 84,125 96,125" fill="#C8FF00"/>
+            
+            <!-- Audience square (larger, emphasized) -->
+            <rect x="52" y="142" width="76" height="34" rx="4" fill="rgba(200,255,0,0.1)" stroke="#C8FF00" stroke-width="2"/>
+            <text x="90" y="163" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="9" letter-spacing="0.08em">AUDIENCE</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SYSTEM -->
 <section class="system" id="system">
   <div class="container">
@@ -1387,32 +1496,6 @@
         <span class="d-icon">📊</span>
         <div class="d-title" data-en="Monthly Research Report + Weekly Review" data-es="Reporte Mensual de Research + Review Semanal">Monthly Research Report + Weekly Review</div>
         <div class="d-body" data-en="Trend analysis in your niche, competitor winner patterns, and weekly performance review to refine creative direction. Constant alignment with your scaling goals." data-es="Análisis de tendencias en tu nicho, patrones de winners en la competencia, y revisión semanal de performance para afinar la dirección creativa. Alineación constante con tus metas de escalado.">Trend analysis in your niche, competitor winner patterns, and weekly performance review to refine creative direction. Constant alignment with your scaling goals.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WHY -->
-<section class="why">
-  <div class="container">
-    <div class="section-tag" data-en="Why It Works" data-es="Por Qué Funciona">Why It Works</div>
-    <h2 data-en="Meta Rewards<br>Velocity." data-es="Meta Premia<br>La Velocidad.">Meta Rewards<br>Velocity.</h2>
-
-    <div class="why-grid reveal">
-      <div class="why-card">
-        <div class="why-num">01 —</div>
-        <div class="why-title" data-en="Meta rewards velocity" data-es="Meta premia velocidad">Meta rewards velocity</div>
-        <div class="why-body" data-en="The algorithm favors accounts that test consistently. Brands that feed it fresh creative signals weekly outperform brands that batch once a month." data-es="El algoritmo favorece cuentas que testean consistentemente. Marcas que alimentan señales frescas semanalmente superan a las que batchean una vez al mes.">The algorithm favors accounts that test consistently. Brands that feed it fresh creative signals weekly outperform brands that batch once a month.</div>
-      </div>
-      <div class="why-card">
-        <div class="why-num">02 —</div>
-        <div class="why-title" data-en="Fatigue is predictable" data-es="La fatiga es predecible">Fatigue is predictable</div>
-        <div class="why-body" data-en="Ad fatigue follows a pattern. Frequency climbs, CTR softens, ROAS dips. When you know the pattern, you can replace creative before performance drops." data-es="Ad fatigue sigue un patrón. Frecuencia sube, CTR baja, ROAS cae. Cuando conoces el patrón, puedes reemplazar creativos antes de que el performance caiga.">Ad fatigue follows a pattern. Frequency climbs, CTR softens, ROAS dips. When you know the pattern, you can replace creative before performance drops.</div>
-      </div>
-      <div class="why-card">
-        <div class="why-num">03 —</div>
-        <div class="why-title" data-en="Speed > Perfection" data-es="Velocidad > Perfección">Speed > Perfection</div>
-        <div class="why-body" data-en="Brands that scale smoothly don't just produce ads. They maintain throughput infrastructure — a continuous supply that keeps spend deployed and learning active." data-es="Las marcas que escalan suave no solo producen ads. Mantienen infraestructura de throughput — un supply continuo que mantiene el gasto deployed y el learning activo.">Brands that scale smoothly don't just produce ads. They maintain throughput infrastructure — a continuous supply that keeps spend deployed and learning active.</div>
       </div>
     </div>
   </div>
