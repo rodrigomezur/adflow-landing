@@ -1197,6 +1197,122 @@
     .final-cta-btns { flex-direction: column; align-items: center; }
     .step-num-large { font-size: 56px; }
   }
+
+  /* CREATIVE GALLERY - Infinite Scroll */
+  .creative-gallery {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    background: var(--navy);
+  }
+
+  .creative-gallery::before,
+  .creative-gallery::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 80px;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .creative-gallery::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--navy) 0%, transparent 100%);
+  }
+
+  .creative-gallery::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--navy) 0%, transparent 100%);
+  }
+
+  .gallery-row {
+    display: flex;
+    gap: 16px;
+    padding: 12px 0;
+    width: max-content;
+  }
+
+  .gallery-row-top {
+    animation: scrollLeft 40s linear infinite;
+  }
+
+  .gallery-row-bottom {
+    animation: scrollRight 45s linear infinite;
+  }
+
+  @keyframes scrollLeft {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes scrollRight {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  .gallery-card {
+    flex-shrink: 0;
+    width: 200px;
+    height: 320px;
+    border-radius: 12px;
+    background: var(--navy-card);
+    border: 1px solid rgba(200,255,0,0.12);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .gallery-card-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.6;
+  }
+
+  .card-bg-1 { background: linear-gradient(145deg, #0a1628 0%, #152238 100%); }
+  .card-bg-2 { background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 100%); }
+  .card-bg-3 { background: linear-gradient(145deg, #0d1f12 0%, #1a3d24 100%); }
+  .card-bg-4 { background: linear-gradient(145deg, #1f0d0d 0%, #3d1a1a 100%); }
+  .card-bg-5 { background: linear-gradient(145deg, #1a150d 0%, #3d3020 100%); }
+  .card-bg-6 { background: linear-gradient(145deg, #0d151a 0%, #1a2d3d 100%); }
+  .card-bg-7 { background: linear-gradient(145deg, #150d1a 0%, #2d1a3d 100%); }
+  .card-bg-8 { background: linear-gradient(145deg, #121212 0%, #1e1e1e 100%); }
+
+  .gallery-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--lime);
+    color: var(--navy);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 4px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .gallery-copy {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+  }
+
+  .gallery-copy span {
+    display: block;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+  }
 </style>
 </head>
 <body>
@@ -1253,6 +1369,53 @@
     </div>
   </div>
 </section>
+
+<!-- CREATIVE GALLERY -->
+<div class="creative-gallery">
+  <!-- Top Row - Scrolls Left -->
+  <div class="gallery-row gallery-row-top">
+    <!-- First set of 8 cards -->
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-1"></div><div class="gallery-badge">UGC</div><div class="gallery-copy"><span>THE TEXTURE ALONE</span><span>CHANGED MY LIFE</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-2"></div><div class="gallery-badge">STATIC</div><div class="gallery-copy"><span>70% OFF</span><span>SITEWIDE</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-3"></div><div class="gallery-badge">HOOK</div><div class="gallery-copy"><span>STOP BLAMING</span><span>YOURSELF</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-4"></div><div class="gallery-badge">VIDEO</div><div class="gallery-copy"><span>MADE FOR WINNERS</span><span>NOT QUITTERS</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-5"></div><div class="gallery-badge">UGC</div><div class="gallery-copy"><span>THE ARMS</span><span>OUT</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-6"></div><div class="gallery-badge">STATIC</div><div class="gallery-copy"><span>FAITH OVER FEAR</span><span>THIS YEAR</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-7"></div><div class="gallery-badge">HOOK</div><div class="gallery-copy"><span>WHAT IF 100K</span><span>WAS INEVITABLE</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-8"></div><div class="gallery-badge">VIDEO</div><div class="gallery-copy"><span>NOT FOR GUYS</span><span>WHO SKIP LEG DAY</span></div></div>
+    <!-- Duplicate set for seamless loop -->
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-1"></div><div class="gallery-badge">UGC</div><div class="gallery-copy"><span>THE TEXTURE ALONE</span><span>CHANGED MY LIFE</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-2"></div><div class="gallery-badge">STATIC</div><div class="gallery-copy"><span>70% OFF</span><span>SITEWIDE</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-3"></div><div class="gallery-badge">HOOK</div><div class="gallery-copy"><span>STOP BLAMING</span><span>YOURSELF</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-4"></div><div class="gallery-badge">VIDEO</div><div class="gallery-copy"><span>MADE FOR WINNERS</span><span>NOT QUITTERS</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-5"></div><div class="gallery-badge">UGC</div><div class="gallery-copy"><span>THE ARMS</span><span>OUT</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-6"></div><div class="gallery-badge">STATIC</div><div class="gallery-copy"><span>FAITH OVER FEAR</span><span>THIS YEAR</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-7"></div><div class="gallery-badge">HOOK</div><div class="gallery-copy"><span>WHAT IF 100K</span><span>WAS INEVITABLE</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-8"></div><div class="gallery-badge">VIDEO</div><div class="gallery-copy"><span>NOT FOR GUYS</span><span>WHO SKIP LEG DAY</span></div></div>
+  </div>
+  
+  <!-- Bottom Row - Scrolls Right -->
+  <div class="gallery-row gallery-row-bottom">
+    <!-- First set of 8 cards -->
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-6"></div><div class="gallery-badge">STATIC</div><div class="gallery-copy"><span>AUG 11</span><span>LIMITED DROP</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-3"></div><div class="gallery-badge">UGC</div><div class="gallery-copy"><span>THE PROMOTION STARTS</span><span>WITH YOUR SOCKS</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-8"></div><div class="gallery-badge">HOOK</div><div class="gallery-copy"><span>WHY ARE YOU STILL</span><span>DRINKING CHALK</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-4"></div><div class="gallery-badge">VIDEO</div><div class="gallery-copy"><span>EVERYONE SINS</span><span>ALL WE CAN ASK IS</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-1"></div><div class="gallery-badge">STATIC</div><div class="gallery-copy"><span>WINTER ESSENTIALS</span><span>SHOP NOW</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-7"></div><div class="gallery-badge">UGC</div><div class="gallery-copy"><span>CLEAN DAILY</span><span>PERFORMANCE</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-2"></div><div class="gallery-badge">HOOK</div><div class="gallery-copy"><span>50% OFF</span><span>TODAY ONLY</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-5"></div><div class="gallery-badge">VIDEO</div><div class="gallery-copy"><span>BUILD YOUR</span><span>CREATIVE PIPELINE</span></div></div>
+    <!-- Duplicate set for seamless loop -->
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-6"></div><div class="gallery-badge">STATIC</div><div class="gallery-copy"><span>AUG 11</span><span>LIMITED DROP</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-3"></div><div class="gallery-badge">UGC</div><div class="gallery-copy"><span>THE PROMOTION STARTS</span><span>WITH YOUR SOCKS</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-8"></div><div class="gallery-badge">HOOK</div><div class="gallery-copy"><span>WHY ARE YOU STILL</span><span>DRINKING CHALK</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-4"></div><div class="gallery-badge">VIDEO</div><div class="gallery-copy"><span>EVERYONE SINS</span><span>ALL WE CAN ASK IS</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-1"></div><div class="gallery-badge">STATIC</div><div class="gallery-copy"><span>WINTER ESSENTIALS</span><span>SHOP NOW</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-7"></div><div class="gallery-badge">UGC</div><div class="gallery-copy"><span>CLEAN DAILY</span><span>PERFORMANCE</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-2"></div><div class="gallery-badge">HOOK</div><div class="gallery-copy"><span>50% OFF</span><span>TODAY ONLY</span></div></div>
+    <div class="gallery-card"><div class="gallery-card-bg card-bg-5"></div><div class="gallery-badge">VIDEO</div><div class="gallery-copy"><span>BUILD YOUR</span><span>CREATIVE PIPELINE</span></div></div>
+  </div>
+</div>
 
 <!-- PROBLEM -->
 <section class="problem">
