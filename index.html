@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -166,6 +166,39 @@
     font-weight: 700 !important;
   }
   .nav-cta:hover { background: #B8EF00 !important; }
+
+  /* Language Switcher */
+  .lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 4px;
+  }
+
+  .lang-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+
+  .lang-btn:hover { color: var(--white); }
+
+  .lang-btn.active {
+    background: var(--lime);
+    color: var(--navy);
+    font-weight: 700;
+  }
 
   /* HERO */
   .hero {
@@ -654,7 +687,7 @@
     text-align: center;
   }
 
-  /* PRICING - SINGLE TIER */
+  /* PRICING */
   .pricing { background: var(--navy-mid); border-top: 1px solid rgba(200,255,0,0.07); }
 
   .pricing-single {
@@ -939,6 +972,7 @@
     nav { padding: 0 24px; }
     footer { padding: 36px 24px; }
     .nav-links a:not(.nav-cta) { display: none; }
+    .lang-switcher { display: flex; }
 
     h1 { font-size: clamp(52px, 13vw, 80px); }
     h2 { font-size: clamp(38px, 10vw, 60px); }
@@ -980,9 +1014,13 @@
 <nav>
   <a href="#" class="logo">Ad<em>Flow</em></a>
   <div class="nav-links">
-    <a href="#system">Sistema</a>
-    <a href="#pricing">Precio</a>
-    <a href="#apply" class="nav-cta">Aplicar</a>
+    <a href="#system" data-en="System" data-es="Sistema">System</a>
+    <a href="#pricing" data-en="Pricing" data-es="Precio">Pricing</a>
+    <div class="lang-switcher">
+      <button class="lang-btn active" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="es">ES</button>
+    </div>
+    <a href="#apply" class="nav-cta" data-en="Apply" data-es="Aplicar">Apply</a>
   </div>
 </nav>
 
@@ -996,16 +1034,16 @@
     <div class="hero-inner reveal">
       <div class="hero-badge">Creative Velocity Infrastructure</div>
       <h1>
-        Tus Ads Funcionan —<br>
-        Pero Tu Cuenta<br>
-        <span class="lime">Aún</span> <span class="ghost">Se Estanca</span>
+        <span data-en="If Your Ads Work —" data-es="Tus Ads Funcionan —">If Your Ads Work —</span><br>
+        <span data-en="But Your Account" data-es="Pero Tu Cuenta">But Your Account</span><br>
+        <span class="lime" data-en="Still" data-es="Aún">Still</span> <span class="ghost" data-en="Stalls" data-es="Se Estanca">Stalls</span>
       </h1>
-      <p class="hero-sub">
-        AdFlow instala un sistema de creativos continuo para que el escalado nunca frene por cuellos de botella de producción. Para marcas ecommerce gastando <strong>$5K–$50K USD/mes en Meta</strong> que están cansadas de que sus winners mueran más rápido de lo que llegan los reemplazos.
+      <p class="hero-sub" data-en="AdFlow installs a continuous creative system so scaling never slows down because of production bottlenecks. For ecommerce brands spending <strong>$5K–$50K/month on Meta</strong> who are tired of winners dying faster than replacements arrive." data-es="AdFlow instala un sistema de creativos continuo para que el escalado nunca frene por cuellos de botella de producción. Para marcas ecommerce gastando <strong>$5K–$50K USD/mes en Meta</strong> que están cansadas de que sus winners mueran más rápido de lo que llegan los reemplazos.">
+        AdFlow installs a continuous creative system so scaling never slows down because of production bottlenecks. For ecommerce brands spending <strong>$5K–$50K/month on Meta</strong> who are tired of winners dying faster than replacements arrive.
       </p>
       <div class="hero-cta-row">
-        <a href="#apply" class="btn btn-lime">Instalar Creative Velocity →</a>
-        <a href="#apply" class="btn btn-outline">Agendar Llamada</a>
+        <a href="#apply" class="btn btn-lime" data-en="Install Creative Velocity →" data-es="Instalar Creative Velocity →">Install Creative Velocity →</a>
+        <a href="#apply" class="btn btn-outline" data-en="Book a Call" data-es="Agendar Llamada">Book a Call</a>
       </div>
       <div class="hero-proof">
         <div class="proof-item">
@@ -1014,11 +1052,11 @@
         </div>
         <div class="proof-item">
           <div class="proof-num">15-20</div>
-          <div class="proof-label">Assets / Semana</div>
+          <div class="proof-label" data-en="Assets / Week" data-es="Assets / Semana">Assets / Week</div>
         </div>
         <div class="proof-item">
           <div class="proof-num">0</div>
-          <div class="proof-label">Shoots Necesarios</div>
+          <div class="proof-label" data-en="Shoots Needed" data-es="Shoots Necesarios">Shoots Needed</div>
         </div>
       </div>
     </div>
@@ -1028,10 +1066,10 @@
 <!-- PROBLEM -->
 <section class="problem">
   <div class="container">
-    <div class="section-tag">El Problema Real</div>
-    <h2>Escalar No Se Rompe<br>Porque Los Ads Dejan De Funcionar.</h2>
-    <p style="max-width:580px; font-size:18px;">
-      Se rompe porque los creativos no pueden seguir el ritmo. Ya has visto este patrón antes.
+    <div class="section-tag" data-en="The Real Problem" data-es="El Problema Real">The Real Problem</div>
+    <h2 data-en="Scaling Doesn't Break<br>Because Ads Stop Working." data-es="Escalar No Se Rompe<br>Porque Los Ads Dejan De Funcionar.">Scaling Doesn't Break<br>Because Ads Stop Working.</h2>
+    <p style="max-width:580px; font-size:18px;" data-en="It breaks because creative can't keep up. You've seen this pattern before." data-es="Se rompe porque los creativos no pueden seguir el ritmo. Ya has visto este patrón antes.">
+      It breaks because creative can't keep up. You've seen this pattern before.
     </p>
 
     <div class="problem-story reveal">
@@ -1039,46 +1077,46 @@
         <div class="story-step">
           <div class="story-dot dot-green">↑</div>
           <div class="story-content">
-            <div class="step-title">Encuentras un winner.</div>
-            <p>El performance sube. El gasto aumenta. Todo está funcionando.</p>
+            <div class="step-title" data-en="You find a winner." data-es="Encuentras un winner.">You find a winner.</div>
+            <p data-en="Performance spikes. Spend increases. Everything is working." data-es="El performance sube. El gasto aumenta. Todo está funcionando.">Performance spikes. Spend increases. Everything is working.</p>
           </div>
         </div>
         <div class="story-step">
           <div class="story-dot dot-yellow">⏱</div>
           <div class="story-content">
-            <div class="step-title">El ad se fatiga.</div>
-            <p>Siempre pasa. El CTR baja, la frecuencia sube, el ROAS cae. ¿Y ahora qué?</p>
+            <div class="step-title" data-en="The ad fatigues." data-es="El ad se fatiga.">The ad fatigues.</div>
+            <p data-en="It always does. CTR softens, frequency climbs, ROAS dips. Now what?" data-es="Siempre pasa. El CTR baja, la frecuencia sube, el ROAS cae. ¿Y ahora qué?">It always does. CTR softens, frequency climbs, ROAS dips. Now what?</p>
           </div>
         </div>
         <div class="story-step">
           <div class="story-dot dot-red">⏸</div>
           <div class="story-content">
-            <div class="step-title">Esperas.</div>
-            <p>A la agencia. Al equipo interno. A los creadores. Y mientras esperas — el gasto se frena.</p>
+            <div class="step-title" data-en="You wait." data-es="Esperas.">You wait.</div>
+            <p data-en="On the agency. On in-house bandwidth. On creators. And while you wait — spend stalls." data-es="A la agencia. Al equipo interno. A los creadores. Y mientras esperas — el gasto se frena.">On the agency. On in-house bandwidth. On creators. And while you wait — spend stalls.</p>
           </div>
         </div>
         <div class="story-step">
           <div class="story-dot dot-red">✕</div>
           <div class="story-content">
-            <div class="step-title">No porque la demanda desapareció.</div>
-            <p>No porque el targeting falló. Porque <strong>la producción de creativos se frenó.</strong></p>
+            <div class="step-title" data-en="Not because demand disappeared." data-es="No porque la demanda desapareció.">Not because demand disappeared.</div>
+            <p data-en="Not because targeting failed. Because <strong>creative supply slowed down.</strong>" data-es="No porque el targeting falló. Porque <strong>la producción de creativos se frenó.</strong>">Not because targeting failed. Because <strong>creative supply slowed down.</strong></p>
           </div>
         </div>
       </div>
 
       <div>
         <div class="cost-list">
-          <div class="cost-list-title">Lo Que Esto Te Cuesta</div>
-          <div class="cost-item"><span class="cost-x">✕</span> Winners que mueren sin reemplazos</div>
-          <div class="cost-item"><span class="cost-x">✕</span> Gasto pausado o volátil</div>
-          <div class="cost-item"><span class="cost-x">✕</span> Equipo reactivo en vez de compounding</div>
-          <div class="cost-item"><span class="cost-x">✕</span> Momentum que se rompe cada 2-3 semanas</div>
-          <div class="cost-item"><span class="cost-x">✕</span> Capital sin desplegar</div>
+          <div class="cost-list-title" data-en="What This Costs You" data-es="Lo Que Esto Te Cuesta">What This Costs You</div>
+          <div class="cost-item"><span class="cost-x">✕</span> <span data-en="Winners die without replacements" data-es="Winners que mueren sin reemplazos">Winners die without replacements</span></div>
+          <div class="cost-item"><span class="cost-x">✕</span> <span data-en="Spend pauses or becomes volatile" data-es="Gasto pausado o volátil">Spend pauses or becomes volatile</span></div>
+          <div class="cost-item"><span class="cost-x">✕</span> <span data-en="Team stays reactive instead of compounding" data-es="Equipo reactivo en vez de compounding">Team stays reactive instead of compounding</span></div>
+          <div class="cost-item"><span class="cost-x">✕</span> <span data-en="Momentum breaks every 2-3 weeks" data-es="Momentum que se rompe cada 2-3 semanas">Momentum breaks every 2-3 weeks</span></div>
+          <div class="cost-item"><span class="cost-x">✕</span> <span data-en="Capital sits undeployed" data-es="Capital sin desplegar">Capital sits undeployed</span></div>
         </div>
 
-        <div class="problem-cta-note">
-          La mayoría de las marcas no tienen un problema de demanda.<br>
-          Tienen un <strong>problema de throughput.</strong>
+        <div class="problem-cta-note" data-en="Most brands don't have a demand problem.<br>They have a <strong>throughput problem.</strong>" data-es="La mayoría de las marcas no tienen un problema de demanda.<br>Tienen un <strong>problema de throughput.</strong>">
+          Most brands don't have a demand problem.<br>
+          They have a <strong>throughput problem.</strong>
         </div>
       </div>
     </div>
@@ -1088,17 +1126,17 @@
 <!-- SOLUTION -->
 <section class="solution">
   <div class="container-narrow">
-    <div class="section-tag">La Solución</div>
-    <h2>AdFlow Instala<br>Infraestructura de<br>Creative Velocity</h2>
+    <div class="section-tag" data-en="The Solution" data-es="La Solución">The Solution</div>
+    <h2 data-en="AdFlow Installs<br>Creative Velocity<br>Infrastructure" data-es="AdFlow Instala<br>Infraestructura de<br>Creative Velocity">AdFlow Installs<br>Creative Velocity<br>Infrastructure</h2>
 
     <div class="not-list reveal">
-      <div class="not-row"><span class="x">✕</span> Esto no es un batch de creativos.</div>
-      <div class="not-row"><span class="x">✕</span> Esto no son "AI ads" genéricos.</div>
-      <div class="not-row"><span class="x">✕</span> Esto no es otro freelancer.</div>
+      <div class="not-row"><span class="x">✕</span> <span data-en="This is not a batch of creatives." data-es="Esto no es un batch de creativos.">This is not a batch of creatives.</span></div>
+      <div class="not-row"><span class="x">✕</span> <span data-en='This is not "AI ads."' data-es='Esto no son "AI ads" genéricos.'>This is not "AI ads."</span></div>
+      <div class="not-row"><span class="x">✕</span> <span data-en="This is not another freelancer." data-es="Esto no es otro freelancer.">This is not another freelancer.</span></div>
     </div>
 
-    <div class="solution-statement reveal">
-      AdFlow instala un <span class="lime">sistema de creativos continuo</span> diseñado para extraer señales probadas, convertirlas en variaciones listas para Meta, y reemplazar la fatiga antes de que impacte el performance — para que tu cuenta nunca se estanque porque la producción se atrasó.
+    <div class="solution-statement reveal" data-en='AdFlow installs a <span class="lime">continuous creative system</span> designed to pull proven signals, turn them into Meta-ready variations, and replace fatigue before it impacts performance — so your account never stalls because production fell behind.' data-es='AdFlow instala un <span class="lime">sistema de creativos continuo</span> diseñado para extraer señales probadas, convertirlas en variaciones listas para Meta, y reemplazar la fatiga antes de que impacte el performance — para que tu cuenta nunca se estanque porque la producción se atrasó.'>
+      AdFlow installs a <span class="lime">continuous creative system</span> designed to pull proven signals, turn them into Meta-ready variations, and replace fatigue before it impacts performance — so your account never stalls because production fell behind.
     </div>
   </div>
 </section>
@@ -1106,24 +1144,24 @@
 <!-- SYSTEM -->
 <section class="system" id="system">
   <div class="container">
-    <div class="section-tag">El Sistema Creative Velocity™</div>
-    <h2>Tres Etapas.<br>Un Cuello de Botella Eliminado.</h2>
-    <p style="max-width:540px; font-size:17px;">Cada cliente de AdFlow pasa por un sistema simple de 3 etapas que elimina el throughput de creativos como variable de escalado.</p>
+    <div class="section-tag" data-en="The Creative Velocity System™" data-es="El Sistema Creative Velocity™">The Creative Velocity System™</div>
+    <h2 data-en="Three Stages.<br>One Constraint Removed." data-es="Tres Etapas.<br>Un Cuello de Botella Eliminado.">Three Stages.<br>One Constraint Removed.</h2>
+    <p style="max-width:540px; font-size:17px;" data-en="Every AdFlow client runs through a simple 3-stage system that removes creative throughput as a scaling variable." data-es="Cada cliente de AdFlow pasa por un sistema simple de 3 etapas que elimina el throughput de creativos como variable de escalado.">Every AdFlow client runs through a simple 3-stage system that removes creative throughput as a scaling variable.</p>
 
     <div class="system-steps reveal">
       <div class="system-step">
         <div class="step-left">
           <div class="step-num-large">01</div>
-          <div class="step-phase">Etapa Uno</div>
+          <div class="step-phase" data-en="Stage One" data-es="Etapa Uno">Stage One</div>
         </div>
         <div class="step-right">
           <h3>Signal First</h3>
-          <p>Extraemos lo que ya está funcionando — los ángulos, hooks, formatos y patrones de tus winners. Sin adivinar. Sin prompts random. Cada decisión creativa está basada en señales probadas de tu mercado.</p>
+          <p data-en="We extract what is already working — the angles, hooks, formats, and patterns across your winners. No guessing. No random AI prompts. Every creative decision is rooted in proven signal from your market." data-es="Extraemos lo que ya está funcionando — los ángulos, hooks, formatos y patrones de tus winners. Sin adivinar. Sin prompts random. Cada decisión creativa está basada en señales probadas de tu mercado.">We extract what is already working — the angles, hooks, formats, and patterns across your winners. No guessing. No random AI prompts. Every creative decision is rooted in proven signal from your market.</p>
           <div class="step-tags">
-            <span class="step-tag">Extracción de Ángulos</span>
-            <span class="step-tag">Mining de Hooks</span>
-            <span class="step-tag">Patrones de Formato</span>
-            <span class="step-tag">Análisis de Winners</span>
+            <span class="step-tag" data-en="Angle Extraction" data-es="Extracción de Ángulos">Angle Extraction</span>
+            <span class="step-tag" data-en="Hook Mining" data-es="Mining de Hooks">Hook Mining</span>
+            <span class="step-tag" data-en="Format Patterns" data-es="Patrones de Formato">Format Patterns</span>
+            <span class="step-tag" data-en="Winner Analysis" data-es="Análisis de Winners">Winner Analysis</span>
           </div>
         </div>
       </div>
@@ -1131,15 +1169,15 @@
       <div class="system-step">
         <div class="step-left">
           <div class="step-num-large">02</div>
-          <div class="step-phase">Etapa Dos</div>
+          <div class="step-phase" data-en="Stage Two" data-es="Etapa Dos">Stage Two</div>
         </div>
         <div class="step-right">
           <h3>Velocity Production</h3>
-          <p>Convertimos esas señales en batches semanales de variaciones listas para Meta. La producción se comprime de semanas a días usando un sistema AI construido específicamente para ads de performance en ecommerce.</p>
+          <p data-en="We turn those signals into weekly batches of Meta-ready variations. Creative production compresses from weeks to days using an AI-powered system built specifically for ecommerce performance ads." data-es="Convertimos esas señales en batches semanales de variaciones listas para Meta. La producción se comprime de semanas a días usando un sistema AI construido específicamente para ads de performance en ecommerce.">We turn those signals into weekly batches of Meta-ready variations. Creative production compresses from weeks to days using an AI-powered system built specifically for ecommerce performance ads.</p>
           <div class="step-tags">
-            <span class="no-tag">Sin Shoots</span>
-            <span class="no-tag">Sin Coordinar Creadores</span>
-            <span class="no-tag">Sin Lag de Ejecución</span>
+            <span class="no-tag" data-en="No Shoots" data-es="Sin Shoots">No Shoots</span>
+            <span class="no-tag" data-en="No Creator Coordination" data-es="Sin Coordinar Creadores">No Creator Coordination</span>
+            <span class="no-tag" data-en="No Execution Lag" data-es="Sin Lag de Ejecución">No Execution Lag</span>
           </div>
         </div>
       </div>
@@ -1147,15 +1185,15 @@
       <div class="system-step">
         <div class="step-left">
           <div class="step-num-large">03</div>
-          <div class="step-phase">Etapa Tres</div>
+          <div class="step-phase" data-en="Stage Three" data-es="Etapa Tres">Stage Three</div>
         </div>
         <div class="step-right">
           <h3>Continuous Refresh</h3>
-          <p>Los creativos llegan antes de que la fatiga pegue. El testing corre continuamente. Los winners se reemplazan. El gasto escala suavemente — no reactivamente. El sistema compone cada ciclo.</p>
+          <p data-en="Creative arrives before fatigue hits. Testing runs continuously. Winners get replaced. Spend scales smoothly — not reactively. The system compounds every cycle." data-es="Los creativos llegan antes de que la fatiga pegue. El testing corre continuamente. Los winners se reemplazan. El gasto escala suavemente — no reactivamente. El sistema compone cada ciclo.">Creative arrives before fatigue hits. Testing runs continuously. Winners get replaced. Spend scales smoothly — not reactively. The system compounds every cycle.</p>
           <div class="step-tags">
-            <span class="step-tag">Testing Always-On</span>
-            <span class="step-tag">Prevención de Fatiga</span>
-            <span class="step-tag">Escalado Suave</span>
+            <span class="step-tag" data-en="Always-On Testing" data-es="Testing Always-On">Always-On Testing</span>
+            <span class="step-tag" data-en="Fatigue Prevention" data-es="Prevención de Fatiga">Fatigue Prevention</span>
+            <span class="step-tag" data-en="Smooth Scaling" data-es="Escalado Suave">Smooth Scaling</span>
           </div>
         </div>
       </div>
@@ -1166,34 +1204,34 @@
 <!-- DELIVERABLES -->
 <section class="deliverables">
   <div class="container">
-    <div class="section-tag">Qué Recibes</div>
-    <h2>Todo Lo Que Necesitas.<br>Nada Que No.</h2>
+    <div class="section-tag" data-en="What You Get" data-es="Qué Recibes">What You Get</div>
+    <h2 data-en="Everything You Need.<br>Nothing You Don't." data-es="Todo Lo Que Necesitas.<br>Nada Que No.">Everything You Need.<br>Nothing You Don't.</h2>
 
     <div class="deliverable-grid reveal">
       <div class="deliverable-card">
         <span class="d-icon">📸</span>
-        <div class="d-title">12-15 Imágenes / Semana</div>
-        <div class="d-body">Statics para feed, stories y reels. Lifestyle shots, product-focused, UGC-style — todo listo para subir a Meta Ads Manager.</div>
+        <div class="d-title" data-en="12-15 Images / Week" data-es="12-15 Imágenes / Semana">12-15 Images / Week</div>
+        <div class="d-body" data-en="Statics for feed, stories, and reels. Lifestyle shots, product-focused, UGC-style — all ready to upload to Meta Ads Manager." data-es="Statics para feed, stories y reels. Lifestyle shots, product-focused, UGC-style — todo listo para subir a Meta Ads Manager.">Statics for feed, stories, and reels. Lifestyle shots, product-focused, UGC-style — all ready to upload to Meta Ads Manager.</div>
       </div>
       <div class="deliverable-card">
         <span class="d-icon">🎬</span>
-        <div class="d-title">3-5 Videos UGC / Semana</div>
-        <div class="d-body">Videos con AI avatars y lip-sync realista. Testimoniales, demos, hooks — sin coordinar creadores ni esperar entregas.</div>
+        <div class="d-title" data-en="3-5 UGC Videos / Week" data-es="3-5 Videos UGC / Semana">3-5 UGC Videos / Week</div>
+        <div class="d-body" data-en="Videos with AI avatars and realistic lip-sync. Testimonials, demos, hooks — no creator coordination or delivery delays." data-es="Videos con AI avatars y lip-sync realista. Testimoniales, demos, hooks — sin coordinar creadores ni esperar entregas.">Videos with AI avatars and realistic lip-sync. Testimonials, demos, hooks — no creator coordination or delivery delays.</div>
       </div>
       <div class="deliverable-card">
         <span class="d-icon">✍️</span>
-        <div class="d-title">10-15 Variaciones de Copy</div>
-        <div class="d-body">Headlines, primary text, y CTAs optimizados para cada batch de creativos. Copy que convierte, no relleno genérico.</div>
+        <div class="d-title" data-en="10-15 Copy Variations" data-es="10-15 Variaciones de Copy">10-15 Copy Variations</div>
+        <div class="d-body" data-en="Headlines, primary text, and CTAs optimized for each creative batch. Copy that converts, not generic filler." data-es="Headlines, primary text, y CTAs optimizados para cada batch de creativos. Copy que convierte, no relleno genérico.">Headlines, primary text, and CTAs optimized for each creative batch. Copy that converts, not generic filler.</div>
       </div>
       <div class="deliverable-card">
         <span class="d-icon">⏱</span>
-        <div class="d-title">Turnaround 48-72h</div>
-        <div class="d-body">De brief a entrega en días, no semanas. Previene cliff de performance y delays de escalado.</div>
+        <div class="d-title" data-en="48-72h Turnaround" data-es="Turnaround 48-72h">48-72h Turnaround</div>
+        <div class="d-body" data-en="From brief to delivery in days, not weeks. Prevents performance cliffs and scaling delays." data-es="De brief a entrega en días, no semanas. Previene cliff de performance y delays de escalado.">From brief to delivery in days, not weeks. Prevents performance cliffs and scaling delays.</div>
       </div>
       <div class="deliverable-card highlight">
         <span class="d-icon">📊</span>
-        <div class="d-title">Reporte Mensual de Research + Review Semanal</div>
-        <div class="d-body">Análisis de tendencias en tu nicho, patrones de winners en la competencia, y revisión semanal de performance para afinar la dirección creativa. Alineación constante con tus metas de escalado.</div>
+        <div class="d-title" data-en="Monthly Research Report + Weekly Review" data-es="Reporte Mensual de Research + Review Semanal">Monthly Research Report + Weekly Review</div>
+        <div class="d-body" data-en="Trend analysis in your niche, competitor winner patterns, and weekly performance review to refine creative direction. Constant alignment with your scaling goals." data-es="Análisis de tendencias en tu nicho, patrones de winners en la competencia, y revisión semanal de performance para afinar la dirección creativa. Alineación constante con tus metas de escalado.">Trend analysis in your niche, competitor winner patterns, and weekly performance review to refine creative direction. Constant alignment with your scaling goals.</div>
       </div>
     </div>
   </div>
@@ -1202,24 +1240,24 @@
 <!-- WHY -->
 <section class="why">
   <div class="container">
-    <div class="section-tag">Por Qué Funciona</div>
-    <h2>Meta Premia<br>La Velocidad.</h2>
+    <div class="section-tag" data-en="Why It Works" data-es="Por Qué Funciona">Why It Works</div>
+    <h2 data-en="Meta Rewards<br>Velocity." data-es="Meta Premia<br>La Velocidad.">Meta Rewards<br>Velocity.</h2>
 
     <div class="why-grid reveal">
       <div class="why-card">
         <div class="why-num">01 —</div>
-        <div class="why-title">Meta premia velocidad</div>
-        <div class="why-body">El algoritmo favorece cuentas que testean consistentemente. Marcas que alimentan señales frescas semanalmente superan a las que batchean una vez al mes.</div>
+        <div class="why-title" data-en="Meta rewards velocity" data-es="Meta premia velocidad">Meta rewards velocity</div>
+        <div class="why-body" data-en="The algorithm favors accounts that test consistently. Brands that feed it fresh creative signals weekly outperform brands that batch once a month." data-es="El algoritmo favorece cuentas que testean consistentemente. Marcas que alimentan señales frescas semanalmente superan a las que batchean una vez al mes.">The algorithm favors accounts that test consistently. Brands that feed it fresh creative signals weekly outperform brands that batch once a month.</div>
       </div>
       <div class="why-card">
         <div class="why-num">02 —</div>
-        <div class="why-title">La fatiga es predecible</div>
-        <div class="why-body">Ad fatigue sigue un patrón. Frecuencia sube, CTR baja, ROAS cae. Cuando conoces el patrón, puedes reemplazar creativos antes de que el performance caiga.</div>
+        <div class="why-title" data-en="Fatigue is predictable" data-es="La fatiga es predecible">Fatigue is predictable</div>
+        <div class="why-body" data-en="Ad fatigue follows a pattern. Frequency climbs, CTR softens, ROAS dips. When you know the pattern, you can replace creative before performance drops." data-es="Ad fatigue sigue un patrón. Frecuencia sube, CTR baja, ROAS cae. Cuando conoces el patrón, puedes reemplazar creativos antes de que el performance caiga.">Ad fatigue follows a pattern. Frequency climbs, CTR softens, ROAS dips. When you know the pattern, you can replace creative before performance drops.</div>
       </div>
       <div class="why-card">
         <div class="why-num">03 —</div>
-        <div class="why-title">Velocidad > Perfección</div>
-        <div class="why-body">Las marcas que escalan suave no solo producen ads. Mantienen infraestructura de throughput — un supply continuo que mantiene el gasto deployed y el learning activo.</div>
+        <div class="why-title" data-en="Speed > Perfection" data-es="Velocidad > Perfección">Speed > Perfection</div>
+        <div class="why-body" data-en="Brands that scale smoothly don't just produce ads. They maintain throughput infrastructure — a continuous supply that keeps spend deployed and learning active." data-es="Las marcas que escalan suave no solo producen ads. Mantienen infraestructura de throughput — un supply continuo que mantiene el gasto deployed y el learning activo.">Brands that scale smoothly don't just produce ads. They maintain throughput infrastructure — a continuous supply that keeps spend deployed and learning active.</div>
       </div>
     </div>
   </div>
@@ -1228,29 +1266,29 @@
 <!-- FIT -->
 <section class="fit">
   <div class="container">
-    <div class="section-tag">Para Quién Es</div>
-    <h2>Construido Para Operadores<br>Que Ya Tienen Demanda.</h2>
+    <div class="section-tag" data-en="Who This Is For" data-es="Para Quién Es">Who This Is For</div>
+    <h2 data-en="Built for Operators<br>Who Already Have Demand." data-es="Construido Para Operadores<br>Que Ya Tienen Demanda.">Built for Operators<br>Who Already Have Demand.</h2>
 
     <div class="fit-grid reveal">
       <div class="fit-card fit-for">
-        <div class="fit-label">✓ &nbsp;Esto Es Para Ti Si</div>
-        <div class="fit-item"><span class="fit-icon">✓</span> Ya estás corriendo ads en Meta</div>
-        <div class="fit-item"><span class="fit-icon">✓</span> Tus winners se fatigan cada 7-21 días</div>
-        <div class="fit-item"><span class="fit-icon">✓</span> Escalar se siente "choppy" en vez de smooth</div>
-        <div class="fit-item"><span class="fit-icon">✓</span> Quieres resolver producción estructuralmente</div>
-        <div class="fit-item"><span class="fit-icon">✓</span> Gastas $5K-$50K/mes y creativos es el bottleneck</div>
+        <div class="fit-label" data-en="✓  This Is For You If" data-es="✓  Esto Es Para Ti Si">✓  This Is For You If</div>
+        <div class="fit-item"><span class="fit-icon">✓</span> <span data-en="You're already running paid Meta ads" data-es="Ya estás corriendo ads en Meta">You're already running paid Meta ads</span></div>
+        <div class="fit-item"><span class="fit-icon">✓</span> <span data-en="Your winners fatigue every 7-21 days" data-es="Tus winners se fatigan cada 7-21 días">Your winners fatigue every 7-21 days</span></div>
+        <div class="fit-item"><span class="fit-icon">✓</span> <span data-en='Scaling feels "choppy" instead of smooth' data-es='Escalar se siente "choppy" en vez de smooth'>Scaling feels "choppy" instead of smooth</span></div>
+        <div class="fit-item"><span class="fit-icon">✓</span> <span data-en="You want production solved structurally" data-es="Quieres resolver producción estructuralmente">You want production solved structurally</span></div>
+        <div class="fit-item"><span class="fit-icon">✓</span> <span data-en="You're spending $5K-$50K/mo and creative is the bottleneck" data-es="Gastas $5K-$50K/mes y creativos es el bottleneck">You're spending $5K-$50K/mo and creative is the bottleneck</span></div>
       </div>
       <div class="fit-card fit-not">
-        <div class="fit-label">✕ &nbsp;Esto NO Es Para Ti Si</div>
-        <div class="fit-item"><span class="fit-icon">✕</span> Aún no estás corriendo ads</div>
-        <div class="fit-item"><span class="fit-icon">✕</span> Buscas tu primera venta</div>
-        <div class="fit-item"><span class="fit-icon">✕</span> Quieres "un ad viral"</div>
-        <div class="fit-item"><span class="fit-icon">✕</span> No estás listo para testear e iterar semanalmente</div>
+        <div class="fit-label" data-en="✕  This Is NOT For You If" data-es="✕  Esto NO Es Para Ti Si">✕  This Is NOT For You If</div>
+        <div class="fit-item"><span class="fit-icon">✕</span> <span data-en="You're not running ads yet" data-es="Aún no estás corriendo ads">You're not running ads yet</span></div>
+        <div class="fit-item"><span class="fit-icon">✕</span> <span data-en="You're looking for your first sale" data-es="Buscas tu primera venta">You're looking for your first sale</span></div>
+        <div class="fit-item"><span class="fit-icon">✕</span> <span data-en='You want "one viral ad"' data-es='Quieres "un ad viral"'>You want "one viral ad"</span></div>
+        <div class="fit-item"><span class="fit-icon">✕</span> <span data-en="You're not ready to test and iterate weekly" data-es="No estás listo para testear e iterar semanalmente">You're not ready to test and iterate weekly</span></div>
       </div>
     </div>
 
-    <div class="fit-note reveal">
-      AdFlow está construido para operadores que ya tienen demanda — y necesitan la infraestructura creativa para desplegarla a escala.
+    <div class="fit-note reveal" data-en="AdFlow is built for operators who already have demand — and need the creative infrastructure to deploy it at scale." data-es="AdFlow está construido para operadores que ya tienen demanda — y necesitan la infraestructura creativa para desplegarla a escala.">
+      AdFlow is built for operators who already have demand — and need the creative infrastructure to deploy it at scale.
     </div>
   </div>
 </section>
@@ -1258,29 +1296,29 @@
 <!-- PRICING -->
 <section class="pricing" id="pricing">
   <div class="container">
-    <div class="section-tag">Inversión</div>
-    <h2>Un Plan.<br>Todo Incluido.</h2>
-    <p style="font-size:17px; max-width:480px; text-align:center; margin:0 auto;">Sin tiers confusos. Sin upsells. Todo lo que necesitas para resolver el throughput de creativos de una vez.</p>
+    <div class="section-tag" data-en="Investment" data-es="Inversión">Investment</div>
+    <h2 data-en="One Plan.<br>Everything Included." data-es="Un Plan.<br>Todo Incluido.">One Plan.<br>Everything Included.</h2>
+    <p style="font-size:17px; max-width:480px; text-align:center; margin:0 auto;" data-en="No confusing tiers. No upsells. Everything you need to solve creative throughput once and for all." data-es="Sin tiers confusos. Sin upsells. Todo lo que necesitas para resolver el throughput de creativos de una vez.">No confusing tiers. No upsells. Everything you need to solve creative throughput once and for all.</p>
 
     <div class="pricing-single reveal">
       <div class="pricing-card">
-        <div class="popular-badge">Aceptando 5 Marcas</div>
+        <div class="popular-badge" data-en="Accepting 5 Brands" data-es="Aceptando 5 Marcas">Accepting 5 Brands</div>
         <div class="plan-name">AdFlow Complete</div>
         <div class="plan-tagline">Creative velocity infrastructure</div>
         <div class="plan-price">$997</div>
-        <div class="plan-per">USD / mes</div>
+        <div class="plan-per" data-en="USD / month" data-es="USD / mes">USD / month</div>
         <div class="plan-divider"></div>
         <div class="plan-features">
-          <div class="plan-feature"><span class="plan-check">✓</span> 12-15 imágenes por semana</div>
-          <div class="plan-feature"><span class="plan-check">✓</span> 3-5 videos UGC por semana</div>
-          <div class="plan-feature"><span class="plan-check">✓</span> 10-15 variaciones de copy</div>
-          <div class="plan-feature"><span class="plan-check">✓</span> Turnaround 48-72 horas</div>
-          <div class="plan-feature"><span class="plan-check">✓</span> Research report mensual</div>
-          <div class="plan-feature"><span class="plan-check">✓</span> Performance review semanal</div>
-          <div class="plan-feature"><span class="plan-check">✓</span> Sin shoots, sin creators, sin chaos</div>
+          <div class="plan-feature"><span class="plan-check">✓</span> <span data-en="12-15 images per week" data-es="12-15 imágenes por semana">12-15 images per week</span></div>
+          <div class="plan-feature"><span class="plan-check">✓</span> <span data-en="3-5 UGC videos per week" data-es="3-5 videos UGC por semana">3-5 UGC videos per week</span></div>
+          <div class="plan-feature"><span class="plan-check">✓</span> <span data-en="10-15 copy variations" data-es="10-15 variaciones de copy">10-15 copy variations</span></div>
+          <div class="plan-feature"><span class="plan-check">✓</span> <span data-en="48-72 hour turnaround" data-es="Turnaround 48-72 horas">48-72 hour turnaround</span></div>
+          <div class="plan-feature"><span class="plan-check">✓</span> <span data-en="Monthly research report" data-es="Research report mensual">Monthly research report</span></div>
+          <div class="plan-feature"><span class="plan-check">✓</span> <span data-en="Weekly performance review" data-es="Performance review semanal">Weekly performance review</span></div>
+          <div class="plan-feature"><span class="plan-check">✓</span> <span data-en="No shoots, no creators, no chaos" data-es="Sin shoots, sin creators, sin chaos">No shoots, no creators, no chaos</span></div>
         </div>
-        <a href="#apply" class="btn btn-lime plan-cta">Aplicar Ahora →</a>
-        <div class="plan-guarantee">Cancela cuando quieras. Sin contratos largos.</div>
+        <a href="#apply" class="btn btn-lime plan-cta" data-en="Apply Now →" data-es="Aplicar Ahora →">Apply Now →</a>
+        <div class="plan-guarantee" data-en="Cancel anytime. No long contracts." data-es="Cancela cuando quieras. Sin contratos largos.">Cancel anytime. No long contracts.</div>
       </div>
     </div>
   </div>
@@ -1289,40 +1327,40 @@
 <!-- SPRINT -->
 <section class="sprint">
   <div class="container">
-    <div class="section-tag">Implementación</div>
-    <h2>El Sprint de<br>Instalación de 30 Días</h2>
-    <p style="font-size:17px; max-width:480px;">Cada cliente empieza con un sprint estructurado de 4 semanas para instalar el sistema — después los creativos corren como infraestructura.</p>
+    <div class="section-tag" data-en="Implementation" data-es="Implementación">Implementation</div>
+    <h2 data-en="The 30-Day<br>Installation Sprint" data-es="El Sprint de<br>Instalación de 30 Días">The 30-Day<br>Installation Sprint</h2>
+    <p style="font-size:17px; max-width:480px;" data-en="Every client starts with a structured 4-week sprint to install the system — then creative runs as infrastructure from there." data-es="Cada cliente empieza con un sprint estructurado de 4 semanas para instalar el sistema — después los creativos corren como infraestructura.">Every client starts with a structured 4-week sprint to install the system — then creative runs as infrastructure from there.</p>
 
     <div class="sprint-weeks reveal">
       <div class="sprint-week">
         <div class="week-num">01</div>
-        <div class="week-tag">Semana Uno</div>
-        <div class="week-title">Diagnóstico</div>
-        <div class="week-body">Construimos tu Signal Library. Analizamos winners, extraemos ángulos, catalogamos hooks. No producimos sin señal primero.</div>
+        <div class="week-tag" data-en="Week One" data-es="Semana Uno">Week One</div>
+        <div class="week-title" data-en="Diagnose" data-es="Diagnóstico">Diagnose</div>
+        <div class="week-body" data-en="We build your Signal Library. Winners are analyzed, angles extracted, hooks catalogued. No production without signal first." data-es="Construimos tu Signal Library. Analizamos winners, extraemos ángulos, catalogamos hooks. No producimos sin señal primero.">We build your Signal Library. Winners are analyzed, angles extracted, hooks catalogued. No production without signal first.</div>
       </div>
       <div class="sprint-week">
         <div class="week-num">02</div>
-        <div class="week-tag">Semana Dos</div>
-        <div class="week-title">Instalación</div>
-        <div class="week-body">Activamos tu cadencia de producción. Workflows listos, templates de brief definidos, sistema de 48h inicializado.</div>
+        <div class="week-tag" data-en="Week Two" data-es="Semana Dos">Week Two</div>
+        <div class="week-title" data-en="Install" data-es="Instalación">Install</div>
+        <div class="week-body" data-en="We activate your production cadence. Workflows built, brief templates locked, 48h turnaround system initialized." data-es="Activamos tu cadencia de producción. Workflows listos, templates de brief definidos, sistema de 48h inicializado.">We activate your production cadence. Workflows built, brief templates locked, 48h turnaround system initialized.</div>
       </div>
       <div class="sprint-week">
         <div class="week-num">03</div>
-        <div class="week-tag">Semana Tres</div>
+        <div class="week-tag" data-en="Week Three" data-es="Semana Tres">Week Three</div>
         <div class="week-title">Deploy</div>
-        <div class="week-body">Primeros batches en vivo. Creativos lanzados, tracking configurado, y el loop de testing genera feedback para el siguiente ciclo.</div>
+        <div class="week-body" data-en="First batches go live. Creative launched, tracking set up, testing loop generates feedback for the next cycle." data-es="Primeros batches en vivo. Creativos lanzados, tracking configurado, y el loop de testing genera feedback para el siguiente ciclo.">First batches go live. Creative launched, tracking set up, testing loop generates feedback for the next cycle.</div>
       </div>
       <div class="sprint-week">
         <div class="week-num">04</div>
-        <div class="week-tag">Semana Cuatro</div>
+        <div class="week-tag" data-en="Week Four" data-es="Semana Cuatro">Week Four</div>
         <div class="week-title">Lock In</div>
-        <div class="week-body">Sistema de refresh continuo establecido. Calendario de rotación activo. La cuenta nunca vuelve a esperar creativos.</div>
+        <div class="week-body" data-en="Continuous refresh system established. Rotation calendar live. The account never waits on creative again." data-es="Sistema de refresh continuo establecido. Calendario de rotación activo. La cuenta nunca vuelve a esperar creativos.">Continuous refresh system established. Rotation calendar live. The account never waits on creative again.</div>
       </div>
     </div>
 
     <div class="sprint-after reveal">
       <span style="font-size:24px;">→</span>
-      <span>Después de eso, <strong>los creativos corren como infraestructura.</strong> Batches semanales, refresh automático, testing continuo — sin que manejes un solo creator.</span>
+      <span data-en="After that, <strong>creative runs as infrastructure.</strong> Weekly batches, automatic refresh, continuous testing — without you managing a single creator." data-es="Después de eso, <strong>los creativos corren como infraestructura.</strong> Batches semanales, refresh automático, testing continuo — sin que manejes un solo creator.">After that, <strong>creative runs as infrastructure.</strong> Weekly batches, automatic refresh, continuous testing — without you managing a single creator.</span>
     </div>
   </div>
 </section>
@@ -1333,16 +1371,16 @@
   <div class="container" style="position:relative; z-index:2;">
     <div class="section-tag" style="justify-content:center;">Ready to Install</div>
     <h2>
-      Si Tus Ads Funcionan —<br>
-      <span style="color:var(--lime);">Instala El Sistema</span><br>
-      Que Los Mantiene Escalando.
+      <span data-en="If Your Ads Work —" data-es="Si Tus Ads Funcionan —">If Your Ads Work —</span><br>
+      <span style="color:var(--lime);" data-en="Install The System" data-es="Instala El Sistema">Install The System</span><br>
+      <span data-en="That Keeps Them Scaling." data-es="Que Los Mantiene Escalando.">That Keeps Them Scaling.</span>
     </h2>
-    <p>
-      El throughput de creativos probablemente es lo que está frenando tu cuenta. Arreglémoslo estructuralmente — no reactivamente.
+    <p data-en="Creative throughput is likely what's capping your account. Let's fix it structurally — not reactively." data-es="El throughput de creativos probablemente es lo que está frenando tu cuenta. Arreglémoslo estructuralmente — no reactivamente.">
+      Creative throughput is likely what's capping your account. Let's fix it structurally — not reactively.
     </p>
     <div class="final-cta-btns">
-      <a href="https://calendly.com" class="btn btn-lime">Aplicar a AdFlow →</a>
-      <a href="https://calendly.com" class="btn btn-outline">Agendar Llamada</a>
+      <a href="https://calendly.com" class="btn btn-lime" data-en="Apply to AdFlow →" data-es="Aplicar a AdFlow →">Apply to AdFlow →</a>
+      <a href="https://calendly.com" class="btn btn-outline" data-en="Book a Call" data-es="Agendar Llamada">Book a Call</a>
     </div>
   </div>
 </section>
@@ -1351,25 +1389,63 @@
 <footer>
   <div>
     <div class="footer-logo">Ad<em>Flow</em></div>
-    <div class="footer-sub">Creative Velocity Infrastructure para Marcas Ecommerce</div>
+    <div class="footer-sub" data-en="Creative Velocity Infrastructure for Scaling Ecommerce Brands" data-es="Creative Velocity Infrastructure para Marcas Ecommerce">Creative Velocity Infrastructure for Scaling Ecommerce Brands</div>
   </div>
   <div class="footer-links">
-    <a href="mailto:hola@adflow.ai">Contacto</a>
-    <a href="#">Términos</a>
-    <a href="#">Privacidad</a>
+    <a href="mailto:hello@adflow.ai" data-en="Contact" data-es="Contacto">Contact</a>
+    <a href="#" data-en="Terms" data-es="Términos">Terms</a>
+    <a href="#" data-en="Privacy" data-es="Privacidad">Privacy</a>
   </div>
 </footer>
 
 <!-- STICKY BAR -->
 <div class="sticky-bar" id="stickyBar">
   <div class="sticky-text">
-    AdFlow — $997/mes
-    <small>15-20 assets semanales. 48h turnaround. Sin shoots.</small>
+    AdFlow — $997<span data-en="/mo" data-es="/mes">/mo</span>
+    <small data-en="15-20 assets weekly. 48h turnaround. No shoots." data-es="15-20 assets semanales. 48h turnaround. Sin shoots.">15-20 assets weekly. 48h turnaround. No shoots.</small>
   </div>
-  <a href="#apply" class="btn btn-lime" style="font-size:13px; padding:12px 20px; white-space:nowrap;">Aplicar →</a>
+  <a href="#apply" class="btn btn-lime" style="font-size:13px; padding:12px 20px; white-space:nowrap;" data-en="Apply →" data-es="Aplicar →">Apply →</a>
 </div>
 
 <script>
+  // Language Switcher
+  const langBtns = document.querySelectorAll('.lang-btn');
+  let currentLang = 'en';
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    
+    // Update all translatable elements
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const text = el.getAttribute(`data-${lang}`);
+      if (text) {
+        el.innerHTML = text;
+      }
+    });
+
+    // Update active button
+    langBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+
+    // Save preference
+    localStorage.setItem('adflow-lang', lang);
+  }
+
+  langBtns.forEach(btn => {
+    btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+  });
+
+  // Check for saved preference or browser language
+  const savedLang = localStorage.getItem('adflow-lang');
+  const browserLang = navigator.language.slice(0, 2);
+  if (savedLang) {
+    setLanguage(savedLang);
+  } else if (browserLang === 'es') {
+    setLanguage('es');
+  }
+
   // Reveal on scroll
   const reveals = document.querySelectorAll('.reveal');
   const revealObserver = new IntersectionObserver((entries) => {
