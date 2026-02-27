@@ -486,24 +486,37 @@
     background: var(--navy-mid);
     border-top: 1px solid rgba(200,255,0,0.07);
     border-bottom: 1px solid rgba(200,255,0,0.07);
+    text-align: center;
   }
 
-  .paradigm-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-    margin-top: 56px;
+  .paradigm .section-tag {
+    justify-content: center;
+  }
+
+  .paradigm h2 {
+    text-align: center;
+  }
+
+  .paradigm-text {
+    max-width: 620px;
+    margin: 40px auto 0;
+    text-align: center;
   }
 
   .paradigm-text p {
-    font-size: 17px;
+    font-size: 18px;
     line-height: 1.75;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .paradigm-text p:last-child {
     margin-bottom: 0;
+  }
+
+  .paradigm-text .muted-note {
+    font-style: italic;
+    color: var(--muted-light);
+    font-size: 16px;
   }
 
   .paradigm-highlight {
@@ -514,8 +527,8 @@
   .paradigm-diagram {
     display: flex;
     justify-content: center;
-    gap: 80px;
-    margin-top: 20px;
+    gap: 100px;
+    margin-top: 64px;
   }
 
   .diagram-side {
@@ -524,7 +537,7 @@
 
   .diagram-label {
     font-family: 'Space Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--muted-light);
@@ -535,23 +548,10 @@
     color: var(--lime);
   }
 
-  .diagram-visual {
-    position: relative;
-    min-height: 180px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
   @media (max-width: 900px) {
-    .paradigm-content {
-      grid-template-columns: 1fr;
-      gap: 48px;
-    }
     .paradigm-diagram {
       flex-direction: column;
-      gap: 40px;
+      gap: 56px;
       align-items: center;
     }
   }
@@ -1338,69 +1338,69 @@
     <div class="section-tag" data-en="The Shift" data-es="El Cambio">The Shift</div>
     <h2 data-en="Meta Changed.<br>Most Brands Didn't." data-es="Meta Cambió.<br>La Mayoría No.">Meta Changed.<br>Most Brands Didn't.</h2>
     
-    <div class="paradigm-content reveal">
-      <div class="paradigm-text">
-        <p data-en="The <span class='paradigm-highlight'>Andromeda update</span> flipped how ads find buyers. The old model was simple: you created an ad, defined an audience, and Meta showed your ad to that audience." data-es="La <span class='paradigm-highlight'>actualización Andromeda</span> cambió cómo los ads encuentran compradores. El modelo viejo era simple: creabas un ad, definías una audiencia, y Meta mostraba tu ad a esa audiencia.">
-          The <span class="paradigm-highlight">Andromeda update</span> flipped how ads find buyers. The old model was simple: you created an ad, defined an audience, and Meta showed your ad to that audience.
-        </p>
-        <p data-en="Now? <span class='paradigm-highlight'>Creative IS the targeting.</span> Meta's AI finds buyers based on what resonates — not who you tell it to target. More concepts = more signals = more buyers found." data-es="¿Ahora? <span class='paradigm-highlight'>El creativo ES el targeting.</span> La IA de Meta encuentra compradores basándose en qué resuena — no en a quién le dices que apunte. Más conceptos = más señales = más compradores encontrados.">
-          Now? <span class="paradigm-highlight">Creative IS the targeting.</span> Meta's AI finds buyers based on what resonates — not who you tell it to target. More concepts = more signals = more buyers found.
-        </p>
-        <p data-en="Brands still running 3-5 ads per month are playing the old game. The winners are flooding the algorithm with concepts and letting Meta's AI do what it does best." data-es="Las marcas que siguen corriendo 3-5 ads por mes están jugando el juego viejo. Los ganadores están inundando el algoritmo con conceptos y dejando que la IA de Meta haga lo que mejor sabe hacer.">
-          Brands still running 3-5 ads per month are playing the old game. The winners are flooding the algorithm with concepts and letting Meta's AI do what it does best.
-        </p>
+    <div class="paradigm-text reveal">
+      <p data-en="The <span class='paradigm-highlight'>Andromeda update</span> flipped the model. Creative is now the targeting — Meta's AI finds buyers based on what resonates, not who you tell it to target." data-es="La <span class='paradigm-highlight'>actualización Andromeda</span> cambió el modelo. El creativo ahora es el targeting — la IA de Meta encuentra compradores basándose en qué resuena, no en a quién le dices que apunte.">
+        The <span class="paradigm-highlight">Andromeda update</span> flipped the model. Creative is now the targeting — Meta's AI finds buyers based on what resonates, not who you tell it to target.
+      </p>
+      <p data-en="The winners aren't optimizing audiences. They're <span class='paradigm-highlight'>flooding the algorithm with concepts.</span>" data-es="Los ganadores no están optimizando audiencias. Están <span class='paradigm-highlight'>inundando el algoritmo con conceptos.</span>">
+        The winners aren't optimizing audiences. They're <span class="paradigm-highlight">flooding the algorithm with concepts.</span>
+      </p>
+      <p class="muted-note" data-en="Not every concept scales equally — and that's fine. Stack enough of them and the algorithm finds every pocket of your market." data-es="No todos los conceptos escalan igual — y está bien. Apila suficientes y el algoritmo encuentra cada rincón de tu mercado.">
+        Not every concept scales equally — and that's fine. Stack enough of them and the algorithm finds every pocket of your market.
+      </p>
+    </div>
+    
+    <div class="paradigm-diagram reveal">
+      <!-- OLD MODEL -->
+      <div class="diagram-side">
+        <div class="diagram-label" data-en="Old Model" data-es="Modelo Viejo">Old Model</div>
+        <svg width="220" height="340" viewBox="0 0 220 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Ad circle -->
+          <circle cx="110" cy="70" r="50" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
+          <text x="110" y="78" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="18" font-weight="bold" letter-spacing="0.1em">AD</text>
+          
+          <!-- Arrow -->
+          <line x1="110" y1="125" x2="110" y2="205" stroke="#5A6478" stroke-width="3"/>
+          <polygon points="110,220 100,200 120,200" fill="#5A6478"/>
+          
+          <!-- Audience square -->
+          <rect x="55" y="235" width="110" height="70" rx="6" fill="rgba(255,80,80,0.12)" stroke="rgba(255,80,80,0.5)" stroke-width="2.5"/>
+          <text x="110" y="278" text-anchor="middle" fill="rgba(255,80,80,0.8)" font-family="Space Mono, monospace" font-size="14" letter-spacing="0.08em">AUDIENCE</text>
+        </svg>
       </div>
       
-      <div class="paradigm-diagram">
-        <!-- OLD MODEL -->
-        <div class="diagram-side">
-          <div class="diagram-label" data-en="Old Model" data-es="Modelo Viejo">Old Model</div>
-          <svg width="220" height="320" viewBox="0 0 220 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Ad circle -->
-            <circle cx="110" cy="70" r="50" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
-            <text x="110" y="78" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="18" font-weight="bold" letter-spacing="0.1em">AD</text>
-            
-            <!-- Arrow -->
-            <line x1="110" y1="125" x2="110" y2="195" stroke="#5A6478" stroke-width="3"/>
-            <polygon points="110,210 100,190 120,190" fill="#5A6478"/>
-            
-            <!-- Audience square -->
-            <rect x="55" y="225" width="110" height="70" rx="6" fill="rgba(255,80,80,0.12)" stroke="rgba(255,80,80,0.5)" stroke-width="2.5"/>
-            <text x="110" y="268" text-anchor="middle" fill="rgba(255,80,80,0.8)" font-family="Space Mono, monospace" font-size="14" letter-spacing="0.08em">AUDIENCE</text>
-          </svg>
-        </div>
-        
-        <!-- NEW MODEL -->
-        <div class="diagram-side">
-          <div class="diagram-label new-label" data-en="New Model (Andromeda)" data-es="Nuevo Modelo (Andromeda)">New Model (Andromeda)</div>
-          <svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Concept circles -->
-            <circle cx="80" cy="55" r="42" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
-            <text x="80" y="62" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="12" font-weight="bold" letter-spacing="0.06em">CONCEPT</text>
-            
-            <circle cx="160" cy="55" r="42" fill="rgba(200,255,0,0.2)" stroke="#C8FF00" stroke-width="2.5"/>
-            <text x="160" y="62" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="12" font-weight="bold" letter-spacing="0.06em">CONCEPT</text>
-            
-            <circle cx="240" cy="55" r="42" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
-            <text x="240" y="62" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="12" font-weight="bold" letter-spacing="0.06em">CONCEPT</text>
-            
-            <!-- Arrows converging -->
-            <line x1="80" y1="100" x2="145" y2="175" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.6"/>
-            <line x1="160" y1="100" x2="160" y2="175" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.8"/>
-            <line x1="240" y1="100" x2="175" y2="175" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.6"/>
-            
-            <!-- Convergence point -->
-            <circle cx="160" cy="185" r="10" fill="#C8FF00" fill-opacity="0.4"/>
-            
-            <!-- Arrow down -->
-            <line x1="160" y1="198" x2="160" y2="220" stroke="#C8FF00" stroke-width="3"/>
-            <polygon points="160,235 150,218 170,218" fill="#C8FF00"/>
-            
-            <!-- Audience square (larger, emphasized) -->
-            <rect x="85" y="248" width="150" height="60" rx="6" fill="rgba(200,255,0,0.1)" stroke="#C8FF00" stroke-width="2.5"/>
-            <text x="160" y="286" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="14" font-weight="bold" letter-spacing="0.08em">AUDIENCE</text>
-          </svg>
-        </div>
+      <!-- NEW MODEL - Vertically Stacked Concepts -->
+      <div class="diagram-side">
+        <div class="diagram-label new-label" data-en="New Model (Andromeda)" data-es="Nuevo Modelo (Andromeda)">New Model (Andromeda)</div>
+        <svg width="220" height="420" viewBox="0 0 220 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Concept 1 (top) -->
+          <circle cx="110" cy="45" r="38" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
+          <text x="110" y="52" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="11" font-weight="bold" letter-spacing="0.06em">CONCEPT</text>
+          
+          <!-- Concept 2 (middle) -->
+          <circle cx="110" cy="130" r="38" fill="rgba(200,255,0,0.2)" stroke="#C8FF00" stroke-width="2.5"/>
+          <text x="110" y="137" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="11" font-weight="bold" letter-spacing="0.06em">CONCEPT</text>
+          
+          <!-- Concept 3 (bottom) -->
+          <circle cx="110" cy="215" r="38" fill="rgba(200,255,0,0.15)" stroke="#C8FF00" stroke-width="2.5"/>
+          <text x="110" y="222" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="11" font-weight="bold" letter-spacing="0.06em">CONCEPT</text>
+          
+          <!-- Lines from each concept converging -->
+          <line x1="110" y1="86" x2="110" y2="92" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.5"/>
+          <line x1="110" y1="171" x2="110" y2="177" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.5"/>
+          <line x1="110" y1="256" x2="110" y2="280" stroke="#C8FF00" stroke-width="2" stroke-opacity="0.8"/>
+          
+          <!-- Convergence point -->
+          <circle cx="110" cy="290" r="10" fill="#C8FF00" fill-opacity="0.4"/>
+          
+          <!-- Arrow down to audience -->
+          <line x1="110" y1="303" x2="110" y2="325" stroke="#C8FF00" stroke-width="3"/>
+          <polygon points="110,340 100,323 120,323" fill="#C8FF00"/>
+          
+          <!-- Audience square -->
+          <rect x="55" y="352" width="110" height="60" rx="6" fill="rgba(200,255,0,0.1)" stroke="#C8FF00" stroke-width="2.5"/>
+          <text x="110" y="390" text-anchor="middle" fill="#C8FF00" font-family="Space Mono, monospace" font-size="14" font-weight="bold" letter-spacing="0.08em">AUDIENCE</text>
+        </svg>
       </div>
     </div>
   </div>
