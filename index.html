@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdFlow — Creative Velocity Infrastructure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #080D1A;
+    --navy-mid: #0E1525;
+    --navy-card: #121A2E;
+    --navy-light: #172035;
+    --lime: #C8FF00;
+    --lime-dim: rgba(200,255,0,0.12);
+    --lime-border: rgba(200,255,0,0.18);
+    --white: #EFF2EC;
+    --muted: #5A6478;
+    --muted-light: #8892A4;
+    --red: rgba(255,80,80,0.75);
+    --red-bg: rgba(255,80,80,0.06);
+    --red-border: rgba(255,80,80,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  .container { max-width: 1040px; margin: 0 auto; padding: 0 40px; }
+  .container-narrow { max-width: 740px; margin: 0 auto; padding: 0 40px; }
+
+  section { padding: 110px 0; }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-tag::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--lime);
+    opacity: 0.6;
+  }
+
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(44px, 5.5vw, 76px);
+    line-height: 0.96;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  p { color: rgba(239,242,236,0.65); line-height: 1.75; }
+
+  strong { color: var(--white); font-weight: 600; }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-lime {
+    background: var(--lime);
+    color: var(--navy);
+    padding: 18px 36px;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+  .btn-lime:hover { background: #B8EF00; transform: translateY(-2px); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--muted-light);
+    padding: 16px 32px;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .btn-outline:hover { border-color: var(--lime-border); color: var(--white); }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 40px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(8,13,26,0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(200,255,0,0.08);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 0.1em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .logo em { color: var(--lime); font-style: normal; }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--lime);
+    color: var(--navy) !important;
+    padding: 9px 20px;
+    font-weight: 700 !important;
+  }
+  .nav-cta:hover { background: #B8EF00 !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 68px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-noise {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; opacity: 0.6;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -20%; right: -10%;
+    width: 60vw; height: 80vh;
+    background: radial-gradient(ellipse, rgba(200,255,0,0.055) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .hero-glow-2 {
+    position: absolute;
+    bottom: -10%; left: -5%;
+    width: 40vw; height: 50vh;
+    background: radial-gradient(ellipse, rgba(200,255,0,0.03) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .hero-grid-lines {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(200,255,0,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,255,0,0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 90% 90% at 60% 40%, black 20%, transparent 80%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    padding: 80px 0 100px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--lime);
+    padding: 8px 16px;
+    border: 1px solid var(--lime-border);
+    background: var(--lime-dim);
+    margin-bottom: 36px;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--lime);
+    border-radius: 50%;
+    animation: blink 2.2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(58px, 7.5vw, 108px);
+    line-height: 0.94;
+    letter-spacing: 0.015em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    max-width: 900px;
+  }
+
+  h1 .lime { color: var(--lime); }
+  h1 .ghost {
+    -webkit-text-stroke: 1.5px rgba(200,255,0,0.35);
+    color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 19px;
+    color: rgba(239,242,236,0.58);
+    max-width: 580px;
+    margin-bottom: 48px;
+    line-height: 1.72;
+    font-weight: 300;
+  }
+
+  .hero-cta-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 72px;
+  }
+
+  .hero-proof {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(200,255,0,0.1);
+    padding-top: 40px;
+    max-width: 700px;
+  }
+
+  .proof-item {
+    padding: 0 40px 0 0;
+    margin-right: 40px;
+    border-right: 1px solid rgba(200,255,0,0.1);
+  }
+  .proof-item:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+
+  .proof-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 46px;
+    color: var(--lime);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .proof-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* PROBLEM */
+  .problem {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(200,255,0,0.07);
+    border-bottom: 1px solid rgba(200,255,0,0.07);
+  }
+
+  .problem-story {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    margin-top: 60px;
+  }
+
+  .story-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .story-step {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 32px;
+    position: relative;
+  }
+
+  .story-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 36px;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, rgba(200,255,0,0.2), rgba(200,255,0,0.02));
+  }
+
+  .story-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    z-index: 1;
+  }
+
+  .dot-green { background: rgba(200,255,0,0.12); border: 1px solid var(--lime-border); color: var(--lime); }
+  .dot-yellow { background: rgba(255,200,0,0.12); border: 1px solid rgba(255,200,0,0.2); color: #FFC800; }
+  .dot-red { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); }
+
+  .story-content .step-title {
+    font-weight: 600;
+    color: var(--white);
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .story-content p {
+    font-size: 15px;
+    color: rgba(239,242,236,0.5);
+    line-height: 1.6;
+  }
+
+  .cost-list {
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+    padding: 36px;
+    margin-top: 8px;
+  }
+
+  .cost-list-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 24px;
+  }
+
+  .cost-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    color: rgba(239,242,236,0.6);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .cost-x { color: var(--red); font-weight: 700; }
+
+  .problem-cta-note {
+    margin-top: 28px;
+    padding: 24px;
+    background: var(--navy-light);
+    border-left: 3px solid var(--lime);
+    font-size: 16px;
+    color: rgba(239,242,236,0.7);
+    line-height: 1.6;
+  }
+
+  /* SOLUTION */
+  .solution { background: var(--navy); }
+
+  .not-list {
+    margin-top: 48px;
+    margin-bottom: 48px;
+  }
+
+  .not-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 18px;
+    color: rgba(239,242,236,0.5);
+    margin-bottom: 16px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  .not-row .x { color: var(--red); font-weight: 700; font-size: 20px; }
+
+  .solution-statement {
+    font-size: 22px;
+    color: rgba(239,242,236,0.85);
+    line-height: 1.7;
+    padding: 40px;
+    background: var(--lime-dim);
+    border: 1px solid var(--lime-border);
+    position: relative;
+  }
+
+  .solution-statement .lime { color: var(--lime); font-weight: 600; }
+
+  /* SYSTEM */
+  .system { background: var(--navy-mid); border-top: 1px solid rgba(200,255,0,0.07); }
+
+  .system-steps { margin-top: 60px; }
+
+  .system-step {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    border: 1px solid rgba(200,255,0,0.07);
+    background: var(--navy-card);
+    margin-bottom: 2px;
+  }
+
+  .step-left {
+    padding: 48px 32px;
+    border-right: 1px solid rgba(200,255,0,0.07);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .step-num-large {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: rgba(200,255,0,0.15);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .step-phase {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin-top: 8px;
+  }
+
+  .step-right {
+    padding: 48px 40px;
+  }
+
+  .step-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .step-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--lime);
+    padding: 6px 12px;
+    border: 1px solid var(--lime-border);
+    background: var(--lime-dim);
+  }
+
+  .no-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+    text-decoration: line-through;
+  }
+
+  /* DELIVERABLES */
+  .deliverables { background: var(--navy); }
+
+  .deliverable-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    margin-top: 56px;
+  }
+
+  .deliverable-card {
+    background: var(--navy-card);
+    border: 1px solid rgba(200,255,0,0.07);
+    padding: 36px 32px;
+  }
+
+  .deliverable-card.highlight {
+    grid-column: span 2;
+    background: var(--lime-dim);
+    border-color: var(--lime-border);
+  }
+
+  .d-icon { font-size: 28px; display: block; margin-bottom: 16px; }
+
+  .d-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .d-body {
+    font-size: 15px;
+    color: rgba(239,242,236,0.55);
+    line-height: 1.65;
+  }
+
+  /* WHY */
+  .why { background: var(--navy-mid); border-top: 1px solid rgba(200,255,0,0.07); }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 56px;
+  }
+
+  .why-card {
+    background: var(--navy-card);
+    border: 1px solid rgba(200,255,0,0.07);
+    padding: 40px 32px;
+  }
+
+  .why-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--lime);
+    margin-bottom: 16px;
+  }
+
+  .why-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .why-body {
+    font-size: 15px;
+    color: rgba(239,242,236,0.5);
+    line-height: 1.65;
+  }
+
+  /* FIT */
+  .fit { background: var(--navy); }
+
+  .fit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 56px;
+  }
+
+  .fit-card {
+    padding: 40px 36px;
+  }
+
+  .fit-for {
+    background: var(--lime-dim);
+    border: 1px solid var(--lime-border);
+  }
+
+  .fit-not {
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+  }
+
+  .fit-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .fit-for .fit-label { color: var(--lime); }
+  .fit-not .fit-label { color: var(--red); }
+
+  .fit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    color: rgba(239,242,236,0.7);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  .fit-for .fit-icon { color: var(--lime); font-weight: 700; }
+  .fit-not .fit-icon { color: var(--red); font-weight: 700; }
+
+  .fit-note {
+    margin-top: 2px;
+    background: var(--navy-card);
+    border: 1px solid rgba(200,255,0,0.07);
+    padding: 28px 36px;
+    font-size: 16px;
+    color: rgba(239,242,236,0.6);
+    text-align: center;
+  }
+
+  /* PRICING - SINGLE TIER */
+  .pricing { background: var(--navy-mid); border-top: 1px solid rgba(200,255,0,0.07); }
+
+  .pricing-single {
+    display: flex;
+    justify-content: center;
+    margin-top: 56px;
+  }
+
+  .pricing-card {
+    background: var(--lime-dim);
+    border: 2px solid var(--lime-border);
+    padding: 56px 52px;
+    max-width: 520px;
+    width: 100%;
+    position: relative;
+    text-align: center;
+  }
+
+  .popular-badge {
+    position: absolute;
+    top: -1px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--lime);
+    color: var(--navy);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    font-weight: 700;
+  }
+
+  .plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .plan-tagline {
+    font-size: 14px;
+    color: var(--muted-light);
+    margin-bottom: 32px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+
+  .plan-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: var(--lime);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .plan-per {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 36px;
+    margin-top: 6px;
+  }
+
+  .plan-divider {
+    height: 1px;
+    background: rgba(200,255,0,0.15);
+    margin: 32px 0;
+  }
+
+  .plan-features {
+    text-align: left;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+
+  .plan-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 16px;
+    color: rgba(239,242,236,0.8);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .plan-check { color: var(--lime); flex-shrink: 0; font-weight: 700; font-size: 18px; }
+
+  .plan-cta {
+    width: 100%;
+    text-align: center;
+    margin-top: 36px;
+    display: block;
+    font-size: 16px;
+    padding: 20px 40px;
+  }
+
+  .plan-guarantee {
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+
+  /* SPRINT */
+  .sprint { background: var(--navy); }
+
+  .sprint-weeks {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 56px;
+  }
+
+  .sprint-week {
+    background: var(--navy-card);
+    border: 1px solid rgba(200,255,0,0.07);
+    padding: 36px 28px;
+    position: relative;
+  }
+
+  .week-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    color: rgba(200,255,0,0.08);
+    line-height: 1;
+    position: absolute;
+    top: 16px; right: 20px;
+  }
+
+  .week-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin-bottom: 12px;
+  }
+
+  .week-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .week-body {
+    font-size: 14px;
+    color: rgba(239,242,236,0.5);
+    line-height: 1.6;
+  }
+
+  .sprint-after {
+    margin-top: 2px;
+    background: var(--lime-dim);
+    border: 1px solid var(--lime-border);
+    padding: 28px 36px;
+    font-size: 16px;
+    color: rgba(239,242,236,0.8);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .sprint-after strong { color: var(--lime); }
+
+  /* FINAL CTA */
+  .final-cta {
+    background: var(--navy);
+    text-align: center;
+    padding: 140px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-cta-glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60vw; height: 60vh;
+    background: radial-gradient(ellipse, rgba(200,255,0,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(48px, 7vw, 90px);
+    max-width: 800px;
+    margin: 0 auto 24px;
+  }
+
+  .final-cta p {
+    font-size: 18px;
+    color: rgba(239,242,236,0.55);
+    max-width: 500px;
+    margin: 0 auto 48px;
+  }
+
+  .final-cta-btns {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(200,255,0,0.07);
+    padding: 44px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.1em;
+  }
+  .footer-logo em { color: var(--lime); font-style: normal; }
+
+  .footer-sub {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.08em;
+    margin-top: 4px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 28px;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--white); }
+
+  /* STICKY BAR */
+  .sticky-bar {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 99;
+    background: rgba(14,21,37,0.97);
+    border-top: 1px solid rgba(200,255,0,0.12);
+    padding: 14px 24px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    backdrop-filter: blur(10px);
+  }
+
+  .sticky-text {
+    font-size: 14px;
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .sticky-text small {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    section { padding: 80px 0; }
+    .container { padding: 0 24px; }
+    .container-narrow { padding: 0 24px; }
+    nav { padding: 0 24px; }
+    footer { padding: 36px 24px; }
+    .nav-links a:not(.nav-cta) { display: none; }
+
+    h1 { font-size: clamp(52px, 13vw, 80px); }
+    h2 { font-size: clamp(38px, 10vw, 60px); }
+
+    .hero-proof { gap: 0; }
+    .proof-item { padding: 0 24px 0 0; margin-right: 24px; }
+
+    .problem-story { grid-template-columns: 1fr; gap: 48px; }
+    .system-step { grid-template-columns: 1fr; }
+    .step-left { padding: 32px 28px; border-right: none; border-bottom: 1px solid rgba(200,255,0,0.07); }
+    .step-right { padding: 32px 28px; }
+
+    .deliverable-grid { grid-template-columns: 1fr; }
+    .deliverable-card.highlight { grid-column: span 1; }
+
+    .why-grid { grid-template-columns: 1fr; }
+    .fit-grid { grid-template-columns: 1fr; }
+    .sprint-weeks { grid-template-columns: 1fr 1fr; }
+
+    .pricing-card { padding: 44px 32px; }
+
+    .sticky-bar { display: flex; }
+    body { padding-bottom: 72px; }
+  }
+
+  @media (max-width: 560px) {
+    .sprint-weeks { grid-template-columns: 1fr; }
+    .hero-proof { flex-wrap: wrap; gap: 24px; }
+    .proof-item { border-right: none; margin-right: 0; padding-right: 0; }
+    .hero-cta-row { flex-direction: column; align-items: flex-start; }
+    .final-cta-btns { flex-direction: column; align-items: center; }
+    .step-num-large { font-size: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Ad<em>Flow</em></a>
+  <div class="nav-links">
+    <a href="#system">Sistema</a>
+    <a href="#pricing">Precio</a>
+    <a href="#apply" class="nav-cta">Aplicar</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="container">
+    <div class="hero-inner reveal">
+      <div class="hero-badge">Creative Velocity Infrastructure</div>
+      <h1>
+        Tus Ads Funcionan —<br>
+        Pero Tu Cuenta<br>
+        <span class="lime">Aún</span> <span class="ghost">Se Estanca</span>
+      </h1>
+      <p class="hero-sub">
+        AdFlow instala un sistema de creativos continuo para que el escalado nunca frene por cuellos de botella de producción. Para marcas ecommerce gastando <strong>$5K–$50K USD/mes en Meta</strong> que están cansadas de que sus winners mueran más rápido de lo que llegan los reemplazos.
+      </p>
+      <div class="hero-cta-row">
+        <a href="#apply" class="btn btn-lime">Instalar Creative Velocity →</a>
+        <a href="#apply" class="btn btn-outline">Agendar Llamada</a>
+      </div>
+      <div class="hero-proof">
+        <div class="proof-item">
+          <div class="proof-num">48h</div>
+          <div class="proof-label">Turnaround</div>
+        </div>
+        <div class="proof-item">
+          <div class="proof-num">15-20</div>
+          <div class="proof-label">Assets / Semana</div>
+        </div>
+        <div class="proof-item">
+          <div class="proof-num">0</div>
+          <div class="proof-label">Shoots Necesarios</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="container">
+    <div class="section-tag">El Problema Real</div>
+    <h2>Escalar No Se Rompe<br>Porque Los Ads Dejan De Funcionar.</h2>
+    <p style="max-width:580px; font-size:18px;">
+      Se rompe porque los creativos no pueden seguir el ritmo. Ya has visto este patrón antes.
+    </p>
+
+    <div class="problem-story reveal">
+      <div class="story-flow">
+        <div class="story-step">
+          <div class="story-dot dot-green">↑</div>
+          <div class="story-content">
+            <div class="step-title">Encuentras un winner.</div>
+            <p>El performance sube. El gasto aumenta. Todo está funcionando.</p>
+          </div>
+        </div>
+        <div class="story-step">
+          <div class="story-dot dot-yellow">⏱</div>
+          <div class="story-content">
+            <div class="step-title">El ad se fatiga.</div>
+            <p>Siempre pasa. El CTR baja, la frecuencia sube, el ROAS cae. ¿Y ahora qué?</p>
+          </div>
+        </div>
+        <div class="story-step">
+          <div class="story-dot dot-red">⏸</div>
+          <div class="story-content">
+            <div class="step-title">Esperas.</div>
+            <p>A la agencia. Al equipo interno. A los creadores. Y mientras esperas — el gasto se frena.</p>
+          </div>
+        </div>
+        <div class="story-step">
+          <div class="story-dot dot-red">✕</div>
+          <div class="story-content">
+            <div class="step-title">No porque la demanda desapareció.</div>
+            <p>No porque el targeting falló. Porque <strong>la producción de creativos se frenó.</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="cost-list">
+          <div class="cost-list-title">Lo Que Esto Te Cuesta</div>
+          <div class="cost-item"><span class="cost-x">✕</span> Winners que mueren sin reemplazos</div>
+          <div class="cost-item"><span class="cost-x">✕</span> Gasto pausado o volátil</div>
+          <div class="cost-item"><span class="cost-x">✕</span> Equipo reactivo en vez de compounding</div>
+          <div class="cost-item"><span class="cost-x">✕</span> Momentum que se rompe cada 2-3 semanas</div>
+          <div class="cost-item"><span class="cost-x">✕</span> Capital sin desplegar</div>
+        </div>
+
+        <div class="problem-cta-note">
+          La mayoría de las marcas no tienen un problema de demanda.<br>
+          Tienen un <strong>problema de throughput.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution">
+  <div class="container-narrow">
+    <div class="section-tag">La Solución</div>
+    <h2>AdFlow Instala<br>Infraestructura de<br>Creative Velocity</h2>
+
+    <div class="not-list reveal">
+      <div class="not-row"><span class="x">✕</span> Esto no es un batch de creativos.</div>
+      <div class="not-row"><span class="x">✕</span> Esto no son "AI ads" genéricos.</div>
+      <div class="not-row"><span class="x">✕</span> Esto no es otro freelancer.</div>
+    </div>
+
+    <div class="solution-statement reveal">
+      AdFlow instala un <span class="lime">sistema de creativos continuo</span> diseñado para extraer señales probadas, convertirlas en variaciones listas para Meta, y reemplazar la fatiga antes de que impacte el performance — para que tu cuenta nunca se estanque porque la producción se atrasó.
+    </div>
+  </div>
+</section>
+
+<!-- SYSTEM -->
+<section class="system" id="system">
+  <div class="container">
+    <div class="section-tag">El Sistema Creative Velocity™</div>
+    <h2>Tres Etapas.<br>Un Cuello de Botella Eliminado.</h2>
+    <p style="max-width:540px; font-size:17px;">Cada cliente de AdFlow pasa por un sistema simple de 3 etapas que elimina el throughput de creativos como variable de escalado.</p>
+
+    <div class="system-steps reveal">
+      <div class="system-step">
+        <div class="step-left">
+          <div class="step-num-large">01</div>
+          <div class="step-phase">Etapa Uno</div>
+        </div>
+        <div class="step-right">
+          <h3>Signal First</h3>
+          <p>Extraemos lo que ya está funcionando — los ángulos, hooks, formatos y patrones de tus winners. Sin adivinar. Sin prompts random. Cada decisión creativa está basada en señales probadas de tu mercado.</p>
+          <div class="step-tags">
+            <span class="step-tag">Extracción de Ángulos</span>
+            <span class="step-tag">Mining de Hooks</span>
+            <span class="step-tag">Patrones de Formato</span>
+            <span class="step-tag">Análisis de Winners</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="system-step">
+        <div class="step-left">
+          <div class="step-num-large">02</div>
+          <div class="step-phase">Etapa Dos</div>
+        </div>
+        <div class="step-right">
+          <h3>Velocity Production</h3>
+          <p>Convertimos esas señales en batches semanales de variaciones listas para Meta. La producción se comprime de semanas a días usando un sistema AI construido específicamente para ads de performance en ecommerce.</p>
+          <div class="step-tags">
+            <span class="no-tag">Sin Shoots</span>
+            <span class="no-tag">Sin Coordinar Creadores</span>
+            <span class="no-tag">Sin Lag de Ejecución</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="system-step">
+        <div class="step-left">
+          <div class="step-num-large">03</div>
+          <div class="step-phase">Etapa Tres</div>
+        </div>
+        <div class="step-right">
+          <h3>Continuous Refresh</h3>
+          <p>Los creativos llegan antes de que la fatiga pegue. El testing corre continuamente. Los winners se reemplazan. El gasto escala suavemente — no reactivamente. El sistema compone cada ciclo.</p>
+          <div class="step-tags">
+            <span class="step-tag">Testing Always-On</span>
+            <span class="step-tag">Prevención de Fatiga</span>
+            <span class="step-tag">Escalado Suave</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERABLES -->
+<section class="deliverables">
+  <div class="container">
+    <div class="section-tag">Qué Recibes</div>
+    <h2>Todo Lo Que Necesitas.<br>Nada Que No.</h2>
+
+    <div class="deliverable-grid reveal">
+      <div class="deliverable-card">
+        <span class="d-icon">📸</span>
+        <div class="d-title">12-15 Imágenes / Semana</div>
+        <div class="d-body">Statics para feed, stories y reels. Lifestyle shots, product-focused, UGC-style — todo listo para subir a Meta Ads Manager.</div>
+      </div>
+      <div class="deliverable-card">
+        <span class="d-icon">🎬</span>
+        <div class="d-title">3-5 Videos UGC / Semana</div>
+        <div class="d-body">Videos con AI avatars y lip-sync realista. Testimoniales, demos, hooks — sin coordinar creadores ni esperar entregas.</div>
+      </div>
+      <div class="deliverable-card">
+        <span class="d-icon">✍️</span>
+        <div class="d-title">10-15 Variaciones de Copy</div>
+        <div class="d-body">Headlines, primary text, y CTAs optimizados para cada batch de creativos. Copy que convierte, no relleno genérico.</div>
+      </div>
+      <div class="deliverable-card">
+        <span class="d-icon">⏱</span>
+        <div class="d-title">Turnaround 48-72h</div>
+        <div class="d-body">De brief a entrega en días, no semanas. Previene cliff de performance y delays de escalado.</div>
+      </div>
+      <div class="deliverable-card highlight">
+        <span class="d-icon">📊</span>
+        <div class="d-title">Reporte Mensual de Research + Review Semanal</div>
+        <div class="d-body">Análisis de tendencias en tu nicho, patrones de winners en la competencia, y revisión semanal de performance para afinar la dirección creativa. Alineación constante con tus metas de escalado.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why">
+  <div class="container">
+    <div class="section-tag">Por Qué Funciona</div>
+    <h2>Meta Premia<br>La Velocidad.</h2>
+
+    <div class="why-grid reveal">
+      <div class="why-card">
+        <div class="why-num">01 —</div>
+        <div class="why-title">Meta premia velocidad</div>
+        <div class="why-body">El algoritmo favorece cuentas que testean consistentemente. Marcas que alimentan señales frescas semanalmente superan a las que batchean una vez al mes.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-num">02 —</div>
+        <div class="why-title">La fatiga es predecible</div>
+        <div class="why-body">Ad fatigue sigue un patrón. Frecuencia sube, CTR baja, ROAS cae. Cuando conoces el patrón, puedes reemplazar creativos antes de que el performance caiga.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-num">03 —</div>
+        <div class="why-title">Velocidad > Perfección</div>
+        <div class="why-body">Las marcas que escalan suave no solo producen ads. Mantienen infraestructura de throughput — un supply continuo que mantiene el gasto deployed y el learning activo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FIT -->
+<section class="fit">
+  <div class="container">
+    <div class="section-tag">Para Quién Es</div>
+    <h2>Construido Para Operadores<br>Que Ya Tienen Demanda.</h2>
+
+    <div class="fit-grid reveal">
+      <div class="fit-card fit-for">
+        <div class="fit-label">✓ &nbsp;Esto Es Para Ti Si</div>
+        <div class="fit-item"><span class="fit-icon">✓</span> Ya estás corriendo ads en Meta</div>
+        <div class="fit-item"><span class="fit-icon">✓</span> Tus winners se fatigan cada 7-21 días</div>
+        <div class="fit-item"><span class="fit-icon">✓</span> Escalar se siente "choppy" en vez de smooth</div>
+        <div class="fit-item"><span class="fit-icon">✓</span> Quieres resolver producción estructuralmente</div>
+        <div class="fit-item"><span class="fit-icon">✓</span> Gastas $5K-$50K/mes y creativos es el bottleneck</div>
+      </div>
+      <div class="fit-card fit-not">
+        <div class="fit-label">✕ &nbsp;Esto NO Es Para Ti Si</div>
+        <div class="fit-item"><span class="fit-icon">✕</span> Aún no estás corriendo ads</div>
+        <div class="fit-item"><span class="fit-icon">✕</span> Buscas tu primera venta</div>
+        <div class="fit-item"><span class="fit-icon">✕</span> Quieres "un ad viral"</div>
+        <div class="fit-item"><span class="fit-icon">✕</span> No estás listo para testear e iterar semanalmente</div>
+      </div>
+    </div>
+
+    <div class="fit-note reveal">
+      AdFlow está construido para operadores que ya tienen demanda — y necesitan la infraestructura creativa para desplegarla a escala.
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-tag">Inversión</div>
+    <h2>Un Plan.<br>Todo Incluido.</h2>
+    <p style="font-size:17px; max-width:480px; text-align:center; margin:0 auto;">Sin tiers confusos. Sin upsells. Todo lo que necesitas para resolver el throughput de creativos de una vez.</p>
+
+    <div class="pricing-single reveal">
+      <div class="pricing-card">
+        <div class="popular-badge">Aceptando 5 Marcas</div>
+        <div class="plan-name">AdFlow Complete</div>
+        <div class="plan-tagline">Creative velocity infrastructure</div>
+        <div class="plan-price">$997</div>
+        <div class="plan-per">USD / mes</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feature"><span class="plan-check">✓</span> 12-15 imágenes por semana</div>
+          <div class="plan-feature"><span class="plan-check">✓</span> 3-5 videos UGC por semana</div>
+          <div class="plan-feature"><span class="plan-check">✓</span> 10-15 variaciones de copy</div>
+          <div class="plan-feature"><span class="plan-check">✓</span> Turnaround 48-72 horas</div>
+          <div class="plan-feature"><span class="plan-check">✓</span> Research report mensual</div>
+          <div class="plan-feature"><span class="plan-check">✓</span> Performance review semanal</div>
+          <div class="plan-feature"><span class="plan-check">✓</span> Sin shoots, sin creators, sin chaos</div>
+        </div>
+        <a href="#apply" class="btn btn-lime plan-cta">Aplicar Ahora →</a>
+        <div class="plan-guarantee">Cancela cuando quieras. Sin contratos largos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPRINT -->
+<section class="sprint">
+  <div class="container">
+    <div class="section-tag">Implementación</div>
+    <h2>El Sprint de<br>Instalación de 30 Días</h2>
+    <p style="font-size:17px; max-width:480px;">Cada cliente empieza con un sprint estructurado de 4 semanas para instalar el sistema — después los creativos corren como infraestructura.</p>
+
+    <div class="sprint-weeks reveal">
+      <div class="sprint-week">
+        <div class="week-num">01</div>
+        <div class="week-tag">Semana Uno</div>
+        <div class="week-title">Diagnóstico</div>
+        <div class="week-body">Construimos tu Signal Library. Analizamos winners, extraemos ángulos, catalogamos hooks. No producimos sin señal primero.</div>
+      </div>
+      <div class="sprint-week">
+        <div class="week-num">02</div>
+        <div class="week-tag">Semana Dos</div>
+        <div class="week-title">Instalación</div>
+        <div class="week-body">Activamos tu cadencia de producción. Workflows listos, templates de brief definidos, sistema de 48h inicializado.</div>
+      </div>
+      <div class="sprint-week">
+        <div class="week-num">03</div>
+        <div class="week-tag">Semana Tres</div>
+        <div class="week-title">Deploy</div>
+        <div class="week-body">Primeros batches en vivo. Creativos lanzados, tracking configurado, y el loop de testing genera feedback para el siguiente ciclo.</div>
+      </div>
+      <div class="sprint-week">
+        <div class="week-num">04</div>
+        <div class="week-tag">Semana Cuatro</div>
+        <div class="week-title">Lock In</div>
+        <div class="week-body">Sistema de refresh continuo establecido. Calendario de rotación activo. La cuenta nunca vuelve a esperar creativos.</div>
+      </div>
+    </div>
+
+    <div class="sprint-after reveal">
+      <span style="font-size:24px;">→</span>
+      <span>Después de eso, <strong>los creativos corren como infraestructura.</strong> Batches semanales, refresh automático, testing continuo — sin que manejes un solo creator.</span>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="apply">
+  <div class="final-cta-glow"></div>
+  <div class="container" style="position:relative; z-index:2;">
+    <div class="section-tag" style="justify-content:center;">Ready to Install</div>
+    <h2>
+      Si Tus Ads Funcionan —<br>
+      <span style="color:var(--lime);">Instala El Sistema</span><br>
+      Que Los Mantiene Escalando.
+    </h2>
+    <p>
+      El throughput de creativos probablemente es lo que está frenando tu cuenta. Arreglémoslo estructuralmente — no reactivamente.
+    </p>
+    <div class="final-cta-btns">
+      <a href="https://calendly.com" class="btn btn-lime">Aplicar a AdFlow →</a>
+      <a href="https://calendly.com" class="btn btn-outline">Agendar Llamada</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">Ad<em>Flow</em></div>
+    <div class="footer-sub">Creative Velocity Infrastructure para Marcas Ecommerce</div>
+  </div>
+  <div class="footer-links">
+    <a href="mailto:hola@adflow.ai">Contacto</a>
+    <a href="#">Términos</a>
+    <a href="#">Privacidad</a>
+  </div>
+</footer>
+
+<!-- STICKY BAR -->
+<div class="sticky-bar" id="stickyBar">
+  <div class="sticky-text">
+    AdFlow — $997/mes
+    <small>15-20 assets semanales. 48h turnaround. Sin shoots.</small>
+  </div>
+  <a href="#apply" class="btn btn-lime" style="font-size:13px; padding:12px 20px; white-space:nowrap;">Aplicar →</a>
+</div>
+
+<script>
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => revealObserver.observe(el));
+
+  // Show sticky bar on scroll
+  const stickyBar = document.getElementById('stickyBar');
+  const heroSection = document.querySelector('.hero');
+  const stickyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting && window.innerWidth <= 900) {
+        stickyBar.style.display = 'flex';
+      } else {
+        stickyBar.style.display = 'none';
+      }
+    });
+  }, { threshold: 0 });
+  stickyObserver.observe(heroSection);
+</script>
+</body>
+</html>
