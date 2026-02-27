@@ -856,43 +856,198 @@
 
   .sprint-after strong { color: var(--lime); }
 
-  /* FINAL CTA */
-  .final-cta {
+  /* APPLICATION FORM */
+  .apply-section {
     background: var(--navy);
-    text-align: center;
-    padding: 140px 0;
+    padding: 120px 0;
     position: relative;
     overflow: hidden;
   }
 
-  .final-cta-glow {
+  .apply-glow {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 60vw; height: 60vh;
-    background: radial-gradient(ellipse, rgba(200,255,0,0.06) 0%, transparent 65%);
+    width: 80vw; height: 80vh;
+    background: radial-gradient(ellipse, rgba(200,255,0,0.05) 0%, transparent 60%);
     pointer-events: none;
   }
 
-  .final-cta h2 {
-    font-size: clamp(48px, 7vw, 90px);
-    max-width: 800px;
-    margin: 0 auto 24px;
+  .apply-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
   }
 
-  .final-cta p {
-    font-size: 18px;
-    color: rgba(239,242,236,0.55);
-    max-width: 500px;
-    margin: 0 auto 48px;
+  .apply-header {
+    text-align: center;
+    margin-bottom: 48px;
   }
 
-  .final-cta-btns {
+  .apply-header h2 {
+    font-size: clamp(40px, 6vw, 64px);
+    margin-bottom: 16px;
+  }
+
+  .apply-header p {
+    font-size: 17px;
+    color: rgba(239,242,236,0.6);
+  }
+
+  .apply-form {
+    background: var(--navy-card);
+    border: 1px solid rgba(200,255,0,0.1);
+    padding: 48px 40px;
+  }
+
+  .form-group {
+    margin-bottom: 24px;
+  }
+
+  .form-label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin-bottom: 10px;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    background: var(--navy-light);
+    border: 1px solid rgba(200,255,0,0.1);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    padding: 16px 18px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: var(--lime);
+    background: var(--navy-mid);
+  }
+
+  .form-input::placeholder,
+  .form-textarea::placeholder {
+    color: var(--muted);
+  }
+
+  .form-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23C8FF00' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 44px;
+  }
+
+  .form-select option {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  .form-textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-submit {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .form-note {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+
+  /* Success State */
+  .form-success {
+    display: none;
+  }
+
+  .form-success.show {
+    display: block;
+  }
+
+  .form-success-inner {
+    background: var(--navy-card);
+    border: 1px solid var(--lime-border);
+    padding: 60px 40px;
+    text-align: center;
+  }
+
+  .form-success-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--lime);
+    color: var(--navy);
+    font-size: 40px;
+    font-weight: 700;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    flex-wrap: wrap;
+    margin: 0 auto 24px;
+  }
+
+  .form-success h3 {
+    font-size: 36px;
+    margin-bottom: 16px;
+  }
+
+  .form-success p {
+    font-size: 17px;
+    color: rgba(239,242,236,0.6);
+    margin-bottom: 32px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .apply-form.hidden {
+    display: none;
+  }
+
+  /* Qualification Badge */
+  .qualify-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--lime-dim);
+    border: 1px solid var(--lime-border);
+    padding: 8px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--lime);
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 560px) {
+    .form-row { grid-template-columns: 1fr; }
+    .apply-form { padding: 36px 24px; }
+    .apply-container { padding: 0 20px; }
   }
 
   /* FOOTER */
@@ -1365,22 +1520,82 @@
   </div>
 </section>
 
-<!-- FINAL CTA -->
-<section class="final-cta" id="apply">
-  <div class="final-cta-glow"></div>
-  <div class="container" style="position:relative; z-index:2;">
-    <div class="section-tag" style="justify-content:center;">Ready to Install</div>
-    <h2>
-      <span data-en="If Your Ads Work —" data-es="Si Tus Ads Funcionan —">If Your Ads Work —</span><br>
-      <span style="color:var(--lime);" data-en="Install The System" data-es="Instala El Sistema">Install The System</span><br>
-      <span data-en="That Keeps Them Scaling." data-es="Que Los Mantiene Escalando.">That Keeps Them Scaling.</span>
-    </h2>
-    <p data-en="Creative throughput is likely what's capping your account. Let's fix it structurally — not reactively." data-es="El throughput de creativos probablemente es lo que está frenando tu cuenta. Arreglémoslo estructuralmente — no reactivamente.">
-      Creative throughput is likely what's capping your account. Let's fix it structurally — not reactively.
-    </p>
-    <div class="final-cta-btns">
-      <a href="https://calendly.com" class="btn btn-lime" data-en="Apply to AdFlow →" data-es="Aplicar a AdFlow →">Apply to AdFlow →</a>
-      <a href="https://calendly.com" class="btn btn-outline" data-en="Book a Call" data-es="Agendar Llamada">Book a Call</a>
+<!-- APPLICATION FORM -->
+<section class="apply-section" id="apply">
+  <div class="apply-glow"></div>
+  <div class="apply-container">
+    <div class="apply-header reveal">
+      <div class="section-tag" style="justify-content:center;" data-en="Apply Now" data-es="Aplicar Ahora">Apply Now</div>
+      <h2 data-en="Let's See If<br><span style='color:var(--lime)'>AdFlow</span> Is Right For You" data-es="Veamos Si<br><span style='color:var(--lime)'>AdFlow</span> Es Para Ti">Let's See If<br><span style="color:var(--lime)">AdFlow</span> Is Right For You</h2>
+      <p data-en="Fill out the form below. We'll review your application and get back to you within 24 hours." data-es="Llena el formulario. Revisaremos tu aplicación y te responderemos en 24 horas.">Fill out the form below. We'll review your application and get back to you within 24 hours.</p>
+    </div>
+
+    <div class="apply-form reveal" id="applicationForm">
+      <form id="adflowForm" action="https://formsubmit.co/rgomez@leadifier.io" method="POST">
+        <!-- FormSubmit Config -->
+        <input type="hidden" name="_subject" value="🚀 New AdFlow Application">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+        <input type="text" name="_honey" style="display:none">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" data-en="Your Name" data-es="Tu Nombre">Your Name</label>
+            <input type="text" name="name" class="form-input" placeholder="John Smith" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-en="Email" data-es="Email">Email</label>
+            <input type="email" name="email" class="form-input" placeholder="john@brand.com" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-en="Store / Website URL" data-es="URL de tu Tienda / Website">Store / Website URL</label>
+          <input type="url" name="website" class="form-input" placeholder="https://yourbrand.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-en="Monthly Meta Ad Spend" data-es="Gasto Mensual en Meta Ads">Monthly Meta Ad Spend</label>
+          <select name="monthly_spend" class="form-select" required>
+            <option value="" disabled selected data-en="Select your current spend" data-es="Selecciona tu gasto actual">Select your current spend</option>
+            <option value="under-5k">Less than $5,000/mo</option>
+            <option value="5k-15k">$5,000 - $15,000/mo</option>
+            <option value="15k-30k">$15,000 - $30,000/mo</option>
+            <option value="30k-50k">$30,000 - $50,000/mo</option>
+            <option value="50k-plus">$50,000+/mo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-en="Current Creative Setup" data-es="Setup Actual de Creativos">Current Creative Setup</label>
+          <select name="creative_setup" class="form-select" required>
+            <option value="" disabled selected data-en="How do you produce creatives now?" data-es="¿Cómo produces creativos ahora?">How do you produce creatives now?</option>
+            <option value="in-house" data-en="In-house team" data-es="Equipo interno">In-house team</option>
+            <option value="agency" data-en="Agency" data-es="Agencia">Agency</option>
+            <option value="freelancers" data-en="Freelancers / Contractors" data-es="Freelancers / Contractors">Freelancers / Contractors</option>
+            <option value="myself" data-en="I do it myself" data-es="Lo hago yo mismo">I do it myself</option>
+            <option value="mix" data-en="Mix of the above" data-es="Combinación de lo anterior">Mix of the above</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-en="What's Your Biggest Creative Bottleneck?" data-es="¿Cuál Es Tu Mayor Cuello de Botella?">What's Your Biggest Creative Bottleneck?</label>
+          <textarea name="bottleneck" class="form-textarea" placeholder="e.g. Winners fatigue too fast, can't test enough variations, production takes too long..." data-placeholder-en="e.g. Winners fatigue too fast, can't test enough variations, production takes too long..." data-placeholder-es="ej. Los winners se fatigan muy rápido, no puedo testear suficientes variaciones, la producción tarda mucho..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-lime form-submit" data-en="Submit Application →" data-es="Enviar Aplicación →">Submit Application →</button>
+        
+        <div class="form-note" data-en="We'll review and respond within 24 hours" data-es="Revisaremos y responderemos en 24 horas">We'll review and respond within 24 hours</div>
+      </form>
+    </div>
+
+    <div class="form-success" id="formSuccess">
+      <div class="form-success-inner">
+        <div class="form-success-icon">✓</div>
+        <h3 data-en="Application Received" data-es="Aplicación Recibida">Application Received</h3>
+        <p data-en="Thanks for applying to AdFlow. We'll review your application and get back to you within 24 hours to discuss next steps." data-es="Gracias por aplicar a AdFlow. Revisaremos tu aplicación y te contactaremos en 24 horas para discutir los siguientes pasos.">Thanks for applying to AdFlow. We'll review your application and get back to you within 24 hours to discuss next steps.</p>
+        <div class="qualify-badge" data-en="📧 Check your inbox" data-es="📧 Revisa tu inbox">📧 Check your inbox</div>
+      </div>
     </div>
   </div>
 </section>
@@ -1424,6 +1639,14 @@
       }
     });
 
+    // Update placeholders
+    document.querySelectorAll('[data-placeholder-en]').forEach(el => {
+      const placeholder = el.getAttribute(`data-placeholder-${lang}`);
+      if (placeholder) {
+        el.placeholder = placeholder;
+      }
+    });
+
     // Update active button
     langBtns.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -1444,6 +1667,46 @@
     setLanguage(savedLang);
   } else if (browserLang === 'es') {
     setLanguage('es');
+  }
+
+  // Form Submission
+  const form = document.getElementById('adflowForm');
+  const formContainer = document.getElementById('applicationForm');
+  const successMessage = document.getElementById('formSuccess');
+
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = currentLang === 'es' ? 'Enviando...' : 'Submitting...';
+      submitBtn.disabled = true;
+
+      try {
+        const formData = new FormData(form);
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          formContainer.classList.add('hidden');
+          successMessage.classList.add('show');
+          // Scroll to success message
+          successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          throw new Error('Form submission failed');
+        }
+      } catch (error) {
+        alert(currentLang === 'es' 
+          ? 'Hubo un error. Por favor intenta de nuevo o escríbenos a rgomez@leadifier.io' 
+          : 'There was an error. Please try again or email us at rgomez@leadifier.io');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
   }
 
   // Reveal on scroll
