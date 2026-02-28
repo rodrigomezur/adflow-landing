@@ -63,7 +63,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${resendKey}`
       },
       body: JSON.stringify({
-        from: 'AdFlow <onboarding@resend.dev>',
+        from: 'AdFlow <team@tryadflow.co>',
         to: email,
         subject: 'Application Received — AdFlow',
         html: `
@@ -102,7 +102,7 @@ export default async function handler(req, res) {
             
             <p style="font-size: 12px; color: #999; text-align: center;">
               AdFlow — Creative Velocity Infrastructure<br>
-              You're receiving this because you applied at adflow-landing.vercel.app
+              You're receiving this because you applied at tryadflow.co
             </p>
           </div>
         `
@@ -117,7 +117,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${resendKey}`
       },
       body: JSON.stringify({
-        from: 'AdFlow Leads <onboarding@resend.dev>',
+        from: 'AdFlow Leads <team@tryadflow.co>',
         to: 'rgomez@leadifier.io',
         subject: `🚀 New AdFlow Application: ${name}`,
         html: `
