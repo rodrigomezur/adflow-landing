@@ -1790,12 +1790,9 @@
     </div>
 
     <div class="apply-form reveal" id="applicationForm">
-      <form id="adflowForm" action="https://formsubmit.co/rgomez@leadifier.io" method="POST">
-        <!-- FormSubmit Config -->
-        <input type="hidden" name="_subject" value="🚀 New AdFlow Application">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
-        <input type="text" name="_honey" style="display:none">
+      <form id="adflowForm">
+        <!-- Honeypot for spam -->
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
         
         <div class="form-row">
           <div class="form-group">
@@ -1937,28 +1934,47 @@
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
       
+      // Check honeypot
+      if (form.querySelector('[name="_honey"]').value) {
+        return; // Bot detected
+      }
+      
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerHTML;
       submitBtn.innerHTML = currentLang === 'es' ? 'Enviando...' : 'Submitting...';
       submitBtn.disabled = true;
 
       try {
-        const formData = new FormData(form);
-        const response = await fetch(form.action, {
+        // Collect form data as JSON
+        const data = {
+          name: form.querySelector('[name="name"]').value,
+          email: form.querySelector('[name="email"]').value,
+          website: form.querySelector('[name="website"]').value,
+          monthly_spend: form.querySelector('[name="monthly_spend"]').value,
+          creative_setup: form.querySelector('[name="creative_setup"]').value,
+          bottleneck: form.querySelector('[name="bottleneck"]').value
+        };
+
+        const response = await fetch('/api/submit', {
           method: 'POST',
-          body: formData,
-          headers: { 'Accept': 'application/json' }
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json' 
+          },
+          body: JSON.stringify(data)
         });
 
-        if (response.ok) {
+        const result = await response.json();
+
+        if (response.ok && result.success) {
           formContainer.classList.add('hidden');
           successMessage.classList.add('show');
-          // Scroll to success message
           successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
-          throw new Error('Form submission failed');
+          throw new Error(result.error || 'Form submission failed');
         }
       } catch (error) {
+        console.error('Form error:', error);
         alert(currentLang === 'es' 
           ? 'Hubo un error. Por favor intenta de nuevo o escríbenos a rgomez@leadifier.io' 
           : 'There was an error. Please try again or email us at rgomez@leadifier.io');
