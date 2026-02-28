@@ -248,6 +248,102 @@
     padding: 80px 0 100px;
   }
 
+  /* Hero Two-Column Grid */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .hero-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+  }
+
+  .hero-content {
+    /* Left column content */
+  }
+
+  /* VSL Placeholder */
+  .vsl-placeholder {
+    display: block;
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--navy-card);
+    border: 1px solid var(--lime-border);
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    overflow: hidden;
+  }
+
+  .vsl-placeholder:hover .vsl-play {
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+
+  .vsl-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .vsl-play {
+    width: 72px;
+    height: 72px;
+    background: var(--lime);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease;
+    animation: vslPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes vslPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(200,255,0,0.2); }
+    50% { box-shadow: 0 0 24px 8px rgba(200,255,0,0.5); }
+  }
+
+  .vsl-play-icon {
+    width: 0;
+    height: 0;
+    border-left: 20px solid var(--navy);
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    margin-left: 4px;
+  }
+
+  .vsl-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--muted-light);
+    text-align: center;
+  }
+
+  /* See How It Works Link */
+  .hero-watch-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--muted-light);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .hero-watch-link:hover {
+    color: var(--white);
+  }
+
   .hero-badge {
     display: inline-flex;
     align-items: center;
@@ -1339,32 +1435,45 @@
   <div class="hero-grid-lines"></div>
   <div class="container">
     <div class="hero-inner reveal">
-      <div class="hero-badge">Creative Velocity Infrastructure</div>
-      <h1>
-        <span data-en="Creative Volume" data-es="El Volumen Creativo">Creative Volume</span><br>
-        <span data-en="Is The New" data-es="Es El Nuevo">Is The New</span><br>
-        <span class="lime" data-en="Targeting" data-es="Targeting">Targeting</span>
-      </h1>
-      <p class="hero-sub" data-en="AdFlow installs a continuous creative system so scaling never slows down because of production bottlenecks. For ecommerce brands spending <strong>$5K–$50K/month on Meta</strong> who are tired of winners dying faster than replacements arrive." data-es="AdFlow instala un sistema de creativos continuo para que el escalado nunca frene por cuellos de botella de producción. Para marcas ecommerce gastando <strong>$5K–$50K USD/mes en Meta</strong> que están cansadas de que sus winners mueran más rápido de lo que llegan los reemplazos.">
-        AdFlow installs a continuous creative system so scaling never slows down because of production bottlenecks. For ecommerce brands spending <strong>$5K–$50K/month on Meta</strong> who are tired of winners dying faster than replacements arrive.
-      </p>
-      <div class="hero-cta-row">
-        <a href="#apply" class="btn btn-lime" data-en="Install Creative Velocity →" data-es="Instalar Creative Velocity →">Install Creative Velocity →</a>
-        <a href="#apply" class="btn btn-outline" data-en="Book a Call" data-es="Agendar Llamada">Book a Call</a>
-      </div>
-      <div class="hero-proof">
-        <div class="proof-item">
-          <div class="proof-num">48h</div>
-          <div class="proof-label">Turnaround</div>
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge">Creative Velocity Infrastructure</div>
+          <h1>
+            <span data-en="Creative Volume" data-es="El Volumen Creativo">Creative Volume</span><br>
+            <span data-en="Is The New" data-es="Es El Nuevo">Is The New</span><br>
+            <span class="lime" data-en="Targeting" data-es="Targeting">Targeting</span>
+          </h1>
+          <p class="hero-sub" data-en="AdFlow installs a continuous creative system so scaling never slows down because of production bottlenecks. For ecommerce brands spending <strong>$5K–$50K/month on Meta</strong> who are tired of winners dying faster than replacements arrive." data-es="AdFlow instala un sistema de creativos continuo para que el escalado nunca frene por cuellos de botella de producción. Para marcas ecommerce gastando <strong>$5K–$50K USD/mes en Meta</strong> que están cansadas de que sus winners mueran más rápido de lo que llegan los reemplazos.">
+            AdFlow installs a continuous creative system so scaling never slows down because of production bottlenecks. For ecommerce brands spending <strong>$5K–$50K/month on Meta</strong> who are tired of winners dying faster than replacements arrive.
+          </p>
+          <div class="hero-cta-row">
+            <a href="#apply" class="btn btn-lime" data-en="Install Creative Velocity →" data-es="Instalar Creative Velocity →">Install Creative Velocity →</a>
+            <a href="#vsl" class="hero-watch-link" data-en="▶️ See How It Works" data-es="▶️ Mira Cómo Funciona">▶️ See How It Works</a>
+          </div>
+          <div class="hero-proof">
+            <div class="proof-item">
+              <div class="proof-num">48h</div>
+              <div class="proof-label">Turnaround</div>
+            </div>
+            <div class="proof-item">
+              <div class="proof-num">15-20</div>
+              <div class="proof-label" data-en="Assets / Week" data-es="Assets / Semana">Assets / Week</div>
+            </div>
+            <div class="proof-item">
+              <div class="proof-num">0</div>
+              <div class="proof-label" data-en="Shoots Needed" data-es="Shoots Necesarios">Shoots Needed</div>
+            </div>
+          </div>
         </div>
-        <div class="proof-item">
-          <div class="proof-num">15-20</div>
-          <div class="proof-label" data-en="Assets / Week" data-es="Assets / Semana">Assets / Week</div>
-        </div>
-        <div class="proof-item">
-          <div class="proof-num">0</div>
-          <div class="proof-label" data-en="Shoots Needed" data-es="Shoots Necesarios">Shoots Needed</div>
-        </div>
+        <a href="#vsl" class="vsl-placeholder" id="vsl">
+          <!-- Replace this div with your VSL embed (YouTube, Loom, or Vimeo) -->
+          <div class="vsl-inner">
+            <div class="vsl-play">
+              <div class="vsl-play-icon"></div>
+            </div>
+            <span class="vsl-text" data-en="Watch: How AdFlow Works" data-es="Ver: Cómo Funciona AdFlow">Watch: How AdFlow Works</span>
+          </div>
+        </a>
       </div>
     </div>
   </div>
