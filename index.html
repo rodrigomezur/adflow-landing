@@ -2443,11 +2443,14 @@
     let mouseX = -1000;
     let mouseY = -1000;
     let animationId;
+    let isMobile = window.innerWidth <= 900;
+    let autoAnimationTimer;
 
     function resize() {
       const rect = container.getBoundingClientRect();
       canvas.width = rect.width;
       canvas.height = rect.height;
+      isMobile = window.innerWidth <= 900;
       initSquares();
     }
 
@@ -2462,7 +2465,8 @@
             x: col * (SQUARE_SIZE + GAP),
             y: row * (SQUARE_SIZE + GAP),
             opacity: 0,
-            targetOpacity: 0
+            targetOpacity: 0,
+            autoGlow: 0 // For mobile auto-animation
           });
         }
       }
@@ -2472,29 +2476,69 @@
       return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
     }
 
+    // Auto-animation for mobile: random squares glow
+    function triggerRandomGlow() {
+      if (!isMobile || squares.length === 0) return;
+      
+      // Pick 3-6 random squares to glow
+      const numSquares = Math.floor(Math.random() * 4) + 3;
+      
+      for (let i = 0; i < numSquares; i++) {
+        const idx = Math.floor(Math.random() * squares.length);
+        const square = squares[idx];
+        
+        // Only glow squares within the visible mask area
+        const centerX = canvas.width * 0.5;
+        const centerY = canvas.height * 0.4;
+        const maxRadius = Math.max(canvas.width, canvas.height) * 0.6;
+        const dist = getDistance(square.x, square.y, centerX, centerY);
+        
+        if (dist < maxRadius) {
+          square.autoGlow = 0.3 + Math.random() * 0.3; // Random intensity
+        }
+      }
+    }
+
+    // Start auto-animation interval for mobile
+    function startAutoAnimation() {
+      if (autoAnimationTimer) clearInterval(autoAnimationTimer);
+      if (isMobile) {
+        triggerRandomGlow(); // Initial glow
+        autoAnimationTimer = setInterval(triggerRandomGlow, 800);
+      }
+    }
+
     function update() {
-      // Create radial fade mask
-      const centerX = canvas.width * 0.6;
+      const centerX = canvas.width * (isMobile ? 0.5 : 0.6);
       const centerY = canvas.height * 0.4;
-      const maxRadius = Math.max(canvas.width, canvas.height) * 0.8;
+      const maxRadius = Math.max(canvas.width, canvas.height) * (isMobile ? 0.7 : 0.8);
 
       squares.forEach(square => {
         const squareCenterX = square.x + SQUARE_SIZE / 2;
         const squareCenterY = square.y + SQUARE_SIZE / 2;
         
-        // Distance from mouse
-        const distFromMouse = getDistance(squareCenterX, squareCenterY, mouseX, mouseY);
-        
         // Distance from center for radial mask
         const distFromCenter = getDistance(squareCenterX, squareCenterY, centerX, centerY);
         const maskOpacity = Math.max(0, 1 - (distFromCenter / maxRadius));
 
-        // Set target opacity based on mouse proximity
-        if (distFromMouse < HOVER_RADIUS) {
-          const intensity = 1 - (distFromMouse / HOVER_RADIUS);
-          square.targetOpacity = Math.min(0.6, intensity * 0.8) * maskOpacity;
+        if (isMobile) {
+          // Mobile: use auto-glow animation
+          square.targetOpacity = square.autoGlow * maskOpacity;
+          
+          // Fade out auto-glow over time
+          if (square.autoGlow > 0) {
+            square.autoGlow = Math.max(0, square.autoGlow - 0.008);
+          }
         } else {
-          square.targetOpacity = 0;
+          // Desktop: use mouse proximity
+          const distFromMouse = getDistance(squareCenterX, squareCenterY, mouseX, mouseY);
+          
+          if (distFromMouse < HOVER_RADIUS) {
+            const intensity = 1 - (distFromMouse / HOVER_RADIUS);
+            square.targetOpacity = Math.min(0.6, intensity * 0.8) * maskOpacity;
+          } else {
+            square.targetOpacity = 0;
+          }
         }
 
         // Smooth transition
@@ -2555,20 +2599,32 @@
     // Initialize
     resize();
     animate();
+    startAutoAnimation();
 
     // Event listeners
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', () => {
+      resize();
+      startAutoAnimation();
+    });
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('mouseleave', handleMouseLeave);
 
-    // Touch support
-    container.addEventListener('touchmove', (e) => {
+    // Touch: show glow on tap
+    container.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
       const rect = canvas.getBoundingClientRect();
       mouseX = touch.clientX - rect.left;
       mouseY = touch.clientY - rect.top;
+      
+      // Temporarily switch to mouse mode for touch
+      const wasMobile = isMobile;
+      isMobile = false;
+      setTimeout(() => { 
+        isMobile = wasMobile;
+        mouseX = -1000;
+        mouseY = -1000;
+      }, 1500);
     });
-    container.addEventListener('touchend', handleMouseLeave);
   })();
 </script>
 </body>
