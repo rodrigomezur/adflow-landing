@@ -292,19 +292,29 @@
   .hero-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 32px;
     align-items: center;
   }
 
   @media (min-width: 900px) {
     .hero-grid {
-      grid-template-columns: 1fr 1.1fr;
-      gap: 48px;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 64px;
     }
   }
 
   .hero-content {
     /* Left column content */
+  }
+
+  /* Stats proof - single line on desktop */
+  .hero-proof {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: nowrap;
+    border-top: 1px solid rgba(200,255,0,0.1);
+    padding-top: 32px;
   }
 
   /* VSL Placeholder */
@@ -429,7 +439,7 @@
 
   h1 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(38px, 4.5vw, 64px);
+    font-size: clamp(44px, 6vw, 72px);
     line-height: 0.94;
     letter-spacing: 0.015em;
     text-transform: uppercase;
@@ -460,38 +470,33 @@
     margin-bottom: 72px;
   }
 
-  .hero-proof {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    flex-wrap: wrap;
-    border-top: 1px solid rgba(200,255,0,0.1);
-    padding-top: 40px;
-    max-width: 700px;
-  }
-
   .proof-item {
-    padding: 0 40px 0 0;
-    margin-right: 40px;
+    padding: 0 32px 0 0;
+    margin-right: 32px;
     border-right: 1px solid rgba(200,255,0,0.1);
   }
   .proof-item:last-child { border-right: none; margin-right: 0; padding-right: 0; }
 
   .proof-num {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 46px;
+    font-size: 42px;
     color: var(--lime);
     line-height: 1;
     letter-spacing: 0.02em;
   }
 
   .proof-label {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-top: 4px;
     font-family: 'Space Mono', monospace;
+  }
+
+  /* Hide mobile proof on desktop */
+  .hero-proof-mobile {
+    display: none;
   }
 
   /* PROBLEM */
@@ -1430,11 +1435,44 @@
     .nav-links a:not(.nav-cta) { display: none; }
     .lang-switcher { display: flex; }
 
-    h1 { font-size: clamp(32px, 9vw, 52px); }
+    h1 { font-size: clamp(40px, 11vw, 56px); }
     h2 { font-size: clamp(38px, 10vw, 60px); }
 
-    .hero-proof { gap: 0; }
-    .proof-item { padding: 0 24px 0 0; margin-right: 24px; }
+    .hero-grid {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .hero-content {
+      order: 1;
+    }
+    
+    .hero-content .hero-proof {
+      display: none; /* Hide proof in content on mobile */
+    }
+    
+    .vsl-placeholder {
+      order: 2;
+    }
+    
+    .hero-proof-mobile {
+      order: 3;
+      display: flex !important;
+      flex-wrap: wrap;
+      gap: 24px;
+      border-top: 1px solid rgba(200,255,0,0.1);
+      padding-top: 32px;
+      justify-content: center;
+    }
+    
+    .hero-proof-mobile .proof-item {
+      border-right: none;
+      margin-right: 0;
+      padding-right: 0;
+      text-align: center;
+    }
+
+    .proof-item { padding: 0 20px 0 0; margin-right: 20px; }
 
     .problem-story { grid-template-columns: 1fr; gap: 48px; }
     .system-step { grid-template-columns: 1fr; }
@@ -1455,11 +1493,20 @@
 
   @media (max-width: 560px) {
     .sprint-weeks { grid-template-columns: 1fr; }
-    .hero-proof { flex-wrap: wrap; gap: 24px; }
-    .proof-item { border-right: none; margin-right: 0; padding-right: 0; }
     .hero-cta-row { flex-direction: column; align-items: flex-start; }
     .final-cta-btns { flex-direction: column; align-items: center; }
     .step-num-large { font-size: 56px; }
+    
+    .hero-proof-mobile {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .hero-proof-mobile .proof-item {
+      padding: 0;
+      margin: 0;
+    }
   }
 
   /* CREATIVE GALLERY - Infinite Scroll */
@@ -1650,6 +1697,21 @@
             <span class="vsl-text" data-en="Watch: How AdFlow Works" data-es="Ver: Cómo Funciona AdFlow">Watch: How AdFlow Works</span>
           </div>
         </a>
+        <!-- Mobile-only proof stats (shown below VSL on mobile) -->
+        <div class="hero-proof hero-proof-mobile">
+          <div class="proof-item">
+            <div class="proof-num">48h</div>
+            <div class="proof-label">Turnaround</div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-num">15-20</div>
+            <div class="proof-label" data-en="Assets / Week" data-es="Assets / Semana">Assets / Week</div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-num">0</div>
+            <div class="proof-label" data-en="Shoots Needed" data-es="Shoots Necesarios">Shoots Needed</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
