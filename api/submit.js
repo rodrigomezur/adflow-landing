@@ -15,6 +15,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const emailErrors = [];
+
   try {
     const { name, email, website, monthly_spend, creative_setup, bottleneck } = req.body;
 
@@ -23,9 +25,16 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Name and email are required' });
     }
 
+    console.log('Processing lead:', { name, email, website });
+
     // 1. Save to Supabase
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('Missing Supabase credentials');
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
 
     const supabaseResponse = await fetch(`${supabaseUrl}/rest/v1/leads`, {
       method: 'POST',
@@ -49,125 +58,175 @@ export default async function handler(req, res) {
     if (!supabaseResponse.ok) {
       const error = await supabaseResponse.text();
       console.error('Supabase error:', error);
-      throw new Error('Failed to save lead');
+      throw new Error('Failed to save lead to database');
     }
 
-    // 2. Send confirmation email to applicant
+    console.log('Lead saved to Supabase successfully');
+
+    // 2. Send emails via Resend
     const resendKey = process.env.RESEND_API_KEY;
+    
+    if (!resendKey) {
+      console.error('RESEND_API_KEY is not configured!');
+      emailErrors.push('Email service not configured');
+    } else {
+      // Email to applicant
+      try {
+        console.log('Sending confirmation email to:', email);
+        
+        const applicantEmailRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${resendKey}`
+          },
+          body: JSON.stringify({
+            from: 'AdFlow <hello@tryadflow.co>',
+            to: email,
+            subject: 'Application Received — AdFlow',
+            html: `
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+                <div style="text-align: center; margin-bottom: 32px;">
+                  <h1 style="font-size: 28px; font-weight: bold; color: #080D1A; margin: 0;">
+                    Ad<span style="color: #C8FF00; background: #080D1A; padding: 2px 6px;">Flow</span>
+                  </h1>
+                </div>
+                
+                <h2 style="font-size: 24px; color: #080D1A; margin-bottom: 16px;">Hey ${name.split(' ')[0]},</h2>
+                
+                <p style="font-size: 16px; color: #333; line-height: 1.6; margin-bottom: 16px;">
+                  Thanks for applying to AdFlow. We've received your application and we're reviewing it now.
+                </p>
+                
+                <p style="font-size: 16px; color: #333; line-height: 1.6; margin-bottom: 24px;">
+                  <strong>What happens next?</strong><br>
+                  We'll review your application within 24 hours and reach out to schedule a quick call if AdFlow is a good fit for your brand.
+                </p>
+                
+                <div style="background: #f8f9fa; border-left: 4px solid #C8FF00; padding: 16px 20px; margin-bottom: 24px;">
+                  <p style="margin: 0; font-size: 14px; color: #666;">
+                    <strong>Your application summary:</strong><br>
+                    Website: ${website || 'Not provided'}<br>
+                    Monthly spend: ${formatSpend(monthly_spend)}
+                  </p>
+                </div>
+                
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                  Talk soon,<br>
+                  <strong>The AdFlow Team</strong>
+                </p>
+                
+                <hr style="border: none; border-top: 1px solid #eee; margin: 32px 0;">
+                
+                <p style="font-size: 12px; color: #999; text-align: center;">
+                  AdFlow — Creative Velocity Infrastructure<br>
+                  You're receiving this because you applied at tryadflow.co
+                </p>
+              </div>
+            `
+          })
+        });
 
-    // Email to applicant
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${resendKey}`
-      },
-      body: JSON.stringify({
-        from: 'AdFlow <team@tryadflow.co>',
-        to: email,
-        subject: 'Application Received — AdFlow',
-        html: `
-          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-            <div style="text-align: center; margin-bottom: 32px;">
-              <h1 style="font-size: 28px; font-weight: bold; color: #080D1A; margin: 0;">
-                Ad<span style="color: #C8FF00; background: #080D1A; padding: 2px 6px;">Flow</span>
-              </h1>
-            </div>
-            
-            <h2 style="font-size: 24px; color: #080D1A; margin-bottom: 16px;">Hey ${name.split(' ')[0]},</h2>
-            
-            <p style="font-size: 16px; color: #333; line-height: 1.6; margin-bottom: 16px;">
-              Thanks for applying to AdFlow. We've received your application and we're reviewing it now.
-            </p>
-            
-            <p style="font-size: 16px; color: #333; line-height: 1.6; margin-bottom: 24px;">
-              <strong>What happens next?</strong><br>
-              We'll review your application within 24 hours and reach out to schedule a quick call if AdFlow is a good fit for your brand.
-            </p>
-            
-            <div style="background: #f8f9fa; border-left: 4px solid #C8FF00; padding: 16px 20px; margin-bottom: 24px;">
-              <p style="margin: 0; font-size: 14px; color: #666;">
-                <strong>Your application summary:</strong><br>
-                Website: ${website || 'Not provided'}<br>
-                Monthly spend: ${monthly_spend || 'Not specified'}
-              </p>
-            </div>
-            
-            <p style="font-size: 16px; color: #333; line-height: 1.6;">
-              Talk soon,<br>
-              <strong>The AdFlow Team</strong>
-            </p>
-            
-            <hr style="border: none; border-top: 1px solid #eee; margin: 32px 0;">
-            
-            <p style="font-size: 12px; color: #999; text-align: center;">
-              AdFlow — Creative Velocity Infrastructure<br>
-              You're receiving this because you applied at tryadflow.co
-            </p>
-          </div>
-        `
-      })
-    });
+        const applicantEmailData = await applicantEmailRes.json();
+        
+        if (!applicantEmailRes.ok) {
+          console.error('Failed to send applicant email:', applicantEmailData);
+          emailErrors.push(`Applicant email failed: ${applicantEmailData.message || 'Unknown error'}`);
+        } else {
+          console.log('Applicant email sent successfully:', applicantEmailData.id);
+        }
+      } catch (emailErr) {
+        console.error('Exception sending applicant email:', emailErr);
+        emailErrors.push(`Applicant email exception: ${emailErr.message}`);
+      }
 
-    // 3. Send notification to Rodrigo
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${resendKey}`
-      },
-      body: JSON.stringify({
-        from: 'AdFlow Leads <team@tryadflow.co>',
-        to: 'rgomez@leadifier.io',
-        subject: `🚀 New AdFlow Application: ${name}`,
-        html: `
-          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-            <h1 style="font-size: 24px; color: #080D1A; margin-bottom: 24px;">New AdFlow Application</h1>
-            
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
-              <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold; width: 140px;">Name</td>
-                <td style="padding: 12px; border-bottom: 1px solid #eee;">${name}</td>
-              </tr>
-              <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Email</td>
-                <td style="padding: 12px; border-bottom: 1px solid #eee;"><a href="mailto:${email}">${email}</a></td>
-              </tr>
-              <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Website</td>
-                <td style="padding: 12px; border-bottom: 1px solid #eee;"><a href="${website}" target="_blank">${website || 'Not provided'}</a></td>
-              </tr>
-              <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Monthly Spend</td>
-                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                  <span style="background: ${getSpendColor(monthly_spend)}; color: white; padding: 4px 10px; border-radius: 4px; font-size: 13px;">
-                    ${formatSpend(monthly_spend)}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Creative Setup</td>
-                <td style="padding: 12px; border-bottom: 1px solid #eee;">${formatSetup(creative_setup)}</td>
-              </tr>
-              <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold; vertical-align: top;">Bottleneck</td>
-                <td style="padding: 12px; border-bottom: 1px solid #eee;">${bottleneck || 'Not provided'}</td>
-              </tr>
-            </table>
-            
-            <p style="font-size: 14px; color: #666;">
-              View all leads in <a href="https://supabase.com/dashboard/project/ykmdpxtnmqkfcscmmjfv/editor/29453" target="_blank">Supabase Dashboard</a>
-            </p>
-          </div>
-        `
-      })
-    });
+      // Email notification to Rodrigo
+      try {
+        console.log('Sending notification email to rgomez@leadifier.io');
+        
+        const notifyEmailRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${resendKey}`
+          },
+          body: JSON.stringify({
+            from: 'AdFlow Leads <hello@tryadflow.co>',
+            to: 'rgomez@leadifier.io',
+            subject: `🚀 New AdFlow Application: ${name}`,
+            html: `
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+                <h1 style="font-size: 24px; color: #080D1A; margin-bottom: 24px;">New AdFlow Application</h1>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+                  <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold; width: 140px;">Name</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">${name}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Email</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;"><a href="mailto:${email}">${email}</a></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Website</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;"><a href="${website}" target="_blank">${website || 'Not provided'}</a></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Monthly Spend</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">
+                      <span style="background: ${getSpendColor(monthly_spend)}; color: white; padding: 4px 10px; border-radius: 4px; font-size: 13px;">
+                        ${formatSpend(monthly_spend)}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Creative Setup</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">${formatSetup(creative_setup)}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold; vertical-align: top;">Bottleneck</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">${bottleneck || 'Not provided'}</td>
+                  </tr>
+                </table>
+                
+                <p style="font-size: 14px; color: #666;">
+                  View all leads in <a href="https://supabase.com/dashboard/project/ykmdpxtnmqkfcscmmjfv/editor/29453" target="_blank">Supabase Dashboard</a>
+                </p>
+              </div>
+            `
+          })
+        });
 
-    return res.status(200).json({ success: true, message: 'Application submitted successfully' });
+        const notifyEmailData = await notifyEmailRes.json();
+        
+        if (!notifyEmailRes.ok) {
+          console.error('Failed to send notification email:', notifyEmailData);
+          emailErrors.push(`Notification email failed: ${notifyEmailData.message || 'Unknown error'}`);
+        } else {
+          console.log('Notification email sent successfully:', notifyEmailData.id);
+        }
+      } catch (emailErr) {
+        console.error('Exception sending notification email:', emailErr);
+        emailErrors.push(`Notification email exception: ${emailErr.message}`);
+      }
+    }
+
+    // Return success (lead was saved even if emails failed)
+    const response = { 
+      success: true, 
+      message: 'Application submitted successfully' 
+    };
+    
+    if (emailErrors.length > 0) {
+      response.emailWarnings = emailErrors;
+      console.warn('Email warnings:', emailErrors);
+    }
+
+    return res.status(200).json(response);
 
   } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({ error: 'Failed to submit application' });
+    console.error('Error processing submission:', error);
+    return res.status(500).json({ error: 'Failed to submit application', details: error.message });
   }
 }
 
