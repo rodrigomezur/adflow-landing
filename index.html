@@ -4,6 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AdFlow — Creative Velocity Infrastructure</title>
+
+<!-- SEO & Social Meta -->
+<meta name="description" content="AdFlow installs continuous creative systems for ecommerce brands. 15-20 assets/week, 48h turnaround, no shoots needed. For brands spending $5K-$50K/month on Meta Ads.">
+<meta name="keywords" content="Meta Ads, Facebook Ads, creative production, ecommerce, UGC, ad creative, scaling ads">
+<meta property="og:title" content="AdFlow — Creative Velocity Infrastructure">
+<meta property="og:description" content="Stop letting creative bottlenecks kill your scaling. 15-20 assets/week, 48h turnaround.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.tryadflow.co">
+<meta property="og:image" content="https://www.tryadflow.co/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AdFlow — Creative Velocity Infrastructure">
+<meta name="twitter:description" content="Stop letting creative bottlenecks kill your scaling. 15-20 assets/week, 48h turnaround.">
+<meta name="twitter:image" content="https://www.tryadflow.co/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23080D1A'/%3E%3Ctext x='4' y='24' font-family='system-ui' font-weight='700' font-size='20' fill='%23C8FF00'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23080D1A'/%3E%3Ctext x='45' y='130' font-family='system-ui' font-weight='700' font-size='110' fill='%23C8FF00'%3EA%3C/text%3E%3C/svg%3E">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -202,7 +220,7 @@
 
   /* HERO */
   .hero {
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     padding-top: 68px;
@@ -761,7 +779,20 @@
     border-color: var(--lime-border);
   }
 
-  .d-icon { font-size: 28px; display: block; margin-bottom: 16px; }
+  .d-icon { 
+    display: block; 
+    margin-bottom: 16px; 
+    width: 32px; 
+    height: 32px;
+    color: var(--lime);
+  }
+  .d-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    fill: none;
+  }
 
   .d-title {
     font-family: 'Bebas Neue', sans-serif;
@@ -1773,27 +1804,27 @@
 
     <div class="deliverable-grid reveal">
       <div class="deliverable-card">
-        <span class="d-icon">📸</span>
+        <span class="d-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></span>
         <div class="d-title" data-en="12-15 Images / Week" data-es="12-15 Imágenes / Semana">12-15 Images / Week</div>
         <div class="d-body" data-en="Statics for feed, stories, and reels. Lifestyle shots, product-focused, UGC-style — all ready to upload to Meta Ads Manager." data-es="Statics para feed, stories y reels. Lifestyle shots, product-focused, UGC-style — todo listo para subir a Meta Ads Manager.">Statics for feed, stories, and reels. Lifestyle shots, product-focused, UGC-style — all ready to upload to Meta Ads Manager.</div>
       </div>
       <div class="deliverable-card">
-        <span class="d-icon">🎬</span>
+        <span class="d-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
         <div class="d-title" data-en="3-5 UGC Videos / Week" data-es="3-5 Videos UGC / Semana">3-5 UGC Videos / Week</div>
         <div class="d-body" data-en="Videos with AI avatars and realistic lip-sync. Testimonials, demos, hooks — no creator coordination or delivery delays." data-es="Videos con AI avatars y lip-sync realista. Testimoniales, demos, hooks — sin coordinar creadores ni esperar entregas.">Videos with AI avatars and realistic lip-sync. Testimonials, demos, hooks — no creator coordination or delivery delays.</div>
       </div>
       <div class="deliverable-card">
-        <span class="d-icon">✍️</span>
+        <span class="d-icon"><svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
         <div class="d-title" data-en="10-15 Copy Variations" data-es="10-15 Variaciones de Copy">10-15 Copy Variations</div>
         <div class="d-body" data-en="Headlines, primary text, and CTAs optimized for each creative batch. Copy that converts, not generic filler." data-es="Headlines, primary text, y CTAs optimizados para cada batch de creativos. Copy que convierte, no relleno genérico.">Headlines, primary text, and CTAs optimized for each creative batch. Copy that converts, not generic filler.</div>
       </div>
       <div class="deliverable-card">
-        <span class="d-icon">⏱</span>
+        <span class="d-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
         <div class="d-title" data-en="48-72h Turnaround" data-es="Turnaround 48-72h">48-72h Turnaround</div>
         <div class="d-body" data-en="From brief to delivery in days, not weeks. Prevents performance cliffs and scaling delays." data-es="De brief a entrega en días, no semanas. Previene cliff de performance y delays de escalado.">From brief to delivery in days, not weeks. Prevents performance cliffs and scaling delays.</div>
       </div>
       <div class="deliverable-card highlight">
-        <span class="d-icon">📊</span>
+        <span class="d-icon"><svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></span>
         <div class="d-title" data-en="Monthly Research Report + Weekly Review" data-es="Reporte Mensual de Research + Review Semanal">Monthly Research Report + Weekly Review</div>
         <div class="d-body" data-en="Trend analysis in your niche, competitor winner patterns, and weekly performance review to refine creative direction. Constant alignment with your scaling goals." data-es="Análisis de tendencias en tu nicho, patrones de winners en la competencia, y revisión semanal de performance para afinar la dirección creativa. Alineación constante con tus metas de escalado.">Trend analysis in your niche, competitor winner patterns, and weekly performance review to refine creative direction. Constant alignment with your scaling goals.</div>
       </div>
