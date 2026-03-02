@@ -274,12 +274,19 @@
 
   .hero-grid-lines {
     position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(200,255,0,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(200,255,0,0.035) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 90% 90% at 60% 40%, black 20%, transparent 80%);
     pointer-events: none;
+    overflow: hidden;
+  }
+
+  .interactive-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: auto;
+  }
+
+  .interactive-grid canvas {
+    width: 100%;
+    height: 100%;
   }
 
   .hero-inner {
@@ -1660,7 +1667,9 @@
   <div class="hero-noise"></div>
   <div class="hero-glow"></div>
   <div class="hero-glow-2"></div>
-  <div class="hero-grid-lines"></div>
+  <div class="hero-grid-lines">
+    <div class="interactive-grid" id="interactiveGrid"></div>
+  </div>
   <div class="container">
     <div class="hero-inner reveal">
       <div class="hero-grid">
@@ -2414,6 +2423,153 @@
   }, { threshold: 0.5 });
 
   tickers.forEach(ticker => tickerObserver.observe(ticker));
+
+  // Interactive Grid Pattern
+  (function() {
+    const container = document.getElementById('interactiveGrid');
+    if (!container) return;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    container.appendChild(canvas);
+
+    const SQUARE_SIZE = 48;
+    const GAP = 1;
+    const LIME = { r: 200, g: 255, b: 0 };
+    const FADE_SPEED = 0.03;
+    const HOVER_RADIUS = 120;
+
+    let squares = [];
+    let mouseX = -1000;
+    let mouseY = -1000;
+    let animationId;
+
+    function resize() {
+      const rect = container.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      initSquares();
+    }
+
+    function initSquares() {
+      squares = [];
+      const cols = Math.ceil(canvas.width / (SQUARE_SIZE + GAP)) + 1;
+      const rows = Math.ceil(canvas.height / (SQUARE_SIZE + GAP)) + 1;
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          squares.push({
+            x: col * (SQUARE_SIZE + GAP),
+            y: row * (SQUARE_SIZE + GAP),
+            opacity: 0,
+            targetOpacity: 0
+          });
+        }
+      }
+    }
+
+    function getDistance(x1, y1, x2, y2) {
+      return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    }
+
+    function update() {
+      // Create radial fade mask
+      const centerX = canvas.width * 0.6;
+      const centerY = canvas.height * 0.4;
+      const maxRadius = Math.max(canvas.width, canvas.height) * 0.8;
+
+      squares.forEach(square => {
+        const squareCenterX = square.x + SQUARE_SIZE / 2;
+        const squareCenterY = square.y + SQUARE_SIZE / 2;
+        
+        // Distance from mouse
+        const distFromMouse = getDistance(squareCenterX, squareCenterY, mouseX, mouseY);
+        
+        // Distance from center for radial mask
+        const distFromCenter = getDistance(squareCenterX, squareCenterY, centerX, centerY);
+        const maskOpacity = Math.max(0, 1 - (distFromCenter / maxRadius));
+
+        // Set target opacity based on mouse proximity
+        if (distFromMouse < HOVER_RADIUS) {
+          const intensity = 1 - (distFromMouse / HOVER_RADIUS);
+          square.targetOpacity = Math.min(0.6, intensity * 0.8) * maskOpacity;
+        } else {
+          square.targetOpacity = 0;
+        }
+
+        // Smooth transition
+        if (square.opacity < square.targetOpacity) {
+          square.opacity = Math.min(square.targetOpacity, square.opacity + FADE_SPEED * 2);
+        } else if (square.opacity > square.targetOpacity) {
+          square.opacity = Math.max(square.targetOpacity, square.opacity - FADE_SPEED);
+        }
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw base grid lines (very subtle)
+      ctx.strokeStyle = 'rgba(200, 255, 0, 0.035)';
+      ctx.lineWidth = 1;
+      
+      for (let x = 0; x <= canvas.width; x += SQUARE_SIZE + GAP) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= canvas.height; y += SQUARE_SIZE + GAP) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      // Draw interactive squares
+      squares.forEach(square => {
+        if (square.opacity > 0.01) {
+          ctx.fillStyle = `rgba(${LIME.r}, ${LIME.g}, ${LIME.b}, ${square.opacity})`;
+          ctx.fillRect(square.x, square.y, SQUARE_SIZE - GAP, SQUARE_SIZE - GAP);
+        }
+      });
+    }
+
+    function animate() {
+      update();
+      draw();
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function handleMouseMove(e) {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    }
+
+    function handleMouseLeave() {
+      mouseX = -1000;
+      mouseY = -1000;
+    }
+
+    // Initialize
+    resize();
+    animate();
+
+    // Event listeners
+    window.addEventListener('resize', resize);
+    container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('mouseleave', handleMouseLeave);
+
+    // Touch support
+    container.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      mouseX = touch.clientX - rect.left;
+      mouseY = touch.clientY - rect.top;
+    });
+    container.addEventListener('touchend', handleMouseLeave);
+  })();
 </script>
 </body>
 </html>
