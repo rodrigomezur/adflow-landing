@@ -485,6 +485,11 @@
     letter-spacing: 0.02em;
   }
 
+  .ticker {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+  }
+
   .proof-label {
     font-size: 11px;
     color: var(--muted);
@@ -1675,15 +1680,15 @@
           </div>
           <div class="hero-proof">
             <div class="proof-item">
-              <div class="proof-num">48h</div>
+              <div class="proof-num"><span class="ticker" data-target="48" data-suffix="h">0h</span></div>
               <div class="proof-label">Turnaround</div>
             </div>
             <div class="proof-item">
-              <div class="proof-num">15-20</div>
+              <div class="proof-num"><span class="ticker" data-target="20" data-prefix="15-">0</span></div>
               <div class="proof-label" data-en="Assets / Week" data-es="Assets / Semana">Assets / Week</div>
             </div>
             <div class="proof-item">
-              <div class="proof-num">0</div>
+              <div class="proof-num"><span class="ticker" data-target="0" data-count-down="true" data-start="10">10</span></div>
               <div class="proof-label" data-en="Shoots Needed" data-es="Shoots Necesarios">Shoots Needed</div>
             </div>
           </div>
@@ -1700,15 +1705,15 @@
         <!-- Mobile-only proof stats (shown below VSL on mobile) -->
         <div class="hero-proof hero-proof-mobile">
           <div class="proof-item">
-            <div class="proof-num">48h</div>
+            <div class="proof-num"><span class="ticker" data-target="48" data-suffix="h">0h</span></div>
             <div class="proof-label">Turnaround</div>
           </div>
           <div class="proof-item">
-            <div class="proof-num">15-20</div>
+            <div class="proof-num"><span class="ticker" data-target="20" data-prefix="15-">0</span></div>
             <div class="proof-label" data-en="Assets / Week" data-es="Assets / Semana">Assets / Week</div>
           </div>
           <div class="proof-item">
-            <div class="proof-num">0</div>
+            <div class="proof-num"><span class="ticker" data-target="0" data-count-down="true" data-start="10">10</span></div>
             <div class="proof-label" data-en="Shoots Needed" data-es="Shoots Necesarios">Shoots Needed</div>
           </div>
         </div>
@@ -2365,6 +2370,50 @@
     });
   }, { threshold: 0 });
   stickyObserver.observe(heroSection);
+
+  // Number Ticker Animation
+  const tickers = document.querySelectorAll('.ticker');
+  const tickerAnimated = new Set();
+
+  function animateTicker(ticker) {
+    if (tickerAnimated.has(ticker)) return;
+    tickerAnimated.add(ticker);
+
+    const target = parseInt(ticker.dataset.target);
+    const prefix = ticker.dataset.prefix || '';
+    const suffix = ticker.dataset.suffix || '';
+    const countDown = ticker.dataset.countDown === 'true';
+    const start = countDown ? parseInt(ticker.dataset.start || 10) : 0;
+    const duration = 1500; // ms
+    const steps = 30;
+    const stepTime = duration / steps;
+    
+    let current = start;
+    const increment = (target - start) / steps;
+    
+    const interval = setInterval(() => {
+      current += increment;
+      
+      if ((!countDown && current >= target) || (countDown && current <= target)) {
+        current = target;
+        clearInterval(interval);
+      }
+      
+      ticker.textContent = prefix + Math.round(current) + suffix;
+    }, stepTime);
+  }
+
+  // Use Intersection Observer to trigger animation when visible
+  const tickerObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Small delay for dramatic effect
+        setTimeout(() => animateTicker(entry.target), 200);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  tickers.forEach(ticker => tickerObserver.observe(ticker));
 </script>
 </body>
 </html>
