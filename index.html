@@ -2337,9 +2337,19 @@
         const result = await response.json();
 
         if (response.ok && result.success) {
-          formContainer.classList.add('hidden');
-          successMessage.classList.add('show');
-          successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Check if qualified based on monthly spend
+          const qualifiedSpends = ['5k-15k', '15k-30k', '30k-50k', '50k-plus'];
+          const isQualified = qualifiedSpends.includes(data.monthly_spend);
+          
+          if (isQualified) {
+            // Redirect qualified leads to booking page
+            window.location.href = '/book.html';
+          } else {
+            // Show regular success message for non-qualified
+            formContainer.classList.add('hidden');
+            successMessage.classList.add('show');
+            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         } else {
           throw new Error(result.error || 'Form submission failed');
         }
