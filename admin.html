@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AdFlow Admin — Lead Dashboard</title>
+<title>AdFlow Admin — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -19,6 +19,15 @@
     --white: #EFF2EC;
     --muted: #5A6478;
     --muted-light: #8892A4;
+    
+    /* Status colors */
+    --status-intake: #60a5fa;
+    --status-strategy: #a78bfa;
+    --status-generating: #fbbf24;
+    --status-qa: #f97316;
+    --status-delivered: #22c55e;
+    --status-revision: #ef4444;
+    --status-completed: var(--lime);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,7 +41,7 @@
     min-height: 100vh;
   }
 
-  /* Login Screen */
+  /* ============ LOGIN SCREEN ============ */
   .login-screen {
     min-height: 100vh;
     display: flex;
@@ -86,11 +95,6 @@
     border-color: var(--lime);
   }
 
-  .login-input::placeholder {
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
-
   .login-btn {
     width: 100%;
     background: var(--lime);
@@ -115,7 +119,7 @@
     display: none;
   }
 
-  /* Dashboard */
+  /* ============ DASHBOARD ============ */
   .dashboard {
     display: none;
     min-height: 100vh;
@@ -125,16 +129,24 @@
     display: block;
   }
 
+  /* Header */
   .header {
     background: var(--navy-mid);
     border-bottom: 1px solid rgba(200,255,0,0.1);
-    padding: 16px 32px;
+    padding: 0 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: sticky;
     top: 0;
     z-index: 100;
+    height: 64px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 32px;
   }
 
   .header-logo {
@@ -144,6 +156,53 @@
   }
 
   .header-logo em { color: var(--lime); font-style: normal; }
+
+  /* Navigation Tabs */
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-tab {
+    background: transparent;
+    border: none;
+    color: var(--muted-light);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 20px 20px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+  }
+
+  .nav-tab:hover {
+    color: var(--white);
+  }
+
+  .nav-tab.active {
+    color: var(--lime);
+  }
+
+  .nav-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--lime);
+  }
+
+  .nav-tab .tab-count {
+    background: var(--lime-dim);
+    color: var(--lime);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
+  }
 
   .header-right {
     display: flex;
@@ -193,10 +252,20 @@
     color: var(--white);
   }
 
+  /* Main Content */
   .main {
     padding: 32px;
   }
 
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  /* ============ LEADS TAB ============ */
   .filters {
     display: flex;
     gap: 12px;
@@ -299,20 +368,9 @@
     border-radius: 3px;
   }
 
-  .badge-spend-low {
-    background: rgba(150,150,150,0.2);
-    color: #999;
-  }
-
-  .badge-spend-mid {
-    background: rgba(34,197,94,0.15);
-    color: #22c55e;
-  }
-
-  .badge-spend-high {
-    background: var(--lime-dim);
-    color: var(--lime);
-  }
+  .badge-spend-low { background: rgba(150,150,150,0.2); color: #999; }
+  .badge-spend-mid { background: rgba(34,197,94,0.15); color: #22c55e; }
+  .badge-spend-high { background: var(--lime-dim); color: var(--lime); }
 
   .status-select {
     background: var(--navy-light);
@@ -354,6 +412,402 @@
     color: var(--muted);
   }
 
+  /* Action buttons in table */
+  .action-btn {
+    background: var(--lime-dim);
+    border: 1px solid var(--lime-border);
+    color: var(--lime);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .action-btn:hover {
+    background: var(--lime);
+    color: var(--navy);
+  }
+
+  /* ============ PROJECTS TAB ============ */
+  .projects-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .projects-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-primary {
+    background: var(--lime);
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+
+  .btn-primary:hover {
+    background: #b8ef00;
+  }
+
+  .btn-primary svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Project filters */
+  .project-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  /* Project Cards Grid */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+  }
+
+  .project-card {
+    background: var(--navy-card);
+    border: 1px solid rgba(200,255,0,0.1);
+    padding: 24px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .project-card:hover {
+    border-color: rgba(200,255,0,0.25);
+  }
+
+  .project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .project-client {
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .project-url {
+    font-size: 13px;
+    color: var(--muted-light);
+    word-break: break-all;
+  }
+
+  .project-url a {
+    color: var(--muted-light);
+    text-decoration: none;
+  }
+
+  .project-url a:hover {
+    color: var(--lime);
+  }
+
+  /* Status Badge */
+  .status-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .status-intake { background: rgba(96,165,250,0.15); color: #60a5fa; }
+  .status-strategy { background: rgba(167,139,250,0.15); color: #a78bfa; }
+  .status-generating { background: rgba(251,191,36,0.15); color: #fbbf24; }
+  .status-qa { background: rgba(249,115,22,0.15); color: #f97316; }
+  .status-delivered { background: rgba(34,197,94,0.15); color: #22c55e; }
+  .status-revision { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .status-completed { background: var(--lime-dim); color: var(--lime); }
+
+  /* Progress Section */
+  .project-progress {
+    margin: 20px 0;
+  }
+
+  .progress-bar-container {
+    background: var(--navy-light);
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--lime);
+    transition: width 0.3s ease;
+  }
+
+  .progress-steps {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .progress-step {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    background: var(--navy-light);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .progress-step.done {
+    background: rgba(34,197,94,0.15);
+    color: #22c55e;
+  }
+
+  .progress-step.active {
+    background: rgba(251,191,36,0.15);
+    color: #fbbf24;
+  }
+
+  .progress-step svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Project Meta */
+  .project-meta {
+    display: flex;
+    gap: 24px;
+    margin: 16px 0;
+    padding: 16px 0;
+    border-top: 1px solid rgba(200,255,0,0.05);
+    border-bottom: 1px solid rgba(200,255,0,0.05);
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .meta-value {
+    font-size: 14px;
+    color: var(--white);
+  }
+
+  /* Project Actions */
+  .project-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .btn-secondary {
+    background: var(--navy-light);
+    border: 1px solid rgba(200,255,0,0.15);
+    color: var(--muted-light);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+    text-align: center;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--lime-border);
+    color: var(--white);
+  }
+
+  .btn-secondary.primary {
+    background: var(--lime-dim);
+    border-color: var(--lime-border);
+    color: var(--lime);
+  }
+
+  .btn-secondary.primary:hover {
+    background: var(--lime);
+    color: var(--navy);
+  }
+
+  /* ============ MODAL ============ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,13,26,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal {
+    background: var(--navy-card);
+    border: 1px solid var(--lime-border);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(200,255,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.05em;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover {
+    color: var(--white);
+  }
+
+  .modal-body {
+    padding: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-light);
+    margin-bottom: 8px;
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-select {
+    width: 100%;
+    background: var(--navy-light);
+    border: 1px solid rgba(200,255,0,0.1);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    padding: 12px 16px;
+  }
+
+  .form-input:focus,
+  .form-textarea:focus,
+  .form-select:focus {
+    outline: none;
+    border-color: var(--lime);
+  }
+
+  .form-textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .form-select option {
+    background: var(--navy);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .modal-footer {
+    padding: 20px 24px;
+    border-top: 1px solid rgba(200,255,0,0.1);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  .btn-cancel {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--muted-light);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-cancel:hover {
+    border-color: var(--white);
+    color: var(--white);
+  }
+
+  /* ============ EMPTY & LOADING STATES ============ */
   .empty-state {
     text-align: center;
     padding: 80px 40px;
@@ -371,6 +825,7 @@
     color: var(--muted);
   }
 
+  /* ============ TOAST ============ */
   .toast {
     position: fixed;
     bottom: 24px;
@@ -386,6 +841,7 @@
     transform: translateY(100px);
     opacity: 0;
     transition: all 0.3s;
+    z-index: 2000;
   }
 
   .toast.show {
@@ -393,18 +849,27 @@
     opacity: 1;
   }
 
+  /* ============ RESPONSIVE ============ */
   @media (max-width: 1024px) {
     .leads-table {
       display: block;
       overflow-x: auto;
+    }
+    .projects-grid {
+      grid-template-columns: 1fr;
     }
   }
 
   @media (max-width: 768px) {
     .header {
       flex-direction: column;
-      gap: 16px;
+      height: auto;
       padding: 16px;
+      gap: 16px;
+    }
+    .header-left {
+      flex-direction: column;
+      gap: 16px;
     }
     .header-stats {
       gap: 16px;
@@ -412,12 +877,18 @@
     .main {
       padding: 16px;
     }
-    .filters {
+    .filters, .project-filters {
       gap: 8px;
     }
     .filter-btn {
       padding: 8px 12px;
       font-size: 10px;
+    }
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+    .project-meta {
+      flex-wrap: wrap;
     }
   }
 </style>
@@ -438,7 +909,17 @@
 <!-- Dashboard -->
 <div class="dashboard" id="dashboard">
   <header class="header">
-    <div class="header-logo">Ad<em>Flow</em> Admin</div>
+    <div class="header-left">
+      <div class="header-logo">Ad<em>Flow</em></div>
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-tab="leads">
+          Leads <span class="tab-count" id="leadsCount">0</span>
+        </button>
+        <button class="nav-tab" data-tab="projects">
+          Projects <span class="tab-count" id="projectsCount">0</span>
+        </button>
+      </nav>
+    </div>
     <div class="header-right">
       <div class="header-stats">
         <div class="stat-item">
@@ -446,8 +927,8 @@
           <div class="stat-label">Total Leads</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value" id="qualifiedLeads">-</div>
-          <div class="stat-label">Qualified</div>
+          <div class="stat-value" id="activeProjects">-</div>
+          <div class="stat-label">Active Projects</div>
         </div>
       </div>
       <button class="logout-btn" onclick="logout()">Logout</button>
@@ -455,38 +936,138 @@
   </header>
 
   <main class="main">
-    <div class="filters">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="new">New</button>
-      <button class="filter-btn" data-filter="contacted">Contacted</button>
-      <button class="filter-btn" data-filter="qualified">Qualified</button>
-      <button class="filter-btn" data-filter="closed">Closed</button>
-      <button class="filter-btn" data-filter="rejected">Rejected</button>
+    <!-- LEADS TAB -->
+    <div class="tab-content active" id="leadsTab">
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="new">New</button>
+        <button class="filter-btn" data-filter="contacted">Contacted</button>
+        <button class="filter-btn" data-filter="qualified">Qualified</button>
+        <button class="filter-btn" data-filter="closed">Closed</button>
+        <button class="filter-btn" data-filter="rejected">Rejected</button>
+      </div>
+      <div id="leadsContainer">
+        <div class="loading">Loading leads...</div>
+      </div>
     </div>
 
-    <div id="leadsContainer">
-      <div class="loading">Loading leads...</div>
+    <!-- PROJECTS TAB -->
+    <div class="tab-content" id="projectsTab">
+      <div class="projects-header">
+        <h2 class="projects-title">Active Projects</h2>
+        <button class="btn-primary" onclick="openNewProjectModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          New Project
+        </button>
+      </div>
+      
+      <div class="project-filters">
+        <button class="filter-btn active" data-project-filter="all">All</button>
+        <button class="filter-btn" data-project-filter="intake">Intake</button>
+        <button class="filter-btn" data-project-filter="strategy">Strategy</button>
+        <button class="filter-btn" data-project-filter="generating">Generating</button>
+        <button class="filter-btn" data-project-filter="qa">QA</button>
+        <button class="filter-btn" data-project-filter="delivered">Delivered</button>
+        <button class="filter-btn" data-project-filter="completed">Completed</button>
+      </div>
+
+      <div id="projectsContainer">
+        <div class="loading">Loading projects...</div>
+      </div>
     </div>
   </main>
+</div>
+
+<!-- New/Edit Project Modal -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modalTitle">New Project</h3>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="projectId">
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Client Name *</label>
+          <input type="text" class="form-input" id="clientName" placeholder="Acme Corp">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Client Email</label>
+          <input type="email" class="form-input" id="clientEmail" placeholder="client@example.com">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Product URL *</label>
+        <input type="url" class="form-input" id="productUrl" placeholder="https://example.com/product">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Brand Assets URL</label>
+        <input type="url" class="form-input" id="brandAssetsUrl" placeholder="Google Drive or Dropbox link">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Brief / Notes</label>
+        <textarea class="form-textarea" id="brief" placeholder="Campaign objectives, target audience, competitors to analyze..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Package</label>
+          <select class="form-select" id="package">
+            <option value="sprint">Sprint ($497)</option>
+            <option value="pro" selected>Pro ($997)</option>
+            <option value="retainer">Retainer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Due Date</label>
+          <input type="date" class="form-input" id="dueDate">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Convert from Lead</label>
+        <select class="form-select" id="leadSelect">
+          <option value="">-- No lead (manual entry) --</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveProject()">Create Project</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast">Status updated</div>
 
 <script>
-  // Config
+  // ============ CONFIG ============
   const SUPABASE_URL = 'https://ykmdpxtnmqkfcscmmjfv.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrbWRweHRubXFrZmNzY21tamZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDc0OTMsImV4cCI6MjA4NzE4MzQ5M30.EfvqLYzRdNitCpqrYlrytYwcry6T1CuGUgGzE4ZXU7Q';
   const ADMIN_PASSWORD = 'adflow2024';
 
   let allLeads = [];
-  let currentFilter = 'all';
+  let allProjects = [];
+  let currentLeadFilter = 'all';
+  let currentProjectFilter = 'all';
+  let currentTab = 'leads';
 
-  // Check if already logged in
+  // ============ AUTH ============
   if (sessionStorage.getItem('adflow_admin') === 'true') {
     showDashboard();
   }
 
-  // Login
   function attemptLogin() {
     const password = document.getElementById('passwordInput').value;
     if (password === ADMIN_PASSWORD) {
@@ -506,6 +1087,7 @@
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboard').classList.add('active');
     loadLeads();
+    loadProjects();
   }
 
   function logout() {
@@ -513,7 +1095,19 @@
     location.reload();
   }
 
-  // Load leads from Supabase
+  // ============ TAB NAVIGATION ============
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      const tabName = tab.dataset.tab;
+      document.getElementById(tabName + 'Tab').classList.add('active');
+      currentTab = tabName;
+    });
+  });
+
+  // ============ LEADS ============
   async function loadLeads() {
     try {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/leads?select=*&order=created_at.desc`, {
@@ -522,24 +1116,20 @@
           'Authorization': `Bearer ${SUPABASE_KEY}`
         }
       });
-      
       allLeads = await response.json();
       updateStats();
       renderLeads();
+      populateLeadSelect();
     } catch (error) {
       console.error('Error loading leads:', error);
       document.getElementById('leadsContainer').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div>Error loading leads</div>';
     }
   }
 
-  function updateStats() {
-    document.getElementById('totalLeads').textContent = allLeads.length;
-    document.getElementById('qualifiedLeads').textContent = allLeads.filter(l => l.status === 'qualified' || l.status === 'closed').length;
-  }
-
   function renderLeads() {
     const container = document.getElementById('leadsContainer');
-    const filtered = currentFilter === 'all' ? allLeads : allLeads.filter(l => l.status === currentFilter);
+    const filtered = currentLeadFilter === 'all' ? allLeads : allLeads.filter(l => l.status === currentLeadFilter);
+    document.getElementById('leadsCount').textContent = allLeads.length;
 
     if (filtered.length === 0) {
       container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div>No leads found</div>';
@@ -565,6 +1155,7 @@
               <td>
                 <div class="lead-name">${escapeHtml(lead.name)}</div>
                 <div class="lead-email"><a href="mailto:${escapeHtml(lead.email)}">${escapeHtml(lead.email)}</a></div>
+                ${lead.status === 'qualified' ? `<button class="action-btn" onclick="convertToProject('${lead.id}')">→ Create Project</button>` : ''}
               </td>
               <td class="lead-website">
                 ${lead.website ? `<a href="${escapeHtml(lead.website)}" target="_blank">${escapeHtml(lead.website.replace(/^https?:\/\//, ''))}</a>` : '-'}
@@ -573,7 +1164,7 @@
               <td style="font-size:13px; color:var(--muted-light);">${formatSetup(lead.creative_setup)}</td>
               <td class="lead-bottleneck">${escapeHtml(lead.bottleneck || '-')}</td>
               <td>
-                <select class="status-select" onchange="updateStatus('${lead.id}', this.value)">
+                <select class="status-select" onchange="updateLeadStatus('${lead.id}', this.value)">
                   <option value="new" ${lead.status === 'new' ? 'selected' : ''}>New</option>
                   <option value="contacted" ${lead.status === 'contacted' ? 'selected' : ''}>Contacted</option>
                   <option value="qualified" ${lead.status === 'qualified' ? 'selected' : ''}>Qualified</option>
@@ -589,8 +1180,7 @@
     `;
   }
 
-  // Update status
-  async function updateStatus(id, status) {
+  async function updateLeadStatus(id, status) {
     try {
       await fetch(`${SUPABASE_URL}/rest/v1/leads?id=eq.${id}`, {
         method: 'PATCH',
@@ -602,39 +1192,346 @@
         },
         body: JSON.stringify({ status })
       });
-
-      // Update local data
       const lead = allLeads.find(l => l.id === id);
       if (lead) lead.status = status;
-      
       updateStats();
       renderLeads();
-      showToast('Status updated');
+      showToast('Lead status updated');
     } catch (error) {
       console.error('Error updating status:', error);
       showToast('Error updating status');
     }
   }
 
-  // Filters
-  document.querySelectorAll('.filter-btn').forEach(btn => {
+  // Lead filters
+  document.querySelectorAll('.filters .filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      currentFilter = btn.dataset.filter;
+      currentLeadFilter = btn.dataset.filter;
       renderLeads();
     });
   });
 
-  // Helpers
-  function formatSpend(spend) {
-    const labels = {
-      'under-5k': '<$5K',
-      '5k-15k': '$5K-15K',
-      '15k-30k': '$15K-30K',
-      '30k-50k': '$30K-50K',
-      '50k-plus': '$50K+'
+  // ============ PROJECTS ============
+  async function loadProjects() {
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/projects?select=*&order=created_at.desc`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      allProjects = await response.json();
+      updateStats();
+      renderProjects();
+    } catch (error) {
+      console.error('Error loading projects:', error);
+      document.getElementById('projectsContainer').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div>Error loading projects</div>';
+    }
+  }
+
+  function renderProjects() {
+    const container = document.getElementById('projectsContainer');
+    const filtered = currentProjectFilter === 'all' 
+      ? allProjects 
+      : allProjects.filter(p => p.status === currentProjectFilter);
+    
+    document.getElementById('projectsCount').textContent = allProjects.filter(p => 
+      !['completed', 'delivered'].includes(p.status)
+    ).length;
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">📁</div>
+          <p>No projects found</p>
+          <button class="btn-primary" style="margin-top: 20px;" onclick="openNewProjectModal()">Create First Project</button>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="projects-grid">
+        ${filtered.map(project => renderProjectCard(project)).join('')}
+      </div>
+    `;
+  }
+
+  function renderProjectCard(project) {
+    const progress = project.progress || {};
+    const progressPercent = calculateProgress(progress);
+    const statusLabels = {
+      intake: 'Intake',
+      strategy: 'Strategy',
+      generating: 'Generating',
+      qa: 'QA Review',
+      delivered: 'Delivered',
+      revision: 'Revision',
+      completed: 'Completed'
     };
+
+    return `
+      <div class="project-card">
+        <div class="project-card-header">
+          <div>
+            <div class="project-client">${escapeHtml(project.client_name)}</div>
+            <div class="project-url">
+              ${project.product_url ? `<a href="${escapeHtml(project.product_url)}" target="_blank">${escapeHtml(project.product_url.replace(/^https?:\/\//, '').substring(0, 40))}${project.product_url.length > 50 ? '...' : ''}</a>` : 'No URL'}
+            </div>
+          </div>
+          <span class="status-badge status-${project.status}">${statusLabels[project.status] || project.status}</span>
+        </div>
+
+        <div class="project-progress">
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: ${progressPercent}%"></div>
+          </div>
+          <div class="progress-steps">
+            <span class="progress-step ${progress.intake ? 'done' : (project.status === 'intake' ? 'active' : '')}">
+              ${progress.intake ? '✓' : ''} Intake
+            </span>
+            <span class="progress-step ${progress.strategy ? 'done' : (project.status === 'strategy' ? 'active' : '')}">
+              ${progress.strategy ? '✓' : ''} Strategy
+            </span>
+            <span class="progress-step ${progress.images ? 'done' : (project.status === 'generating' ? 'active' : '')}">
+              ${progress.images ? '✓' : ''} Images
+            </span>
+            <span class="progress-step ${progress.videos ? 'done' : ''}">
+              ${progress.videos ? '✓' : ''} Videos
+            </span>
+            <span class="progress-step ${progress.qa ? 'done' : (project.status === 'qa' ? 'active' : '')}">
+              ${progress.qa ? '✓' : ''} QA
+            </span>
+          </div>
+        </div>
+
+        <div class="project-meta">
+          <div class="meta-item">
+            <span class="meta-label">Package</span>
+            <span class="meta-value">${formatPackage(project.package)}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Created</span>
+            <span class="meta-value">${formatDateShort(project.created_at)}</span>
+          </div>
+          ${project.due_date ? `
+          <div class="meta-item">
+            <span class="meta-label">Due</span>
+            <span class="meta-value">${formatDateShort(project.due_date)}</span>
+          </div>
+          ` : ''}
+          ${project.deliverables_count ? `
+          <div class="meta-item">
+            <span class="meta-label">Assets</span>
+            <span class="meta-value">${project.deliverables_count}</span>
+          </div>
+          ` : ''}
+        </div>
+
+        <div class="project-actions">
+          <button class="btn-secondary" onclick="editProject('${project.id}')">Edit</button>
+          <button class="btn-secondary" onclick="updateProjectStatus('${project.id}')">Update Status</button>
+          ${project.assets_folder_url ? `<button class="btn-secondary primary" onclick="window.open('${escapeHtml(project.assets_folder_url)}', '_blank')">View Assets</button>` : `<button class="btn-secondary primary" onclick="showToast('Generate assets coming soon!')">Generate</button>`}
+        </div>
+      </div>
+    `;
+  }
+
+  function calculateProgress(progress) {
+    const steps = ['intake', 'strategy', 'images', 'videos', 'copy', 'qa', 'delivery'];
+    const done = steps.filter(s => progress[s]).length;
+    return Math.round((done / steps.length) * 100);
+  }
+
+  // Project filters
+  document.querySelectorAll('.project-filters .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.project-filters .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentProjectFilter = btn.dataset.projectFilter;
+      renderProjects();
+    });
+  });
+
+  // ============ PROJECT MODAL ============
+  function openNewProjectModal() {
+    document.getElementById('modalTitle').textContent = 'New Project';
+    document.getElementById('projectId').value = '';
+    document.getElementById('clientName').value = '';
+    document.getElementById('clientEmail').value = '';
+    document.getElementById('productUrl').value = '';
+    document.getElementById('brandAssetsUrl').value = '';
+    document.getElementById('brief').value = '';
+    document.getElementById('package').value = 'pro';
+    document.getElementById('dueDate').value = getDefaultDueDate();
+    document.getElementById('leadSelect').value = '';
+    document.getElementById('projectModal').classList.add('active');
+  }
+
+  function editProject(id) {
+    const project = allProjects.find(p => p.id === id);
+    if (!project) return;
+    
+    document.getElementById('modalTitle').textContent = 'Edit Project';
+    document.getElementById('projectId').value = project.id;
+    document.getElementById('clientName').value = project.client_name || '';
+    document.getElementById('clientEmail').value = project.client_email || '';
+    document.getElementById('productUrl').value = project.product_url || '';
+    document.getElementById('brandAssetsUrl').value = project.brand_assets_url || '';
+    document.getElementById('brief').value = project.brief || '';
+    document.getElementById('package').value = project.package || 'pro';
+    document.getElementById('dueDate').value = project.due_date ? project.due_date.split('T')[0] : '';
+    document.getElementById('leadSelect').value = project.lead_id || '';
+    document.getElementById('projectModal').classList.add('active');
+  }
+
+  function closeModal() {
+    document.getElementById('projectModal').classList.remove('active');
+  }
+
+  async function saveProject() {
+    const id = document.getElementById('projectId').value;
+    const data = {
+      client_name: document.getElementById('clientName').value,
+      client_email: document.getElementById('clientEmail').value || null,
+      product_url: document.getElementById('productUrl').value || null,
+      brand_assets_url: document.getElementById('brandAssetsUrl').value || null,
+      brief: document.getElementById('brief').value || null,
+      package: document.getElementById('package').value,
+      due_date: document.getElementById('dueDate').value || null,
+      lead_id: document.getElementById('leadSelect').value || null
+    };
+
+    if (!data.client_name) {
+      showToast('Client name is required');
+      return;
+    }
+
+    try {
+      if (id) {
+        // Update
+        await fetch(`${SUPABASE_URL}/rest/v1/projects?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(data)
+        });
+        showToast('Project updated');
+      } else {
+        // Create
+        data.status = 'intake';
+        data.progress = { intake: false, strategy: false, images: false, videos: false, copy: false, qa: false, delivery: false };
+        await fetch(`${SUPABASE_URL}/rest/v1/projects`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(data)
+        });
+        showToast('Project created');
+      }
+      closeModal();
+      loadProjects();
+    } catch (error) {
+      console.error('Error saving project:', error);
+      showToast('Error saving project');
+    }
+  }
+
+  async function updateProjectStatus(id) {
+    const project = allProjects.find(p => p.id === id);
+    if (!project) return;
+
+    const statuses = ['intake', 'strategy', 'generating', 'qa', 'delivered', 'completed'];
+    const currentIndex = statuses.indexOf(project.status);
+    const nextStatus = statuses[currentIndex + 1] || 'completed';
+
+    if (!confirm(`Move project to "${nextStatus}"?`)) return;
+
+    try {
+      const updateData = { status: nextStatus };
+      
+      // Also update progress based on status
+      const progress = project.progress || {};
+      if (nextStatus === 'strategy') progress.intake = true;
+      if (nextStatus === 'generating') progress.strategy = true;
+      if (nextStatus === 'qa') { progress.images = true; progress.videos = true; progress.copy = true; }
+      if (nextStatus === 'delivered') progress.qa = true;
+      if (nextStatus === 'completed') progress.delivery = true;
+      updateData.progress = progress;
+
+      if (nextStatus === 'delivered') {
+        updateData.delivered_at = new Date().toISOString();
+      }
+
+      await fetch(`${SUPABASE_URL}/rest/v1/projects?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      showToast(`Project moved to ${nextStatus}`);
+      loadProjects();
+    } catch (error) {
+      console.error('Error updating project:', error);
+      showToast('Error updating project');
+    }
+  }
+
+  function convertToProject(leadId) {
+    const lead = allLeads.find(l => l.id === leadId);
+    if (!lead) return;
+
+    document.getElementById('modalTitle').textContent = 'New Project';
+    document.getElementById('projectId').value = '';
+    document.getElementById('clientName').value = lead.name || '';
+    document.getElementById('clientEmail').value = lead.email || '';
+    document.getElementById('productUrl').value = lead.website || '';
+    document.getElementById('brandAssetsUrl').value = '';
+    document.getElementById('brief').value = lead.bottleneck ? `Bottleneck: ${lead.bottleneck}` : '';
+    document.getElementById('package').value = 'pro';
+    document.getElementById('dueDate').value = getDefaultDueDate();
+    document.getElementById('leadSelect').value = leadId;
+    document.getElementById('projectModal').classList.add('active');
+
+    // Switch to projects tab
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector('.nav-tab[data-tab="projects"]').classList.add('active');
+    document.getElementById('projectsTab').classList.add('active');
+  }
+
+  function populateLeadSelect() {
+    const select = document.getElementById('leadSelect');
+    const qualifiedLeads = allLeads.filter(l => l.status === 'qualified' || l.status === 'closed');
+    select.innerHTML = '<option value="">-- No lead (manual entry) --</option>' +
+      qualifiedLeads.map(l => `<option value="${l.id}">${escapeHtml(l.name)} (${escapeHtml(l.email)})</option>`).join('');
+  }
+
+  // ============ STATS ============
+  function updateStats() {
+    document.getElementById('totalLeads').textContent = allLeads.length;
+    const activeCount = allProjects.filter(p => !['completed', 'delivered'].includes(p.status)).length;
+    document.getElementById('activeProjects').textContent = activeCount;
+  }
+
+  // ============ HELPERS ============
+  function formatSpend(spend) {
+    const labels = { 'under-5k': '<$5K', '5k-15k': '$5K-15K', '15k-30k': '$15K-30K', '30k-50k': '$30K-50K', '50k-plus': '$50K+' };
     return labels[spend] || spend || '-';
   }
 
@@ -645,20 +1542,31 @@
   }
 
   function formatSetup(setup) {
-    const labels = {
-      'in-house': 'In-house',
-      'agency': 'Agency',
-      'freelancers': 'Freelancers',
-      'myself': 'DIY',
-      'mix': 'Mix'
-    };
+    const labels = { 'in-house': 'In-house', 'agency': 'Agency', 'freelancers': 'Freelancers', 'myself': 'DIY', 'mix': 'Mix' };
     return labels[setup] || setup || '-';
+  }
+
+  function formatPackage(pkg) {
+    const labels = { sprint: 'Sprint $497', pro: 'Pro $997', retainer: 'Retainer' };
+    return labels[pkg] || pkg || '-';
   }
 
   function formatDate(dateStr) {
     if (!dateStr) return '-';
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function formatDateShort(dateStr) {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  function getDefaultDueDate() {
+    const date = new Date();
+    date.setDate(date.getDate() + 3); // Default 3 days from now
+    return date.toISOString().split('T')[0];
   }
 
   function escapeHtml(str) {
@@ -670,8 +1578,18 @@
     const toast = document.getElementById('toast');
     toast.textContent = message;
     toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2000);
+    setTimeout(() => toast.classList.remove('show'), 2500);
   }
+
+  // Close modal on outside click
+  document.getElementById('projectModal').addEventListener('click', (e) => {
+    if (e.target.id === 'projectModal') closeModal();
+  });
+
+  // Close modal on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
 </script>
 </body>
 </html>
