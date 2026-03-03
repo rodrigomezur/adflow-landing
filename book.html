@@ -49,10 +49,10 @@
     position: fixed;
     top: 0; left: 0; right: 0; z-index: 100;
     padding: 0 40px;
-    height: 68px;
+    height: 72px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     background: rgba(8,13,26,0.88);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid rgba(200,255,0,0.08);
@@ -60,34 +60,17 @@
 
   .logo {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px;
-    letter-spacing: 0.1em;
+    font-size: 32px;
+    letter-spacing: 0.12em;
     color: var(--white);
     text-decoration: none;
   }
   .logo em { color: var(--lime); font-style: normal; }
 
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-  }
-
-  .nav-links a {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--white); }
-
   /* MAIN CONTENT */
   .book-page {
     min-height: 100vh;
-    padding-top: 68px;
+    padding-top: 72px;
     display: flex;
     flex-direction: column;
   }
@@ -291,10 +274,6 @@
 <!-- NAV -->
 <nav>
   <a href="/" class="logo">Ad<em>Flow</em></a>
-  <div class="nav-links">
-    <a href="/#system">System</a>
-    <a href="/#pricing">Pricing</a>
-  </div>
 </nav>
 
 <!-- BOOK PAGE -->
