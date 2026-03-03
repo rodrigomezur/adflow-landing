@@ -157,6 +157,12 @@
     position: relative;
   }
 
+  /* Koalendar widget styling */
+  #inline-widget-meet-with-rodrigo-9 {
+    width: 100%;
+    min-height: 650px;
+  }
+
   /* Placeholder when no calendar is embedded */
   .calendar-placeholder {
     position: absolute;
@@ -302,24 +308,11 @@
 
   <div class="calendar-section">
     <div class="calendar-container" id="calendarContainer">
-      <!-- 
-        CALENDAR EMBED GOES HERE
-        Replace this placeholder with your Calendly/Cal.com embed code
-        Example for Calendly:
-        <iframe src="https://calendly.com/YOUR-LINK?hide_event_type_details=1&hide_gdpr_banner=1&background_color=121a2e&text_color=eff2ec&primary_color=c8ff00"></iframe>
-      -->
-      <div class="calendar-placeholder" id="calendarPlaceholder">
-        <div class="calendar-placeholder-icon">
-          <svg viewBox="0 0 24 24">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-        </div>
-        <h3>Calendar Coming Soon</h3>
-        <p>The scheduling calendar will be embedded here. For now, email us at rgomez@leadifier.io to book your call.</p>
-      </div>
+      <!-- Koalendar Inline Embed -->
+      <div id="inline-widget-meet-with-rodrigo-9"></div>
+      <script>window.Koalendar=window.Koalendar||function(){(Koalendar.props=Koalendar.props||[]).push(arguments)};</script>
+      <script async src="https://koalendar.com/assets/widget.js"></script>
+      <script>Koalendar('inline', {"url":"https://koalendar.com/e/meet-with-rodrigo-9","selector":"#inline-widget-meet-with-rodrigo-9"});</script>
     </div>
   </div>
 
