@@ -83,7 +83,8 @@ TASK:
    - Maintain the same general layout and style
    - Each has a UNIQUE headline targeting different customer pain points
    - Each has slightly different visual emphasis
-   - All feature the brand's product prominently
+   - KEEP THE PRODUCT EXACTLY AS IT APPEARS IN THE PRODUCT IMAGE - DO NOT MODIFY THE PRODUCT
+   - Only change background, scene, context, and text - NEVER change the product itself
 
 OUTPUT FORMAT - Return ONLY valid JSON:
 {
@@ -131,14 +132,15 @@ RULES FOR EACH PROMPT:
 - ALL TEXT (headlines, subheadlines, CTAs) MUST BE IN ${outputLanguage}
 - Include EXACT text that should appear (headlines in quotes)
 - Describe the layout based on the reference ad
-- Specify the product from the product image
+- CRITICAL: The prompt MUST instruct to keep the product EXACTLY as shown - same shape, colors, details, branding. Add text like "Keep the product from the reference image identical, only change the background/scene"
 - Use brand colors: ${brandKit?.colors?.primary || '#000'} and ${brandKit?.colors?.secondary || '#FFF'}
 - Each prompt should be 150-250 words
-- Include negative_prompt for each variation
+- Include negative_prompt for each variation (always include "distorted product, modified product, different product")
 ${customCta ? `- Use this CTA when appropriate: "${customCta}"` : ''}
 
 LANGUAGE: ${outputLanguage} (ALL ad copy must be in this language)
-Aspect ratio for all: ${aspectRatio || '4:5'}`
+Aspect ratio for all: ${aspectRatio || '4:5'}
+PRODUCT FIDELITY: MANDATORY - The product must remain identical to the reference. Only the scene/background/context changes.`
     });
 
     // Add reference image

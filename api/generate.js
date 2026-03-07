@@ -93,14 +93,23 @@ export default async function handler(req, res) {
     // 1. If we have a reference image → use Nano Banana Pro Edit (image-to-image)
     // 2. Otherwise → use Nano Banana 2 (text-to-image)
     
-    if (refImage && use_image_to_image !== false) {
+    if ((refImage || product_image_url) && use_image_to_image !== false) {
       // Image-to-image mode using Nano Banana Pro Edit
       endpoint = 'fal-ai/nano-banana-pro/edit';
       
-      // For image-to-image, we need to incorporate the product into the prompt
+      // Build the image_urls array - product image should be FIRST for best results
+      const imageUrls = [];
+      if (product_image_url) {
+        imageUrls.push(product_image_url);
+      }
+      if (refImage && refImage !== product_image_url) {
+        imageUrls.push(refImage);
+      }
+      
+      // Enhance prompt to instruct model to keep product identical
       let enhancedPrompt = finalPrompt;
       if (product_image_url) {
-        enhancedPrompt += ` The product shown should match exactly: ${product_image_url}`;
+        enhancedPrompt = `IMPORTANT: Keep the product from the first reference image EXACTLY as it is - same shape, color, details, branding. Do not modify the product. Only change the background, scene, and context around it.\n\n${finalPrompt}`;
       }
       
       // IMPORTANT: Do NOT use "auto" - explicitly set the aspect ratio
@@ -110,14 +119,17 @@ export default async function handler(req, res) {
       
       requestBody = {
         prompt: enhancedPrompt,
-        image_url: refImage,
-        aspect_ratio: aspectRatioToUse,  // Force specific aspect ratio, NOT auto
-        num_images: 1
+        image_urls: imageUrls,  // Use image_urls (plural, array) not image_url
+        aspect_ratio: aspectRatioToUse,
+        num_images: 1,
+        limit_generations: true  // Prevent model from generating multiple variations
       };
       
       console.log('Using Nano Banana Pro Edit (image-to-image)');
       console.log('Forcing aspect ratio:', aspectRatioToUse);
-      console.log('Reference image:', refImage.substring(0, 100));
+      console.log('Image URLs:', imageUrls.length, 'images');
+      console.log('Product image:', product_image_url?.substring(0, 80));
+      console.log('Reference image:', refImage?.substring(0, 80));
       
     } else {
       // Text-to-image mode using Nano Banana 2
