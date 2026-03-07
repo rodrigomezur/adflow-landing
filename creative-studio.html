@@ -1006,19 +1006,113 @@ body {
 
         <!-- Competitor Mode Content -->
         <div id="mode-competitor-content" style="display: none;">
-          <div class="card">
+          <!-- Step 1: Upload Competitor Ad -->
+          <div class="card" id="competitor-step-1">
             <div class="card-header">
-              <div class="card-title">Upload Competitor Ad</div>
+              <div class="card-title">Step 1: Upload Competitor Ad</div>
             </div>
             <div class="form-group">
-              <label class="form-label">Competitor Ad Image</label>
-              <input type="file" class="form-input" id="competitorImage" accept="image/*">
+              <label class="form-label">Competitor Ad Image URL</label>
+              <input type="text" class="form-input" id="competitorUrl" placeholder="Paste image URL from Foreplay, Meta Ad Library, etc.">
+            </div>
+            <div id="competitorPreview" style="margin: 16px 0; display: none;">
+              <img id="competitorPreviewImg" style="max-width: 300px; max-height: 300px; border: 1px solid var(--lime-border);">
+            </div>
+            <button class="btn btn-primary" onclick="analyzeCompetitorAd()" id="analyzeBtn">🔍 Analyze Ad</button>
+          </div>
+
+          <!-- Step 2: Analysis Results -->
+          <div class="card" id="competitor-step-2" style="display: none;">
+            <div class="card-header">
+              <div class="card-title">Step 2: Analysis Results</div>
+            </div>
+            <div id="analysisResults">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Detected Ad Type</label>
+                  <select class="form-select" id="detectedAdType">
+                    <option value="ugc-image">UGC Image</option>
+                    <option value="before-after">Before/After</option>
+                    <option value="big-callout">Big Call-Out</option>
+                    <option value="feature-callout">Feature Callout</option>
+                    <option value="testimonial">Testimonial</option>
+                    <option value="us-vs-them">Us vs Them</option>
+                    <option value="pr-screenshot">PR Screenshot</option>
+                    <option value="notes-app">Notes App</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Visual Style</label>
+                  <select class="form-select" id="detectedStyle">
+                    <option value="ugc">UGC / Authentic</option>
+                    <option value="premium">Premium / Polished</option>
+                    <option value="minimal">Minimal / Clean</option>
+                    <option value="bold">Bold / High Contrast</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Extracted Hook / Main Message</label>
+                <input type="text" class="form-input" id="extractedHook" placeholder="Main hook or headline from the ad">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Visual Description</label>
+                <textarea class="form-textarea" id="extractedDescription" style="min-height: 100px;" placeholder="Description of the visual layout, composition, colors, elements..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Your Brand Customization -->
+          <div class="card" id="competitor-step-3" style="display: none;">
+            <div class="card-header">
+              <div class="card-title">Step 3: Apply Your Brand</div>
             </div>
             <div class="form-group">
-              <label class="form-label">Or paste Foreplay/URL</label>
-              <input type="text" class="form-input" id="competitorUrl" placeholder="https://foreplay.co/ad/...">
+              <label class="form-label">Your Product Image</label>
+              <select class="form-select" id="competitorProductAsset">
+                <option value="">Choose a product asset...</option>
+              </select>
             </div>
-            <button class="btn btn-secondary" onclick="analyzeCompetitorAd()">🔍 Analyze Ad</button>
+            <div class="form-group">
+              <label class="form-label">Your Hook / Message (customize or keep similar)</label>
+              <input type="text" class="form-input" id="yourHook" placeholder="Your version of the hook">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Platform</label>
+                <select class="form-select" id="competitorPlatform">
+                  <option value="instagram-feed">Instagram Feed (1:1)</option>
+                  <option value="instagram-stories">Instagram Stories (9:16)</option>
+                  <option value="facebook-feed">Facebook Feed (4:5)</option>
+                  <option value="tiktok">TikTok (9:16)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Number of Variations</label>
+                <select class="form-select" id="numVariations">
+                  <option value="1">1 variation</option>
+                  <option value="3">3 variations</option>
+                  <option value="4" selected>4 variations</option>
+                  <option value="6">6 variations</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="generateCompetitorVariations()" id="generateVariationsBtn">✨ Generate Variations</button>
+          </div>
+
+          <!-- Step 4: Generated Variations -->
+          <div class="card" id="competitor-step-4" style="display: none;">
+            <div class="card-header">
+              <div class="card-title">Generated Variations</div>
+              <span id="variationsProgress" style="font-size: 12px; color: var(--muted);"></span>
+            </div>
+            <div class="assets-grid" id="variationsGrid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+              <!-- Variations will be rendered here -->
+            </div>
+            <div style="margin-top: 16px; display: flex; gap: 12px;">
+              <button class="btn btn-primary" onclick="downloadAllVariations()">📥 Download All</button>
+              <button class="btn btn-secondary" onclick="generateMoreVariations()">🔄 Generate More</button>
+            </div>
           </div>
         </div>
 
@@ -2872,6 +2966,245 @@ async function deleteAsset(assetId) {
     console.error('Error deleting asset:', err);
     showToast('Error deleting asset');
   }
+}
+
+// ============ COMPETITOR MODE FUNCTIONS ============
+let competitorImageUrl = null;
+let generatedVariations = [];
+
+// Preview competitor image when URL changes
+document.getElementById('competitorUrl')?.addEventListener('input', (e) => {
+  const url = e.target.value.trim();
+  const preview = document.getElementById('competitorPreview');
+  const img = document.getElementById('competitorPreviewImg');
+  
+  if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+    img.src = url;
+    img.onload = () => { 
+      preview.style.display = 'block';
+      competitorImageUrl = url;
+    };
+    img.onerror = () => { 
+      preview.style.display = 'none';
+      competitorImageUrl = null;
+    };
+  } else {
+    preview.style.display = 'none';
+    competitorImageUrl = null;
+  }
+});
+
+async function analyzeCompetitorAd() {
+  const url = document.getElementById('competitorUrl').value.trim();
+  
+  if (!url) {
+    showToast('Please enter a competitor ad URL');
+    return;
+  }
+  
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true;
+  btn.textContent = '🔍 Analyzing...';
+  
+  competitorImageUrl = url;
+  
+  // For now, we'll do a basic analysis based on common ad patterns
+  // In a full implementation, this would use Claude Vision API
+  setTimeout(() => {
+    // Show analysis steps
+    document.getElementById('competitor-step-2').style.display = 'block';
+    document.getElementById('competitor-step-3').style.display = 'block';
+    
+    // Pre-fill with placeholder analysis (user can adjust)
+    document.getElementById('extractedDescription').value = 
+      'Analyze the uploaded ad and describe its key visual elements here. Include:\n' +
+      '- Layout structure (split screen, centered product, etc.)\n' +
+      '- Color scheme\n' +
+      '- Text placement and style\n' +
+      '- Product positioning\n' +
+      '- Overall mood/aesthetic';
+    
+    // Populate product asset dropdown
+    const select = document.getElementById('competitorProductAsset');
+    const productAssets = assets.filter(a => a.category === 'product');
+    select.innerHTML = '<option value="">Choose a product asset...</option>' +
+      productAssets.map(a => `<option value="${a.id}">${escapeHtml(a.name)}</option>`).join('');
+    
+    btn.disabled = false;
+    btn.textContent = '🔍 Analyze Ad';
+    showToast('Ad analyzed! Customize and generate variations.');
+    
+    // Scroll to analysis
+    document.getElementById('competitor-step-2').scrollIntoView({ behavior: 'smooth' });
+  }, 1500);
+}
+
+async function generateCompetitorVariations() {
+  if (!currentBrand) {
+    showToast('Please select a brand first');
+    return;
+  }
+  
+  const numVariations = parseInt(document.getElementById('numVariations').value);
+  const platform = document.getElementById('competitorPlatform').value;
+  const adType = document.getElementById('detectedAdType').value;
+  const style = document.getElementById('detectedStyle').value;
+  const hook = document.getElementById('yourHook').value || document.getElementById('extractedHook').value;
+  const description = document.getElementById('extractedDescription').value;
+  
+  const productAssetId = document.getElementById('competitorProductAsset').value;
+  const productAsset = assets.find(a => a.id === productAssetId);
+  
+  const btn = document.getElementById('generateVariationsBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating...';
+  
+  // Show progress section
+  document.getElementById('competitor-step-4').style.display = 'block';
+  document.getElementById('variationsGrid').innerHTML = '';
+  document.getElementById('variationsProgress').textContent = `Generating 0 of ${numVariations}...`;
+  
+  generatedVariations = [];
+  
+  // Brand info
+  const brandName = currentBrand?.name || 'Brand';
+  const primaryColor = currentBrand?.primary_color || '#C8FF00';
+  const secondaryColor = currentBrand?.secondary_color || '#080D1A';
+  
+  // Aspect ratio
+  const aspectRatios = {
+    'instagram-feed': '1:1',
+    'instagram-stories': '9:16',
+    'facebook-feed': '4:5',
+    'tiktok': '9:16'
+  };
+  
+  // Style descriptions
+  const styleDesc = {
+    'ugc': 'Authentic UGC aesthetic - iPhone photo quality, natural lighting',
+    'premium': 'Premium brand photography - studio lighting, polished',
+    'minimal': 'Minimal clean design - lots of white space',
+    'bold': 'Bold high-contrast - saturated colors, strong typography'
+  };
+  
+  // Variation angles for diversity
+  const variationAngles = [
+    'Focus on the main benefit with clear visual hierarchy',
+    'Emphasize social proof and trust elements',
+    'Create urgency with time-sensitive messaging',
+    'Highlight the transformation or result',
+    'Use a direct, bold approach with minimal elements',
+    'Focus on the emotional benefit rather than features'
+  ];
+  
+  // Generate each variation
+  for (let i = 0; i < numVariations; i++) {
+    try {
+      document.getElementById('variationsProgress').textContent = `Generating ${i + 1} of ${numVariations}...`;
+      
+      const angle = variationAngles[i % variationAngles.length];
+      
+      // Build prompt for this variation
+      const prompt = `Create a ${adType.replace(/-/g, ' ')} style ad for ${brandName}.
+
+REFERENCE STRUCTURE (recreate this style):
+${description}
+
+VARIATION ANGLE: ${angle}
+
+BRAND APPLICATION:
+- Brand: ${brandName}
+- Hook/Message: "${hook || 'Your product, better results'}"
+- Primary color: ${primaryColor}
+- Secondary color: ${secondaryColor}
+${productAsset ? `- Product image reference: ${productAsset.file_url}` : ''}
+
+STYLE: ${styleDesc[style]}
+
+REQUIREMENTS:
+- Maintain the same general layout and structure as the reference
+- Apply the brand colors and product
+- ${angle}
+- Make it scroll-stopping and conversion-focused
+- Aspect ratio: ${aspectRatios[platform]}
+- Resolution: 2K
+
+This is variation ${i + 1} of ${numVariations} - make it unique while staying true to the format.`;
+
+      // Call API
+      const response = await fetch(GENERATE_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: prompt,
+          aspect_ratio: aspectRatios[platform],
+          image_url: productAsset?.file_url || null
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Generation failed');
+      }
+      
+      const result = await response.json();
+      const imageUrl = result.images?.[0]?.url || result.image?.url;
+      
+      if (imageUrl) {
+        generatedVariations.push({
+          url: imageUrl,
+          prompt: prompt,
+          angle: angle
+        });
+        
+        // Add to grid
+        const grid = document.getElementById('variationsGrid');
+        grid.innerHTML += `
+          <div class="asset-card" onclick="window.open('${imageUrl}', '_blank')">
+            <img src="${imageUrl}" alt="Variation ${i + 1}" loading="lazy">
+            <div class="asset-card-info">
+              <div class="asset-card-name">Variation ${i + 1}</div>
+              <div class="asset-card-category">${angle.substring(0, 30)}...</div>
+            </div>
+          </div>
+        `;
+        
+        // Save to database
+        await saveGeneration(prompt, imageUrl, productAssetId);
+      }
+      
+    } catch (error) {
+      console.error(`Error generating variation ${i + 1}:`, error);
+      showToast(`Error on variation ${i + 1}`);
+    }
+  }
+  
+  document.getElementById('variationsProgress').textContent = `${generatedVariations.length} variations generated`;
+  btn.disabled = false;
+  btn.textContent = '✨ Generate Variations';
+  
+  if (generatedVariations.length > 0) {
+    showToast(`${generatedVariations.length} variations generated!`);
+  }
+}
+
+function downloadAllVariations() {
+  if (generatedVariations.length === 0) {
+    showToast('No variations to download');
+    return;
+  }
+  
+  // Open each in new tab
+  generatedVariations.forEach((v, i) => {
+    setTimeout(() => {
+      window.open(v.url, '_blank');
+    }, i * 500);
+  });
+  
+  showToast('Opening images in new tabs - right click to save');
+}
+
+function generateMoreVariations() {
+  generateCompetitorVariations();
 }
 </script>
 </body>
