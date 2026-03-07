@@ -1851,7 +1851,9 @@ async function startGeneration() {
     });
     
     if (!planResponse.ok) {
-      throw new Error('Creative Director failed to create plan');
+      const errorData = await planResponse.json().catch(() => ({}));
+      console.error('Plan API error:', errorData);
+      throw new Error(errorData.error || errorData.details || 'Creative Director failed to create plan (timeout?)');
     }
     
     const planResult = await planResponse.json();
