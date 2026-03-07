@@ -1266,19 +1266,19 @@ async function init() {
     return;
   }
   
-  // Get brand from URL or session
+  // Get brand from URL or session (optional now)
   const urlParams = new URLSearchParams(window.location.search);
   const brandId = urlParams.get('brand') || sessionStorage.getItem('adflow_brand');
   
-  if (!brandId) {
-    showToast('No brand selected');
-    setTimeout(() => window.location.href = '/creative-studio.html', 1500);
-    return;
+  if (brandId) {
+    await loadBrand(brandId);
+    await loadAssets();
+    await loadProfiles();
+  } else {
+    // No brand - still allow usage, just with local data
+    document.getElementById('brandName').textContent = 'New Campaign';
+    console.log('No brand selected - running in standalone mode');
   }
-  
-  await loadBrand(brandId);
-  await loadAssets();
-  await loadProfiles();
 }
 
 async function loadBrand(brandId) {
@@ -1484,18 +1484,21 @@ async function generateProfiles() {
   const btn = document.getElementById('generateProfilesBtn');
   const status = document.getElementById('generateStatus');
   
-  if (!currentBrand) {
-    showToast('Please select a brand first');
-    return;
-  }
+  // Get brand name - use currentBrand or a default
+  const brandName = currentBrand?.name || 'Product Brand';
   
-  // Get product context
+  // Get product context from selected asset or reference
   let productContext = '';
   if (selectedProductAsset) {
     const asset = productAssets.find(a => a.id === selectedProductAsset);
     if (asset) {
-      productContext = `Product: ${asset.name || 'Product image selected'}`;
+      productContext = `Product: ${asset.name || 'Product image'}`;
     }
+  }
+  
+  // If we have a reference image, mention it
+  if (referenceImageUrl) {
+    productContext += productContext ? '. Reference ad uploaded.' : 'Reference ad uploaded.';
   }
   
   btn.disabled = true;
@@ -1513,8 +1516,8 @@ async function generateProfiles() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        brandName: currentBrand.name,
-        brandDescription: currentBrand.description || productContext,
+        brandName: brandName,
+        brandDescription: currentBrand?.description || productContext || 'E-commerce product',
         numProfiles: 6
       })
     });
@@ -1530,9 +1533,9 @@ async function generateProfiles() {
       throw new Error('No profiles generated');
     }
     
-    // Save profiles to Supabase
-    const profilesToSave = data.profiles.map(p => ({
-      brand_id: currentBrand.id,
+    // Convert API response to local profile format
+    const localProfiles = data.profiles.map((p, idx) => ({
+      id: `generated_${idx}_${Date.now()}`,
       persona_name: p.name,
       pain_points: p.painPoints || [],
       desires: p.desires || [],
@@ -1544,36 +1547,49 @@ async function generateProfiles() {
       source: 'ai_generated'
     }));
     
-    // Delete old AI-generated profiles for this brand
-    await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence?brand_id=eq.${currentBrand.id}&source=eq.ai_generated`, {
-      method: 'DELETE',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
+    // If we have a brand in Supabase, also save there
+    if (currentBrand?.id) {
+      try {
+        // Delete old AI-generated profiles
+        await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence?brand_id=eq.${currentBrand.id}&source=eq.ai_generated`, {
+          method: 'DELETE',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        
+        // Save new profiles to Supabase
+        const profilesToSave = localProfiles.map(p => ({
+          ...p,
+          id: undefined, // Let Supabase generate ID
+          brand_id: currentBrand.id
+        }));
+        
+        await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(profilesToSave)
+        });
+        
+        // Reload from Supabase to get proper IDs
+        await loadProfiles();
+      } catch (dbErr) {
+        console.warn('Could not save to Supabase, using local profiles:', dbErr);
+        profiles = localProfiles;
+        renderProfiles();
       }
-    });
-    
-    // Insert new profiles
-    const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      },
-      body: JSON.stringify(profilesToSave)
-    });
-    
-    if (!insertRes.ok) {
-      console.error('Supabase insert error:', await insertRes.text());
-      throw new Error('Failed to save profiles');
+    } else {
+      // No brand - just use local profiles
+      profiles = localProfiles;
+      renderProfiles();
     }
     
-    // Reload profiles
-    await loadProfiles();
-    
-    // Auto-select all new profiles
+    // Auto-select all profiles
     selectAllProfiles();
     
     status.textContent = `✓ ${data.profiles.length} profiles generated`;
