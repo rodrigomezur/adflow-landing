@@ -1598,95 +1598,127 @@ async function startGeneration() {
   document.getElementById('pendingCount').textContent = generationPlan.length;
   document.getElementById('errorCount').textContent = '0';
   document.getElementById('progressFill').style.width = '0%';
-  document.getElementById('generationStatus').textContent = `Generating ${generationPlan.length} ads...`;
+  document.getElementById('generationStatus').textContent = `🎬 Creative Director analyzing reference ad...`;
   
   // Render initial grid
   renderResultsGrid();
   
-  // Process each item
-  let completed = 0;
-  let errors = 0;
-  
-  for (let i = 0; i < generationPlan.length; i++) {
-    const item = generationPlan[i];
-    item.status = 'generating';
-    renderResultsGrid();
+  try {
+    // STEP 1: Call Creative Director (Gemini) to generate ALL prompts at once
+    console.log('Step 1: Calling Creative Director to plan', generationPlan.length, 'variations');
     
-    try {
-      const imageUrl = await generateSingleAd(item);
-      item.status = 'success';
-      item.imageUrl = imageUrl;
-      completed++;
-      
-      // Save to database
-      await saveGeneration(item);
-      
-    } catch (error) {
-      console.error('Generation error:', error);
-      item.status = 'error';
-      item.error = error.message;
-      errors++;
+    const planResponse = await fetch('/api/campaign/plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        referenceImageUrl: referenceImageUrl,
+        productImageUrl: selectedProductUrl,
+        brandKit: {
+          name: currentBrand?.name || 'Brand',
+          colors: {
+            primary: currentBrand?.primary_color || '#000000',
+            secondary: currentBrand?.secondary_color || '#FFFFFF'
+          },
+          description: currentBrand?.description || ''
+        },
+        profiles: selectedProfiles.map(id => profiles.find(p => p.id === id)).filter(Boolean),
+        numVariations: generationPlan.length,
+        aspectRatio: config.aspectRatio
+      })
+    });
+    
+    if (!planResponse.ok) {
+      throw new Error('Creative Director failed to create plan');
     }
     
-    // Update progress
-    const progress = ((i + 1) / generationPlan.length) * 100;
-    document.getElementById('progressFill').style.width = `${progress}%`;
-    document.getElementById('successCount').textContent = completed;
-    document.getElementById('pendingCount').textContent = generationPlan.length - i - 1;
-    document.getElementById('errorCount').textContent = errors;
+    const planResult = await planResponse.json();
+    const variations = planResult.plan?.variations || [];
     
-    renderResultsGrid();
+    console.log('Creative Director created', variations.length, 'variation prompts');
+    document.getElementById('generationStatus').textContent = `🖼️ Generating ${variations.length} ads...`;
+    
+    // Update generation plan with the prompts
+    for (let i = 0; i < generationPlan.length && i < variations.length; i++) {
+      generationPlan[i].variation = variations[i];
+      generationPlan[i].headline = variations[i].headline;
+    }
+    
+    // STEP 2: Generate all images
+    let completed = 0;
+    let errors = 0;
+    
+    for (let i = 0; i < generationPlan.length; i++) {
+      const item = generationPlan[i];
+      item.status = 'generating';
+      renderResultsGrid();
+      
+      try {
+        const imageUrl = await generateSingleAd(item);
+        item.status = 'success';
+        item.imageUrl = imageUrl;
+        completed++;
+        
+        // Save to database
+        await saveGeneration(item);
+        
+      } catch (error) {
+        console.error('Generation error:', error);
+        item.status = 'error';
+        item.error = error.message;
+        errors++;
+      }
+      
+      // Update progress
+      const progress = ((i + 1) / generationPlan.length) * 100;
+      document.getElementById('progressFill').style.width = `${progress}%`;
+      document.getElementById('successCount').textContent = completed;
+      document.getElementById('pendingCount').textContent = generationPlan.length - i - 1;
+      document.getElementById('errorCount').textContent = errors;
+      
+      renderResultsGrid();
+    }
+    
+    // Done
+    document.getElementById('generationStatus').textContent = `✅ Complete! ${completed} ads generated, ${errors} failed.`;
+    document.getElementById('downloadAllBtn').disabled = completed === 0;
+    showToast(`🎉 Generated ${completed} ads!`);
+    
+  } catch (error) {
+    console.error('Campaign generation error:', error);
+    document.getElementById('generationStatus').textContent = `❌ Error: ${error.message}`;
+    showToast('Error generating campaign');
   }
   
-  // Done
   isGenerating = false;
-  document.getElementById('generationStatus').textContent = `Complete! ${completed} ads generated, ${errors} failed.`;
-  document.getElementById('downloadAllBtn').disabled = completed === 0;
-  
-  showToast(`🎉 Generated ${completed} ads!`);
 }
 
 async function generateSingleAd(item) {
-  const profile = item.profile;
+  // Use the pre-generated prompt from Creative Director
+  const variation = item.variation;
   
-  // STEP 1: Use Gemini to compose a structured JSON prompt
-  console.log('Step 1: Composing prompt with Gemini for profile:', profile.persona_name);
-  
-  const composeResponse = await fetch(COMPOSE_API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      referenceImageUrl: referenceImageUrl,
-      productImageUrl: selectedProductUrl,
-      brandKit: {
-        name: currentBrand?.name || 'Brand',
-        colors: {
-          primary: currentBrand?.primary_color || '#000000',
-          secondary: currentBrand?.secondary_color || '#FFFFFF'
-        },
-        description: currentBrand?.description || ''
-      },
-      profile: {
-        persona: profile.persona_name,
-        painPoint: (profile.pain_points || [])[0] || '',
-        angle: profile.messaging_angle || '',
-        emotion: profile.emotional_trigger || 'trust'
-      },
-      aspectRatio: config.aspectRatio,
-      adStyle: config.visualStyle === 'match' ? null : config.visualStyle
-    })
-  });
-  
-  if (!composeResponse.ok) {
-    const errorText = await composeResponse.text();
-    console.error('Compose error:', errorText);
-    throw new Error('Failed to compose prompt');
+  if (!variation || !variation.prompt) {
+    // Fallback to old method if no variation prompt
+    console.log('No variation prompt, using fallback');
+    return await generateSingleAdFallback(item);
   }
   
-  const composeResult = await composeResponse.json();
-  const jsonPrompt = composeResult.jsonPrompt;
+  console.log('Generating:', variation.headline || 'variation ' + variation.id);
   
-  console.log('Step 2: Generating image with Nano Banana');
+  // Build JSON prompt from variation
+  const jsonPrompt = {
+    prompt: variation.prompt,
+    negative_prompt: variation.negative_prompt || "blurry, low quality, watermark, cartoon, plastic skin",
+    settings: variation.settings || {
+      aspect_ratio: config.aspectRatio,
+      style: 'lifestyle-in-context',
+      lighting: 'natural-window',
+      camera: { lens: '35mm', depth_of_field: 'shallow' },
+      color_grading: 'warm'
+    }
+  };
+  
+  // Store prompt for later reference
+  item.jsonPrompt = jsonPrompt;
   console.log('Prompt preview:', jsonPrompt.prompt?.substring(0, 150) + '...');
   
   // STEP 2: Generate image with Nano Banana using the JSON prompt
@@ -1722,9 +1754,64 @@ async function generateSingleAd(item) {
   return imageUrl;
 }
 
+// Fallback method if Creative Director fails
+async function generateSingleAdFallback(item) {
+  const profile = item.profile;
+  
+  const composeResponse = await fetch(COMPOSE_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      referenceImageUrl: referenceImageUrl,
+      productImageUrl: selectedProductUrl,
+      brandKit: {
+        name: currentBrand?.name || 'Brand',
+        colors: {
+          primary: currentBrand?.primary_color || '#000000',
+          secondary: currentBrand?.secondary_color || '#FFFFFF'
+        },
+        description: currentBrand?.description || ''
+      },
+      profile: {
+        persona: profile.persona_name,
+        painPoint: (profile.pain_points || [])[0] || '',
+        angle: profile.messaging_angle || '',
+        emotion: profile.emotional_trigger || 'trust'
+      },
+      aspectRatio: config.aspectRatio
+    })
+  });
+  
+  if (!composeResponse.ok) {
+    throw new Error('Failed to compose prompt');
+  }
+  
+  const composeResult = await composeResponse.json();
+  const jsonPrompt = composeResult.jsonPrompt;
+  item.jsonPrompt = jsonPrompt;
+  
+  const generateResponse = await fetch(GENERATE_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      jsonPrompt: jsonPrompt,
+      reference_image_url: referenceImageUrl,
+      product_image_url: selectedProductUrl,
+      aspect_ratio: config.aspectRatio,
+      use_image_to_image: true
+    })
+  });
+  
+  if (!generateResponse.ok) {
+    throw new Error('Failed to generate image');
+  }
+  
+  const result = await generateResponse.json();
+  return result.images?.[0]?.url || result.image?.url;
+}
+
 // Legacy function - kept for backward compatibility
 function buildAdPrompt(profile) {
-  // This is now handled by Gemini via /api/prompt/compose
   const brandName = currentBrand?.name || 'Brand';
   return `Professional product advertisement for ${brandName}. Clean modern layout, product prominently featured.`;
 }
@@ -1793,10 +1880,10 @@ function renderResultsGrid() {
           </div>
         `}
         <div class="result-info">
-          <div class="result-profile">${escapeHtml(item.profile.persona_name)}</div>
+          <div class="result-profile">${escapeHtml(item.headline || item.variation?.headline || item.profile.persona_name)}</div>
           <div class="result-status">${
             item.status === 'generating' ? 'Generating...' :
-            item.status === 'success' ? 'Complete' :
+            item.status === 'success' ? '✓ ' + escapeHtml(item.profile.persona_name) :
             item.status === 'error' ? 'Failed' : 'Pending'
           }</div>
         </div>
