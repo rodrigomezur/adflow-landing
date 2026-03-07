@@ -88,7 +88,7 @@ Create a JSON prompt that:
 4. Targets the specified customer persona with appropriate headline/copy
 5. Looks authentic and scroll-stopping, NOT like AI-generated
 
-Return ONLY the JSON object, no markdown, no explanation.`;
+IMPORTANT: Return ONLY the raw JSON object. No markdown code blocks. No \`\`\`. No explanation. Start with { and end with }.`;
 
     // Call Gemini API
     const response = await fetch(
@@ -105,8 +105,7 @@ Return ONLY the JSON object, no markdown, no explanation.`;
           }],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 2048,
-            responseMimeType: "application/json"
+            maxOutputTokens: 2048
           }
         })
       }
