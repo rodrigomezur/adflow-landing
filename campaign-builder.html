@@ -1690,12 +1690,16 @@ async function generateSingleAd(item) {
   console.log('Prompt preview:', jsonPrompt.prompt?.substring(0, 150) + '...');
   
   // STEP 2: Generate image with Nano Banana using the JSON prompt
+  // Include reference image for image-to-image transformation
   const generateResponse = await fetch(GENERATE_API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       jsonPrompt: jsonPrompt,
-      aspect_ratio: config.aspectRatio
+      reference_image_url: referenceImageUrl,  // Use reference ad as base for image-to-image
+      product_image_url: selectedProductUrl,    // Product image for reference
+      aspect_ratio: config.aspectRatio,
+      use_image_to_image: true                  // Enable image-to-image mode
     })
   });
   

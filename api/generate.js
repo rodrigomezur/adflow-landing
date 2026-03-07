@@ -1,5 +1,5 @@
 // Serverless function to call fal.ai API securely
-// Using Nano Banana 2 with structured JSON prompts
+// Using Nano Banana 2 / Nano Banana Pro for ad creative generation
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -14,60 +14,49 @@ export default async function handler(req, res) {
 
   try {
     const { 
-      // New structured JSON prompt format
-      jsonPrompt,
-      // Legacy format (still supported)
-      prompt, 
-      negative_prompt,
-      image_url, 
-      product_url,
+      jsonPrompt,           // Structured JSON prompt from Gemini
+      prompt,               // Legacy: plain text prompt
+      negative_prompt,      // Negative prompt
+      reference_image_url,  // Reference ad for image-to-image
+      product_image_url,    // Product image
+      image_url,            // Legacy: any reference image
       aspect_ratio,
-      width,
-      height
+      use_image_to_image    // Force image-to-image mode
     } = req.body;
 
-    // Handle both new JSON format and legacy format
-    let finalPrompt, finalNegativePrompt, finalAspectRatio, finalSettings;
+    // Extract prompt and settings from JSON or use legacy format
+    let finalPrompt, finalNegativePrompt, finalAspectRatio;
     
     if (jsonPrompt) {
-      // New structured JSON prompt from Gemini
       finalPrompt = jsonPrompt.prompt;
-      finalNegativePrompt = jsonPrompt.negative_prompt || "blurry, low quality, distorted, watermark, cartoon, plastic skin";
-      finalSettings = jsonPrompt.settings || {};
-      finalAspectRatio = finalSettings.aspect_ratio || aspect_ratio || "4:5";
+      finalNegativePrompt = jsonPrompt.negative_prompt || "blurry, low quality, watermark, cartoon, plastic skin";
+      finalAspectRatio = jsonPrompt.settings?.aspect_ratio || aspect_ratio || "4:5";
       
-      // Enhance prompt with camera/lighting settings if available
-      if (finalSettings.lighting) {
-        finalPrompt += `. Lighting: ${finalSettings.lighting}`;
+      // Append camera/lighting settings to prompt
+      const settings = jsonPrompt.settings || {};
+      if (settings.lighting) {
+        finalPrompt += `. ${settings.lighting} lighting`;
       }
-      if (finalSettings.camera?.lens) {
-        finalPrompt += `. Shot on ${finalSettings.camera.lens} lens`;
+      if (settings.camera?.lens) {
+        finalPrompt += `. Shot on ${settings.camera.lens} lens`;
       }
-      if (finalSettings.camera?.depth_of_field) {
-        finalPrompt += `, ${finalSettings.camera.depth_of_field} depth of field`;
+      if (settings.camera?.depth_of_field) {
+        finalPrompt += `, ${settings.camera.depth_of_field} depth of field`;
       }
-      if (finalSettings.color_grading) {
-        finalPrompt += `. ${finalSettings.color_grading} color grading`;
+      if (settings.color_grading) {
+        finalPrompt += `. ${settings.color_grading} color grading`;
       }
-      if (finalSettings.style) {
-        finalPrompt += `. Style: ${finalSettings.style}`;
-      }
-      
-      console.log('Using structured JSON prompt');
     } else {
-      // Legacy plain text prompt
       finalPrompt = prompt;
-      finalNegativePrompt = negative_prompt || "blurry, low quality, distorted, watermark, cartoon, plastic skin";
+      finalNegativePrompt = negative_prompt || "blurry, low quality, watermark, cartoon";
       finalAspectRatio = aspect_ratio || "4:5";
-      
-      console.log('Using legacy plain text prompt');
     }
 
     if (!finalPrompt) {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
-    // Determine resolution based on aspect ratio
+    // Determine image size based on aspect ratio
     let imageSize;
     switch (finalAspectRatio) {
       case '1:1':
@@ -86,21 +75,60 @@ export default async function handler(req, res) {
         imageSize = { width: 1024, height: 1280 }; // Default to 4:5
     }
 
-    // Build request for Nano Banana 2
-    const requestBody = {
-      prompt: finalPrompt,
-      negative_prompt: finalNegativePrompt,
-      image_size: imageSize,
-      num_images: 1,
-      seed: Math.floor(Math.random() * 1000000) // Random seed for variety
-    };
-
-    console.log('Prompt (first 200 chars):', finalPrompt.substring(0, 200));
-    console.log('Negative prompt:', finalNegativePrompt.substring(0, 100));
+    // Determine which reference image to use
+    const refImage = reference_image_url || image_url;
+    
+    console.log('=== Generation Request ===');
+    console.log('Aspect ratio:', finalAspectRatio);
     console.log('Image size:', imageSize);
+    console.log('Prompt (first 200):', finalPrompt.substring(0, 200));
+    console.log('Has reference image:', !!refImage);
+    console.log('Has product image:', !!product_image_url);
 
-    // Try Nano Banana 2 first (better quality, supports negative prompts)
-    let response = await fetch('https://fal.run/fal-ai/nano-banana-2', {
+    let response;
+    let endpoint;
+    let requestBody;
+
+    // Strategy:
+    // 1. If we have a reference image → use Nano Banana Pro Edit (image-to-image)
+    // 2. Otherwise → use Nano Banana 2 (text-to-image)
+    
+    if (refImage && use_image_to_image !== false) {
+      // Image-to-image mode using Nano Banana Pro Edit
+      endpoint = 'fal-ai/nano-banana-pro/edit';
+      
+      // For image-to-image, we need to incorporate the product into the prompt
+      let enhancedPrompt = finalPrompt;
+      if (product_image_url) {
+        enhancedPrompt += ` The product shown should match exactly: ${product_image_url}`;
+      }
+      
+      requestBody = {
+        prompt: enhancedPrompt,
+        image_url: refImage,
+        aspect_ratio: finalAspectRatio
+      };
+      
+      console.log('Using Nano Banana Pro Edit (image-to-image)');
+      console.log('Reference image:', refImage.substring(0, 100));
+      
+    } else {
+      // Text-to-image mode using Nano Banana 2
+      endpoint = 'fal-ai/nano-banana-2';
+      requestBody = {
+        prompt: finalPrompt,
+        negative_prompt: finalNegativePrompt,
+        image_size: imageSize,
+        num_images: 1
+      };
+      
+      console.log('Using Nano Banana 2 (text-to-image)');
+    }
+
+    // Call FAL API
+    console.log('Calling FAL API endpoint:', endpoint);
+    
+    response = await fetch(`https://fal.run/${endpoint}`, {
       method: 'POST',
       headers: {
         'Authorization': `Key ${FAL_KEY}`,
@@ -111,33 +139,32 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Nano Banana 2 error:', errorText);
+      console.error('FAL API error:', errorText);
       
-      // Try with image reference if provided
-      if (image_url || product_url) {
-        console.log('Trying Nano Banana Pro Edit with image reference...');
+      // Fallback: try text-to-image if image-to-image failed
+      if (endpoint.includes('edit')) {
+        console.log('Image-to-image failed, falling back to text-to-image...');
         
-        const editRequestBody = {
-          prompt: finalPrompt,
-          image_url: image_url || product_url,
-          aspect_ratio: finalAspectRatio
-        };
-        
-        response = await fetch('https://fal.run/fal-ai/nano-banana-pro/edit', {
+        response = await fetch('https://fal.run/fal-ai/nano-banana-2', {
           method: 'POST',
           headers: {
             'Authorization': `Key ${FAL_KEY}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(editRequestBody)
+          body: JSON.stringify({
+            prompt: finalPrompt,
+            negative_prompt: finalNegativePrompt,
+            image_size: imageSize,
+            num_images: 1
+          })
         });
         
         if (!response.ok) {
-          const editError = await response.text();
-          console.error('Nano Banana Pro Edit error:', editError);
+          const fallbackError = await response.text();
+          console.error('Fallback also failed:', fallbackError);
           return res.status(response.status).json({ 
             error: `API error: ${response.status}`,
-            details: editError
+            details: fallbackError
           });
         }
       } else {
@@ -149,9 +176,17 @@ export default async function handler(req, res) {
     }
 
     const result = await response.json();
-    console.log('Generation successful');
+    console.log('Generation successful!');
     
-    // Return the result
+    // Verify aspect ratio of result
+    const generatedImage = result.images?.[0] || result.image;
+    if (generatedImage) {
+      console.log('Generated image URL:', generatedImage.url?.substring(0, 80));
+      if (generatedImage.width && generatedImage.height) {
+        console.log('Generated dimensions:', generatedImage.width, 'x', generatedImage.height);
+      }
+    }
+    
     return res.status(200).json(result);
 
   } catch (error) {
