@@ -2031,17 +2031,25 @@ async function generateAd() {
     const productAssetId = document.getElementById('productAsset').value;
     const productAsset = assets.find(a => a.id === productAssetId);
     
+    // Get aspect ratio for Nano Banana
+    const aspectRatioStr = {
+      'instagram-feed': '1:1',
+      'instagram-stories': '9:16',
+      'facebook-feed': '4:5',
+      'tiktok': '9:16'
+    }[platform] || '1:1';
+    
     // Prepare request for our serverless API
     const requestBody = {
       prompt: prompt,
       width: dimensions.width,
-      height: dimensions.height
+      height: dimensions.height,
+      aspect_ratio: aspectRatioStr
     };
     
     // If product image selected, add as reference
     if (productAsset?.file_url) {
       requestBody.image_url = productAsset.file_url;
-      requestBody.strength = 0.75; // How much to keep from reference
     }
     
     // Call our serverless API (which calls fal.ai securely)
@@ -2116,7 +2124,7 @@ async function saveGeneration(prompt, imageUrl, productAssetId) {
     prompt: prompt,
     image_url: imageUrl,
     status: 'completed',
-    model: 'fal-ai/flux-pro/v1.1',
+    model: 'nano-banana-2',
     aspect_ratio: aspectRatioMap[platform] || '1:1',
     cost: 0.05, // Approximate cost per generation
     product_asset_id: productAssetId || null,
