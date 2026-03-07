@@ -69,7 +69,7 @@ Make the profiles specific and actionable for ad creation.`;
 
     // Call Gemini API (using 1.5-flash for better quota handling)
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${GEMINI_KEY}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -122,7 +122,7 @@ Make the profiles specific and actionable for ad creation.`;
       success: true,
       brandName: brandName,
       profiles: profiles.profiles || [],
-      model: 'gemini-pro'
+      model: 'gemini-2.5-flash'
     });
 
   } catch (error) {
