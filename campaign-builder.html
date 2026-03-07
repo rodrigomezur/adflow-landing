@@ -1649,84 +1649,89 @@ async function startGeneration() {
 async function generateSingleAd(item) {
   const profile = item.profile;
   
-  // Build a concise, visual prompt
-  const prompt = buildAdPrompt(profile);
+  // STEP 1: Use Gemini to compose a structured JSON prompt
+  console.log('Step 1: Composing prompt with Gemini for profile:', profile.persona_name);
   
-  // Call generation API with reference ad as base image
-  const response = await fetch(GENERATE_API, {
+  const composeResponse = await fetch(COMPOSE_API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      prompt: prompt,
-      image_url: referenceImageUrl,  // Use reference ad as base to transform
-      product_url: selectedProductUrl, // Product image for reference
+      referenceImageUrl: referenceImageUrl,
+      productImageUrl: selectedProductUrl,
+      brandKit: {
+        name: currentBrand?.name || 'Brand',
+        colors: {
+          primary: currentBrand?.primary_color || '#000000',
+          secondary: currentBrand?.secondary_color || '#FFFFFF'
+        },
+        description: currentBrand?.description || ''
+      },
+      profile: {
+        persona: profile.persona_name,
+        painPoint: (profile.pain_points || [])[0] || '',
+        angle: profile.messaging_angle || '',
+        emotion: profile.emotional_trigger || 'trust'
+      },
+      aspectRatio: config.aspectRatio,
+      adStyle: config.visualStyle === 'match' ? null : config.visualStyle
+    })
+  });
+  
+  if (!composeResponse.ok) {
+    const errorText = await composeResponse.text();
+    console.error('Compose error:', errorText);
+    throw new Error('Failed to compose prompt');
+  }
+  
+  const composeResult = await composeResponse.json();
+  const jsonPrompt = composeResult.jsonPrompt;
+  
+  console.log('Step 2: Generating image with Nano Banana');
+  console.log('Prompt preview:', jsonPrompt.prompt?.substring(0, 150) + '...');
+  
+  // STEP 2: Generate image with Nano Banana using the JSON prompt
+  const generateResponse = await fetch(GENERATE_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      jsonPrompt: jsonPrompt,
       aspect_ratio: config.aspectRatio
     })
   });
   
-  if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+  if (!generateResponse.ok) {
+    const errorText = await generateResponse.text();
+    console.error('Generate error:', errorText);
+    throw new Error('Failed to generate image');
   }
   
-  const result = await response.json();
+  const result = await generateResponse.json();
   const imageUrl = result.images?.[0]?.url || result.image?.url;
   
   if (!imageUrl) {
     throw new Error('No image in response');
   }
   
+  // Store the prompt for reference
+  item.jsonPrompt = jsonPrompt;
+  
   return imageUrl;
 }
 
+// Legacy function - kept for backward compatibility
 function buildAdPrompt(profile) {
+  // This is now handled by Gemini via /api/prompt/compose
   const brandName = currentBrand?.name || 'Brand';
-  const primaryColor = currentBrand?.primary_color || '#C8FF00';
-  const secondaryColor = currentBrand?.secondary_color || '#080D1A';
-  
-  // Get the main pain point and angle
-  const painPoint = (profile.pain_points || [])[0] || '';
-  const angle = profile.messaging_angle || '';
-  const emotion = profile.emotional_trigger || 'trust';
-  
-  // Generate a short headline based on profile
-  let headline = '';
-  if (painPoint) {
-    // Create a benefit-focused headline from the pain point
-    const painWords = painPoint.toLowerCase();
-    if (painWords.includes('time') || painWords.includes('busy')) {
-      headline = `Save Time. Get Results.`;
-    } else if (painWords.includes('money') || painWords.includes('price') || painWords.includes('cost')) {
-      headline = `Premium Quality. Fair Price.`;
-    } else if (painWords.includes('trust') || painWords.includes('skeptic')) {
-      headline = `Join 10,000+ Happy Customers`;
-    } else if (painWords.includes('work') || painWords.includes('effective')) {
-      headline = `Finally, Something That Works`;
-    } else if (painWords.includes('health') || painWords.includes('natural')) {
-      headline = `Your Health, Our Priority`;
-    } else {
-      headline = `Discover the ${brandName} Difference`;
-    }
-  }
-  
-  // Build a CONCISE visual prompt - Nano Banana works better with short prompts
-  let prompt = `${brandName} product advertisement. `;
-  prompt += `Headline text: "${headline}". `;
-  prompt += `Brand colors: ${primaryColor} primary, ${secondaryColor} secondary. `;
-  prompt += `Style: Professional product photography, clean layout, minimal text. `;
-  prompt += `Feature the ${brandName} product prominently in center. `;
-  
-  if (config.customCta) {
-    prompt += `CTA button: "${config.customCta}". `;
-  }
-  
-  // Keep it short and visual
-  prompt += `High quality, photorealistic, commercial advertisement.`;
-  
-  return prompt;
+  return `Professional product advertisement for ${brandName}. Clean modern layout, product prominently featured.`;
 }
 
 async function saveGeneration(item) {
   if (!currentBrand) return;
+  
+  // Save the JSON prompt if available
+  const promptToSave = item.jsonPrompt 
+    ? JSON.stringify(item.jsonPrompt, null, 2)
+    : buildAdPrompt(item.profile);
   
   try {
     await fetch(`${SUPABASE_URL}/rest/v1/generations`, {
@@ -1740,7 +1745,7 @@ async function saveGeneration(item) {
         brand_id: currentBrand.id,
         mode: 'campaign',
         ad_type: 'campaign-batch',
-        prompt: buildAdPrompt(item.profile).substring(0, 5000),
+        prompt: promptToSave.substring(0, 5000),
         image_url: item.imageUrl,
         status: 'completed',
         model: 'nano-banana-2',

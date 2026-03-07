@@ -1,5 +1,5 @@
 // Prompt Composition using Gemini API
-// Takes reference ad, product, brand context → outputs detailed generation prompt
+// Takes reference ad, product, brand context → outputs structured JSON prompt for Nano Banana
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -18,63 +18,77 @@ export default async function handler(req, res) {
       productImageUrl,      // URL of our product image
       brandKit,             // { name, colors, font, description }
       profile,              // { persona, painPoint, angle, emotion }
-      campaignGoal,         // optional campaign objective
-      aspectRatio           // '1:1', '4:5', '9:16'
+      aspectRatio,          // '1:1', '4:5', '9:16'
+      adStyle               // 'ugc-selfie', 'studio-product', 'lifestyle', etc.
     } = req.body;
 
     if (!referenceImageUrl) {
       return res.status(400).json({ error: 'referenceImageUrl is required' });
     }
 
-    // Build the prompt for Gemini
-    const systemPrompt = `You are an expert at analyzing Facebook/Instagram static ads and creating detailed image generation prompts.
+    // System prompt for Gemini - teaches it to create Nano Banana JSON prompts
+    const systemPrompt = `You are an expert at analyzing Facebook/Instagram ads and creating structured JSON prompts for Nano Banana 2 image generation.
 
-Your task is to analyze a reference ad and create a detailed prompt that:
-1. Recreates the exact layout, structure, and visual style of the reference
-2. Replaces the competitor's product with the client's product
-3. Rewrites all text/copy to target the specified customer profile
-4. Uses the client's brand colors and font
-5. Maintains the same visual hierarchy
+Your task is to analyze a reference ad image and create a detailed JSON prompt that will recreate a similar ad with a different product and messaging.
 
-Output your prompt in JSON format with these fields:
+OUTPUT FORMAT - Return ONLY valid JSON with this exact structure:
 {
-  "prompt": "The detailed image generation prompt",
-  "headline": "The main headline text to appear on the ad",
-  "subheadline": "Secondary text if applicable",
-  "cta": "Call to action text",
-  "layoutDescription": "Brief description of the layout",
-  "colorScheme": "Colors to use",
-  "textPlacement": "Where text should be positioned"
+  "prompt": "Detailed visual description of the ad creative - describe what's IN the image, not instructions",
+  "negative_prompt": "Elements to exclude from the image",
+  "settings": {
+    "resolution": "1536x1536",
+    "aspect_ratio": "4:5",
+    "style": "ugc-selfie | lifestyle-in-context | studio-product-hero | flat-lay | editorial-beauty",
+    "lighting": "ring-light | natural-window | golden-hour | studio-softbox | bathroom-vanity | dramatic-rim",
+    "camera": {
+      "lens": "35mm",
+      "angle": "eye-level | low-angle | high-angle | overhead",
+      "framing": "close-up | medium | full-body | wide",
+      "depth_of_field": "shallow | moderate | deep"
+    },
+    "color_grading": "warm | cool | neutral | muted | vibrant"
+  }
 }
 
-Be EXTREMELY specific about every visual element. Spell out every word of text that should appear.`;
+CRITICAL RULES:
+1. The "prompt" field should be a VISUAL DESCRIPTION of what's in the image, NOT instructions
+2. Describe specific details: materials, textures, lighting quality, skin texture, environment details
+3. For UGC style: include "shot on iPhone, slight motion blur, casual composition, visible pores, natural skin texture"
+4. For product shots: specify exact material properties ("matte packaging, glossy label, liquid inside glass bottle")
+5. Always include negative_prompt to avoid AI artifacts
+6. Spell out EXACTLY what text should appear on the product
+7. Keep prompt under 300 words but highly detailed
+8. Focus on recreating the LAYOUT and STYLE of the reference, not copying it exactly`;
 
-    const userPrompt = `Analyze this reference ad and create a detailed image generation prompt.
+    const userPrompt = `Analyze this reference ad and create a Nano Banana 2 JSON prompt.
 
-REFERENCE AD: ${referenceImageUrl}
-${productImageUrl ? `PRODUCT IMAGE: ${productImageUrl}` : ''}
+REFERENCE AD IMAGE: ${referenceImageUrl}
+${productImageUrl ? `PRODUCT IMAGE TO USE: ${productImageUrl}` : ''}
 
 BRAND INFORMATION:
 - Brand Name: ${brandKit?.name || 'Brand'}
 - Primary Color: ${brandKit?.colors?.primary || '#000000'}
 - Secondary Color: ${brandKit?.colors?.secondary || '#FFFFFF'}
-- Accent Color: ${brandKit?.colors?.accent || '#FF0000'}
-- Font Style: ${brandKit?.font || 'Modern sans-serif'}
-- Brand Description: ${brandKit?.description || ''}
+- Description: ${brandKit?.description || ''}
 
-${profile ? `TARGET CUSTOMER PROFILE:
-- Persona: ${profile.persona}
-- Pain Point: ${profile.painPoint}
-- Angle: ${profile.angle}
-- Emotion to Convey: ${profile.emotion}
-- Visual Direction: ${profile.visualDirection || 'authentic'}` : ''}
+${profile ? `TARGET CUSTOMER:
+- Persona: ${profile.persona || profile.persona_name || ''}
+- Pain Point: ${profile.painPoint || (profile.pain_points || [])[0] || ''}
+- Messaging Angle: ${profile.angle || profile.messaging_angle || ''}
+- Emotion to Convey: ${profile.emotion || profile.emotional_trigger || 'trust'}` : ''}
 
-${campaignGoal ? `CAMPAIGN GOAL: ${campaignGoal}` : ''}
+TECHNICAL REQUIREMENTS:
+- Aspect Ratio: ${aspectRatio || '4:5'}
+- Style Preference: ${adStyle || 'Match the reference ad style'}
 
-ASPECT RATIO: ${aspectRatio || '1:1'}
+Create a JSON prompt that:
+1. Recreates the layout and visual style of the reference ad
+2. Features the product from the product image prominently
+3. Uses the brand colors and messaging
+4. Targets the specified customer persona with appropriate headline/copy
+5. Looks authentic and scroll-stopping, NOT like AI-generated
 
-Create a detailed, specific prompt that I can paste directly into Nano Banana Pro.
-The prompt should recreate the reference ad's structure but with this brand's product and messaging targeting this customer profile.`;
+Return ONLY the JSON object, no markdown, no explanation.`;
 
     // Call Gemini API
     const response = await fetch(
@@ -113,43 +127,70 @@ The prompt should recreate the reference ad's structure but with this brand's pr
       return res.status(500).json({ error: 'No response from Gemini' });
     }
 
-    // Try to parse JSON from response
-    let parsedPrompt;
+    // Parse JSON from response
+    let jsonPrompt;
     try {
-      // Extract JSON from response (might be wrapped in markdown)
-      const jsonMatch = textContent.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        parsedPrompt = JSON.parse(jsonMatch[0]);
-      } else {
-        // Fallback: use the raw text as prompt
-        parsedPrompt = {
-          prompt: textContent,
-          headline: '',
-          subheadline: '',
-          cta: '',
-          layoutDescription: '',
-          colorScheme: '',
-          textPlacement: ''
-        };
+      // Clean up the response - remove markdown code blocks if present
+      let cleanedText = textContent.trim();
+      if (cleanedText.startsWith('```json')) {
+        cleanedText = cleanedText.slice(7);
       }
+      if (cleanedText.startsWith('```')) {
+        cleanedText = cleanedText.slice(3);
+      }
+      if (cleanedText.endsWith('```')) {
+        cleanedText = cleanedText.slice(0, -3);
+      }
+      cleanedText = cleanedText.trim();
+      
+      jsonPrompt = JSON.parse(cleanedText);
+      
+      // Ensure required fields exist
+      if (!jsonPrompt.prompt) {
+        throw new Error('Missing prompt field');
+      }
+      
+      // Add default negative prompt if missing
+      if (!jsonPrompt.negative_prompt) {
+        jsonPrompt.negative_prompt = "blurry, low quality, distorted, extra fingers, extra limbs, watermark, cartoon, illustration, anime, 3d render, oversaturated, plastic skin, airbrushed, stock photo feel, text errors, misspelled words";
+      }
+      
+      // Ensure settings exist
+      if (!jsonPrompt.settings) {
+        jsonPrompt.settings = {};
+      }
+      
+      // Apply aspect ratio
+      jsonPrompt.settings.aspect_ratio = aspectRatio || jsonPrompt.settings.aspect_ratio || '4:5';
+      
     } catch (parseError) {
       console.error('JSON parse error:', parseError);
-      parsedPrompt = {
-        prompt: textContent,
-        headline: '',
-        subheadline: '',
-        cta: '',
-        layoutDescription: '',
-        colorScheme: '',
-        textPlacement: ''
+      console.error('Raw text:', textContent);
+      
+      // Fallback: create a basic JSON prompt from the text
+      jsonPrompt = {
+        prompt: textContent.substring(0, 500),
+        negative_prompt: "blurry, low quality, distorted, extra fingers, watermark, cartoon, illustration, plastic skin, airbrushed, stock photo feel",
+        settings: {
+          resolution: "1536x1536",
+          aspect_ratio: aspectRatio || "4:5",
+          style: adStyle || "lifestyle-in-context",
+          lighting: "natural-window",
+          camera: {
+            lens: "35mm",
+            angle: "eye-level",
+            framing: "medium",
+            depth_of_field: "shallow"
+          },
+          color_grading: "warm"
+        }
       };
     }
 
     return res.status(200).json({
       success: true,
-      composedPrompt: parsedPrompt,
-      model: 'gemini-2.5-flash',
-      rawResponse: textContent
+      jsonPrompt: jsonPrompt,
+      model: 'gemini-2.5-flash'
     });
 
   } catch (error) {

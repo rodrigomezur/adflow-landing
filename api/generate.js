@@ -1,13 +1,11 @@
 // Serverless function to call fal.ai API securely
-// Using Nano Banana 2 / Nano Banana Pro for ad creative generation
+// Using Nano Banana 2 with structured JSON prompts
 
 export default async function handler(req, res) {
-  // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Get API key from environment
   const FAL_KEY = process.env.FAL_API_KEY;
   
   if (!FAL_KEY) {
@@ -15,66 +13,94 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { prompt, width, height, image_url, product_url, aspect_ratio } = req.body;
+    const { 
+      // New structured JSON prompt format
+      jsonPrompt,
+      // Legacy format (still supported)
+      prompt, 
+      negative_prompt,
+      image_url, 
+      product_url,
+      aspect_ratio,
+      width,
+      height
+    } = req.body;
 
-    if (!prompt) {
+    // Handle both new JSON format and legacy format
+    let finalPrompt, finalNegativePrompt, finalAspectRatio, finalSettings;
+    
+    if (jsonPrompt) {
+      // New structured JSON prompt from Gemini
+      finalPrompt = jsonPrompt.prompt;
+      finalNegativePrompt = jsonPrompt.negative_prompt || "blurry, low quality, distorted, watermark, cartoon, plastic skin";
+      finalSettings = jsonPrompt.settings || {};
+      finalAspectRatio = finalSettings.aspect_ratio || aspect_ratio || "4:5";
+      
+      // Enhance prompt with camera/lighting settings if available
+      if (finalSettings.lighting) {
+        finalPrompt += `. Lighting: ${finalSettings.lighting}`;
+      }
+      if (finalSettings.camera?.lens) {
+        finalPrompt += `. Shot on ${finalSettings.camera.lens} lens`;
+      }
+      if (finalSettings.camera?.depth_of_field) {
+        finalPrompt += `, ${finalSettings.camera.depth_of_field} depth of field`;
+      }
+      if (finalSettings.color_grading) {
+        finalPrompt += `. ${finalSettings.color_grading} color grading`;
+      }
+      if (finalSettings.style) {
+        finalPrompt += `. Style: ${finalSettings.style}`;
+      }
+      
+      console.log('Using structured JSON prompt');
+    } else {
+      // Legacy plain text prompt
+      finalPrompt = prompt;
+      finalNegativePrompt = negative_prompt || "blurry, low quality, distorted, watermark, cartoon, plastic skin";
+      finalAspectRatio = aspect_ratio || "4:5";
+      
+      console.log('Using legacy plain text prompt');
+    }
+
+    if (!finalPrompt) {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
-    // Determine aspect ratio string for Nano Banana
-    let aspectRatioStr = "1:1";
-    if (aspect_ratio) {
-      aspectRatioStr = aspect_ratio;
-    } else if (width && height) {
-      if (width === height) aspectRatioStr = "1:1";
-      else if (height > width) aspectRatioStr = "9:16";
-      else aspectRatioStr = "16:9";
+    // Determine resolution based on aspect ratio
+    let imageSize;
+    switch (finalAspectRatio) {
+      case '1:1':
+        imageSize = { width: 1024, height: 1024 };
+        break;
+      case '4:5':
+        imageSize = { width: 1024, height: 1280 };
+        break;
+      case '9:16':
+        imageSize = { width: 768, height: 1344 };
+        break;
+      case '16:9':
+        imageSize = { width: 1344, height: 768 };
+        break;
+      default:
+        imageSize = { width: 1024, height: 1280 }; // Default to 4:5
     }
 
-    let response;
-    let endpoint;
-    let requestBody;
-    
-    // Build enhanced prompt that incorporates product reference
-    let enhancedPrompt = prompt;
-    if (product_url) {
-      // Add product reference to the prompt for better product consistency
-      enhancedPrompt = `${prompt} Use the exact product shown in the reference image. Product image: ${product_url}`;
-    }
+    // Build request for Nano Banana 2
+    const requestBody = {
+      prompt: finalPrompt,
+      negative_prompt: finalNegativePrompt,
+      image_size: imageSize,
+      num_images: 1,
+      seed: Math.floor(Math.random() * 1000000) // Random seed for variety
+    };
 
-    // If reference image provided (image_url), use edit endpoint
-    if (image_url) {
-      endpoint = 'fal-ai/nano-banana-pro/edit';
-      requestBody = {
-        prompt: enhancedPrompt,
-        image_url: image_url,  // Reference ad as base
-        aspect_ratio: aspectRatioStr
-      };
-      console.log('Using Nano Banana Pro Edit with reference ad');
-    } else if (product_url) {
-      // Only product image, use it as reference
-      endpoint = 'fal-ai/nano-banana-pro/edit';
-      requestBody = {
-        prompt: prompt,
-        image_url: product_url,
-        aspect_ratio: aspectRatioStr
-      };
-      console.log('Using Nano Banana Pro Edit with product image');
-    } else {
-      // Text-to-image only
-      endpoint = 'fal-ai/nano-banana-2';
-      requestBody = {
-        prompt: prompt,
-        aspect_ratio: aspectRatioStr
-      };
-      console.log('Using Nano Banana 2 text-to-image');
-    }
+    console.log('Prompt (first 200 chars):', finalPrompt.substring(0, 200));
+    console.log('Negative prompt:', finalNegativePrompt.substring(0, 100));
+    console.log('Image size:', imageSize);
 
-    console.log('Endpoint:', endpoint);
-    console.log('Prompt:', enhancedPrompt.substring(0, 200) + '...');
-
-    // Call Nano Banana API
-    response = await fetch(`https://fal.run/${endpoint}`, {
+    // Try Nano Banana 2 first (better quality, supports negative prompts)
+    let response = await fetch('https://fal.run/fal-ai/nano-banana-2', {
       method: 'POST',
       headers: {
         'Authorization': `Key ${FAL_KEY}`,
@@ -85,34 +111,39 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Nano Banana error:', errorText);
+      console.error('Nano Banana 2 error:', errorText);
       
-      // Fallback to standard Nano Banana 2 with condensed prompt
-      console.log('Falling back to nano-banana-2...');
-      
-      // Keep fallback prompt short and visual
-      const fallbackPrompt = product_url 
-        ? `Professional product advertisement. Clean modern layout. Product prominently featured. ${prompt.substring(0, 300)}`
-        : prompt;
-      
-      response = await fetch('https://fal.run/fal-ai/nano-banana-2', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Key ${FAL_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          prompt: fallbackPrompt,
-          aspect_ratio: aspectRatioStr
-        })
-      });
-      
-      if (!response.ok) {
-        const fallbackError = await response.text();
-        console.error('Fallback error:', fallbackError);
+      // Try with image reference if provided
+      if (image_url || product_url) {
+        console.log('Trying Nano Banana Pro Edit with image reference...');
+        
+        const editRequestBody = {
+          prompt: finalPrompt,
+          image_url: image_url || product_url,
+          aspect_ratio: finalAspectRatio
+        };
+        
+        response = await fetch('https://fal.run/fal-ai/nano-banana-pro/edit', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Key ${FAL_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(editRequestBody)
+        });
+        
+        if (!response.ok) {
+          const editError = await response.text();
+          console.error('Nano Banana Pro Edit error:', editError);
+          return res.status(response.status).json({ 
+            error: `API error: ${response.status}`,
+            details: editError
+          });
+        }
+      } else {
         return res.status(response.status).json({ 
           error: `API error: ${response.status}`,
-          details: fallbackError
+          details: errorText
         });
       }
     }
