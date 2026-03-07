@@ -1649,16 +1649,17 @@ async function startGeneration() {
 async function generateSingleAd(item) {
   const profile = item.profile;
   
-  // Build prompt for this profile
+  // Build a concise, visual prompt
   const prompt = buildAdPrompt(profile);
   
-  // Call generation API
+  // Call generation API with reference ad as base image
   const response = await fetch(GENERATE_API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       prompt: prompt,
-      image_url: selectedProductUrl,
+      image_url: referenceImageUrl,  // Use reference ad as base to transform
+      product_url: selectedProductUrl, // Product image for reference
       aspect_ratio: config.aspectRatio
     })
   });
@@ -1679,51 +1680,49 @@ async function generateSingleAd(item) {
 
 function buildAdPrompt(profile) {
   const brandName = currentBrand?.name || 'Brand';
-  const brandDesc = currentBrand?.description || '';
-  const primaryColor = currentBrand?.primary_color || '#000000';
-  const secondaryColor = currentBrand?.secondary_color || '#FFFFFF';
+  const primaryColor = currentBrand?.primary_color || '#C8FF00';
+  const secondaryColor = currentBrand?.secondary_color || '#080D1A';
   
-  const styleDesc = {
-    'match': 'Match the exact style, layout, and visual feel of the reference ad',
-    'ugc': 'UGC authentic style - iPhone photo quality, natural lighting, real person feel',
-    'premium': 'Premium polished style - studio lighting, professional photography',
-    'minimal': 'Minimal clean style - lots of white space, simple composition',
-    'bold': 'Bold high-contrast style - saturated colors, strong typography'
-  };
+  // Get the main pain point and angle
+  const painPoint = (profile.pain_points || [])[0] || '';
+  const angle = profile.messaging_angle || '';
+  const emotion = profile.emotional_trigger || 'trust';
   
-  return `Create a Facebook/Instagram static ad for ${brandName}.
-
-REFERENCE AD STYLE:
-Recreate the layout, structure, and visual composition of the reference image.
-${styleDesc[config.visualStyle] || styleDesc['match']}
-
-BRAND:
-- Name: ${brandName}
-- Description: ${brandDesc}
-- Primary Color: ${primaryColor}
-- Secondary Color: ${secondaryColor}
-
-TARGET CUSTOMER PROFILE:
-- Persona: ${profile.persona_name}
-- Pain Point: ${(profile.pain_points || [])[0] || 'general concern'}
-- Desire: ${(profile.desires || [])[0] || 'solution'}
-- Emotional Trigger: ${profile.emotional_trigger || 'trust'}
-- Messaging Angle: ${profile.messaging_angle || 'benefit-focused'}
-
-REQUIREMENTS:
-1. Use the reference ad's layout structure as a template
-2. Replace the product with our product image
-3. Adapt the headline and copy to target this specific customer profile's pain point
-4. Use brand colors: ${primaryColor} and ${secondaryColor}
-5. Make it scroll-stopping and conversion-focused
-${config.customCta ? `6. Include CTA: "${config.customCta}"` : ''}
-
-HEADLINE DIRECTION:
-Write a headline that speaks directly to "${profile.persona_name}" addressing their pain point of "${(profile.pain_points || [])[0] || 'their needs'}".
-Emotion to convey: ${profile.emotional_trigger || 'trust'}
-
-Aspect ratio: ${config.aspectRatio}
-Resolution: High quality, 2K`;
+  // Generate a short headline based on profile
+  let headline = '';
+  if (painPoint) {
+    // Create a benefit-focused headline from the pain point
+    const painWords = painPoint.toLowerCase();
+    if (painWords.includes('time') || painWords.includes('busy')) {
+      headline = `Save Time. Get Results.`;
+    } else if (painWords.includes('money') || painWords.includes('price') || painWords.includes('cost')) {
+      headline = `Premium Quality. Fair Price.`;
+    } else if (painWords.includes('trust') || painWords.includes('skeptic')) {
+      headline = `Join 10,000+ Happy Customers`;
+    } else if (painWords.includes('work') || painWords.includes('effective')) {
+      headline = `Finally, Something That Works`;
+    } else if (painWords.includes('health') || painWords.includes('natural')) {
+      headline = `Your Health, Our Priority`;
+    } else {
+      headline = `Discover the ${brandName} Difference`;
+    }
+  }
+  
+  // Build a CONCISE visual prompt - Nano Banana works better with short prompts
+  let prompt = `${brandName} product advertisement. `;
+  prompt += `Headline text: "${headline}". `;
+  prompt += `Brand colors: ${primaryColor} primary, ${secondaryColor} secondary. `;
+  prompt += `Style: Professional product photography, clean layout, minimal text. `;
+  prompt += `Feature the ${brandName} product prominently in center. `;
+  
+  if (config.customCta) {
+    prompt += `CTA button: "${config.customCta}". `;
+  }
+  
+  // Keep it short and visual
+  prompt += `High quality, photorealistic, commercial advertisement.`;
+  
+  return prompt;
 }
 
 async function saveGeneration(item) {

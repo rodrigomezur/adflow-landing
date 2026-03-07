@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { prompt, width, height, image_url, aspect_ratio } = req.body;
+    const { prompt, width, height, image_url, product_url, aspect_ratio } = req.body;
 
     if (!prompt) {
       return res.status(400).json({ error: 'Prompt is required' });
@@ -34,16 +34,32 @@ export default async function handler(req, res) {
     let response;
     let endpoint;
     let requestBody;
+    
+    // Build enhanced prompt that incorporates product reference
+    let enhancedPrompt = prompt;
+    if (product_url) {
+      // Add product reference to the prompt for better product consistency
+      enhancedPrompt = `${prompt} Use the exact product shown in the reference image. Product image: ${product_url}`;
+    }
 
-    // If product image provided, use edit endpoint for better integration
+    // If reference image provided (image_url), use edit endpoint
     if (image_url) {
       endpoint = 'fal-ai/nano-banana-pro/edit';
       requestBody = {
-        prompt: prompt,
-        image_url: image_url,
+        prompt: enhancedPrompt,
+        image_url: image_url,  // Reference ad as base
         aspect_ratio: aspectRatioStr
       };
-      console.log('Using Nano Banana Pro Edit with image reference');
+      console.log('Using Nano Banana Pro Edit with reference ad');
+    } else if (product_url) {
+      // Only product image, use it as reference
+      endpoint = 'fal-ai/nano-banana-pro/edit';
+      requestBody = {
+        prompt: prompt,
+        image_url: product_url,
+        aspect_ratio: aspectRatioStr
+      };
+      console.log('Using Nano Banana Pro Edit with product image');
     } else {
       // Text-to-image only
       endpoint = 'fal-ai/nano-banana-2';
@@ -55,7 +71,7 @@ export default async function handler(req, res) {
     }
 
     console.log('Endpoint:', endpoint);
-    console.log('Request:', JSON.stringify(requestBody, null, 2));
+    console.log('Prompt:', enhancedPrompt.substring(0, 200) + '...');
 
     // Call Nano Banana API
     response = await fetch(`https://fal.run/${endpoint}`, {
@@ -71,8 +87,14 @@ export default async function handler(req, res) {
       const errorText = await response.text();
       console.error('Nano Banana error:', errorText);
       
-      // Fallback to standard Nano Banana 2
+      // Fallback to standard Nano Banana 2 with condensed prompt
       console.log('Falling back to nano-banana-2...');
+      
+      // Keep fallback prompt short and visual
+      const fallbackPrompt = product_url 
+        ? `Professional product advertisement. Clean modern layout. Product prominently featured. ${prompt.substring(0, 300)}`
+        : prompt;
+      
       response = await fetch('https://fal.run/fal-ai/nano-banana-2', {
         method: 'POST',
         headers: {
@@ -80,9 +102,7 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          prompt: image_url 
-            ? `Create this exact ad with this product prominently featured. Product reference: ${image_url}\n\n${prompt}`
-            : prompt,
+          prompt: fallbackPrompt,
           aspect_ratio: aspectRatioStr
         })
       });
