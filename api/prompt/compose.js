@@ -78,7 +78,7 @@ The prompt should recreate the reference ad's structure but with this brand's pr
 
     // Call Gemini API
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -148,7 +148,7 @@ The prompt should recreate the reference ad's structure but with this brand's pr
     return res.status(200).json({
       success: true,
       composedPrompt: parsedPrompt,
-      model: 'gemini-pro',
+      model: 'gemini-1.5-flash',
       rawResponse: textContent
     });
 
