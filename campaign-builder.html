@@ -1473,21 +1473,21 @@ function renderProductAssets() {
   }
   
   grid.innerHTML = assets.map(a => `
-    <div class="asset-card ${selectedProductId === a.id ? 'selected' : ''}" onclick="selectProduct('${a.id}', '${a.file_url}')">
+    <div class="asset-card ${selectedProductId === a.id ? 'selected' : ''}" onclick="selectProduct('${a.id}', '${a.file_url}', this)">
       <img src="${a.file_url}" alt="${escapeHtml(a.name)}" loading="lazy">
       <div class="asset-card-name">${escapeHtml(a.name)}</div>
     </div>
   `).join('');
 }
 
-function selectProduct(id, url) {
+function selectProduct(id, url, element) {
   selectedProductId = id;
   selectedProductUrl = url;
   
   document.querySelectorAll('#productAssetsGrid .asset-card').forEach(el => {
     el.classList.remove('selected');
   });
-  event.currentTarget.classList.add('selected');
+  if (element) element.classList.add('selected');
   
   document.getElementById('step2Next').disabled = false;
   document.getElementById('step2Status').textContent = '✓ Product selected';
@@ -1788,15 +1788,14 @@ function renderPlan() {
 
 // ============ STEP 6: GENERATION ============
 async function startGeneration() {
-  console.log('startGeneration called!');
-  console.log('isGenerating:', isGenerating);
-  console.log('generationPlan:', generationPlan);
-  
+  // Reset isGenerating in case of previous error
   if (isGenerating) {
-    console.log('Already generating, returning');
-    return;
+    console.log('Resetting stuck isGenerating flag');
+    isGenerating = false;
   }
+  
   isGenerating = true;
+  console.log('startGeneration started');
   
   // Move to step 6
   currentStep = 6;
