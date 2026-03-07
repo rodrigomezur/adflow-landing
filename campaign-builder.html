@@ -1026,14 +1026,28 @@ body {
         <div class="card" id="generateProfilesCard">
           <div class="card-title">Generate Customer Profiles</div>
           <p style="color: var(--muted-light); margin-bottom: 16px;">
-            AI will analyze your product and create 6 distinct customer profiles with unique pain points, desires, and messaging angles.
+            Describe your product so AI can create targeted customer profiles with unique pain points, desires, and messaging angles.
           </p>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted-light); margin-bottom: 8px;">
+              What are you selling?
+            </label>
+            <textarea 
+              id="productDescription" 
+              class="form-input" 
+              rows="3" 
+              placeholder="Ej: Botas tácticas para trabajo de campo, $2,500 MXN. Target: obreros, trabajadores de construcción, seguridad privada. Diferenciador: resistencia extrema y comodidad para jornadas de 12+ horas."
+              style="width: 100%; resize: vertical;"
+            ></textarea>
+          </div>
+          
           <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
             <button class="btn btn-primary" onclick="generateProfiles()" id="generateProfilesBtn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
                 <path d="M12 3v18M3 12h18"/>
               </svg>
-              Generate with AI
+              Generate 6 Profiles
             </button>
             <div id="generateStatus" style="font-size: 12px; color: var(--muted);"></div>
           </div>
@@ -1483,23 +1497,22 @@ function selectProduct(id, url) {
 async function generateProfiles() {
   const btn = document.getElementById('generateProfilesBtn');
   const status = document.getElementById('generateStatus');
+  const productDescInput = document.getElementById('productDescription');
   
-  // Get brand name - use currentBrand or a default
-  const brandName = currentBrand?.name || 'Product Brand';
+  // Get product description from textarea
+  const productDescription = productDescInput?.value?.trim() || '';
   
-  // Get product context from selected asset or reference
-  let productContext = '';
-  if (selectedProductAsset) {
-    const asset = productAssets.find(a => a.id === selectedProductAsset);
-    if (asset) {
-      productContext = `Product: ${asset.name || 'Product image'}`;
-    }
+  if (!productDescription && !currentBrand?.description) {
+    showToast('Please describe your product first');
+    productDescInput?.focus();
+    return;
   }
   
-  // If we have a reference image, mention it
-  if (referenceImageUrl) {
-    productContext += productContext ? '. Reference ad uploaded.' : 'Reference ad uploaded.';
-  }
+  // Get brand name - use currentBrand or extract from description
+  const brandName = currentBrand?.name || 'Product';
+  
+  // Build context from description + any existing brand info
+  let productContext = productDescription || currentBrand?.description || '';
   
   btn.disabled = true;
   btn.innerHTML = `
@@ -1517,7 +1530,7 @@ async function generateProfiles() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         brandName: brandName,
-        brandDescription: currentBrand?.description || productContext || 'E-commerce product',
+        brandDescription: productContext,
         numProfiles: 6
       })
     });
