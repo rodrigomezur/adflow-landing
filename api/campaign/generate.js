@@ -49,7 +49,7 @@ export default async function handler(req, res) {
           if (GEMINI_KEY) {
             // Use Gemini to compose a detailed prompt
             const composeResponse = await fetch(
-              `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_KEY}`,
+              `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${GEMINI_KEY}`,
               {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
