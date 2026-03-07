@@ -1,5 +1,5 @@
 // Serverless function to call fal.ai API securely
-// Using Nano Banana 2 for ad creative generation
+// Using Nano Banana 2 / Nano Banana Pro for ad creative generation
 
 export default async function handler(req, res) {
   // Only allow POST
@@ -23,36 +23,42 @@ export default async function handler(req, res) {
 
     // Determine aspect ratio string for Nano Banana
     let aspectRatioStr = "1:1";
-    if (width && height) {
+    if (aspect_ratio) {
+      aspectRatioStr = aspect_ratio;
+    } else if (width && height) {
       if (width === height) aspectRatioStr = "1:1";
       else if (height > width) aspectRatioStr = "9:16";
       else aspectRatioStr = "16:9";
     }
-    if (aspect_ratio) aspectRatioStr = aspect_ratio;
 
-    // Prepare Nano Banana 2 request
-    const requestBody = {
-      prompt: prompt,
-      negative_prompt: "blurry, low quality, distorted, watermark, signature, text errors, misspelled",
-      num_images: 1,
-      aspect_ratio: aspectRatioStr,
-      output_format: "png"
-    };
+    let response;
+    let endpoint;
+    let requestBody;
 
-    // If product image provided, add as reference image
+    // If product image provided, use edit endpoint for better integration
     if (image_url) {
-      requestBody.reference_images = [
-        {
-          image_url: image_url,
-          weight: 0.85
-        }
-      ];
+      endpoint = 'fal-ai/nano-banana-pro/edit';
+      requestBody = {
+        prompt: prompt,
+        image_url: image_url,
+        aspect_ratio: aspectRatioStr
+      };
+      console.log('Using Nano Banana Pro Edit with image reference');
+    } else {
+      // Text-to-image only
+      endpoint = 'fal-ai/nano-banana-2';
+      requestBody = {
+        prompt: prompt,
+        aspect_ratio: aspectRatioStr
+      };
+      console.log('Using Nano Banana 2 text-to-image');
     }
 
-    console.log('Calling Nano Banana 2 with:', JSON.stringify(requestBody, null, 2));
+    console.log('Endpoint:', endpoint);
+    console.log('Request:', JSON.stringify(requestBody, null, 2));
 
-    // Call Nano Banana 2 API
-    const response = await fetch('https://fal.run/fal-ai/imagen4/preview', {
+    // Call Nano Banana API
+    response = await fetch(`https://fal.run/${endpoint}`, {
       method: 'POST',
       headers: {
         'Authorization': `Key ${FAL_KEY}`,
@@ -63,36 +69,36 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('fal.ai error:', errorText);
+      console.error('Nano Banana error:', errorText);
       
-      // Try alternative model if first fails
-      console.log('Trying alternative model...');
-      const altResponse = await fetch('https://fal.run/fal-ai/flux-pro/v1.1', {
+      // Fallback to standard Nano Banana 2
+      console.log('Falling back to nano-banana-2...');
+      response = await fetch('https://fal.run/fal-ai/nano-banana-2', {
         method: 'POST',
         headers: {
           'Authorization': `Key ${FAL_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          prompt: prompt,
-          image_size: { width: width || 1024, height: height || 1024 },
-          num_images: 1
+          prompt: image_url 
+            ? `Create this exact ad with this product prominently featured. Product reference: ${image_url}\n\n${prompt}`
+            : prompt,
+          aspect_ratio: aspectRatioStr
         })
       });
       
-      if (!altResponse.ok) {
-        const altError = await altResponse.text();
-        return res.status(altResponse.status).json({ 
-          error: `API error: ${altResponse.status}`,
-          details: altError
+      if (!response.ok) {
+        const fallbackError = await response.text();
+        console.error('Fallback error:', fallbackError);
+        return res.status(response.status).json({ 
+          error: `API error: ${response.status}`,
+          details: fallbackError
         });
       }
-      
-      const altResult = await altResponse.json();
-      return res.status(200).json(altResult);
     }
 
     const result = await response.json();
+    console.log('Generation successful');
     
     // Return the result
     return res.status(200).json(result);
