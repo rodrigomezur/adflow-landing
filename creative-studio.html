@@ -1276,6 +1276,105 @@ body {
   </div>
 </div>
 
+<!-- Persona Modal -->
+<div class="modal-overlay" id="personaModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add Customer Persona</div>
+      <button class="modal-close" onclick="closePersonaModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Persona Name *</label>
+        <input type="text" class="form-input" id="newPersonaName" placeholder="e.g., Skeptical First-Time Buyer">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="newPersonaDesc" placeholder="Who is this person? What's their situation?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pain Points (one per line)</label>
+        <textarea class="form-textarea" id="newPersonaPains" placeholder="Frustrated with current solutions&#10;Wasting money on things that don't work&#10;Feeling overwhelmed"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Desires (one per line)</label>
+        <textarea class="form-textarea" id="newPersonaDesires" placeholder="Quick results&#10;Easy to use&#10;Proven solution"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Emotional Trigger</label>
+          <select class="form-select" id="newPersonaEmotion">
+            <option value="trust">Trust</option>
+            <option value="excitement">Excitement</option>
+            <option value="relief">Relief</option>
+            <option value="fear">Fear (FOMO)</option>
+            <option value="aspiration">Aspiration</option>
+            <option value="belonging">Belonging</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Visual Style</label>
+          <select class="form-select" id="newPersonaVisual">
+            <option value="ugc">UGC / Authentic</option>
+            <option value="premium">Premium / Polished</option>
+            <option value="lifestyle">Lifestyle</option>
+            <option value="minimal">Minimal / Clean</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Messaging Angle</label>
+        <input type="text" class="form-input" id="newPersonaAngle" placeholder="e.g., Social proof from real customers">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closePersonaModal()">Cancel</button>
+      <button class="btn btn-primary" id="createPersonaBtn" onclick="createPersona()">Create Persona</button>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Asset Modal -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Upload Asset</div>
+      <button class="modal-close" onclick="closeUploadModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Asset Name *</label>
+        <input type="text" class="form-input" id="newAssetName" placeholder="e.g., Product Hero Shot">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="newAssetCategory">
+          <option value="product">Product Image</option>
+          <option value="lifestyle">Lifestyle</option>
+          <option value="logo">Logo</option>
+          <option value="packaging">Packaging</option>
+          <option value="ugc">UGC</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Image URL *</label>
+        <input type="text" class="form-input" id="newAssetUrl" placeholder="https://... (paste image URL)">
+        <div style="font-size: 11px; color: var(--muted); margin-top: 6px;">
+          Upload your image to Imgur, Cloudinary, or any image host and paste the URL here.
+        </div>
+      </div>
+      <div id="assetPreview" style="margin-top: 16px; display: none;">
+        <img id="assetPreviewImg" style="max-width: 200px; max-height: 200px; border: 1px solid var(--lime-border);">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeUploadModal()">Cancel</button>
+      <button class="btn btn-primary" id="createAssetBtn" onclick="createAsset()">Add Asset</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast">Saved</div>
 
@@ -2015,6 +2114,226 @@ document.querySelectorAll('input[type="color"]').forEach(input => {
     if (textInput) textInput.value = e.target.value;
   });
 });
+
+// ============ PERSONA FUNCTIONS ============
+function openPersonaModal() {
+  if (!currentBrand) {
+    showToast('Please select a brand first');
+    return;
+  }
+  document.getElementById('personaModal').classList.add('active');
+  document.getElementById('newPersonaName').focus();
+}
+
+function closePersonaModal() {
+  document.getElementById('personaModal').classList.remove('active');
+  document.getElementById('newPersonaName').value = '';
+  document.getElementById('newPersonaDesc').value = '';
+  document.getElementById('newPersonaPains').value = '';
+  document.getElementById('newPersonaDesires').value = '';
+  document.getElementById('newPersonaAngle').value = '';
+}
+
+let isCreatingPersona = false;
+
+async function createPersona() {
+  if (isCreatingPersona) return;
+  
+  const name = document.getElementById('newPersonaName').value.trim();
+  if (!name) {
+    showToast('Please enter a persona name');
+    return;
+  }
+  
+  if (!currentBrand) {
+    showToast('Please select a brand first');
+    return;
+  }
+  
+  isCreatingPersona = true;
+  const btn = document.getElementById('createPersonaBtn');
+  btn.disabled = true;
+  btn.textContent = 'Creating...';
+  
+  const data = {
+    brand_id: currentBrand.id,
+    persona_name: name,
+    persona_description: document.getElementById('newPersonaDesc').value.trim(),
+    pain_points: document.getElementById('newPersonaPains').value.split('\n').filter(p => p.trim()),
+    desires: document.getElementById('newPersonaDesires').value.split('\n').filter(d => d.trim()),
+    emotional_trigger: document.getElementById('newPersonaEmotion').value,
+    visual_style: document.getElementById('newPersonaVisual').value,
+    messaging_angle: document.getElementById('newPersonaAngle').value.trim(),
+    source: 'manual'
+  };
+  
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(data)
+    });
+    
+    const newPersona = await res.json();
+    personas.unshift(newPersona[0]);
+    renderPersonas();
+    renderPersonaSelect();
+    closePersonaModal();
+    showToast('Persona created!');
+  } catch (err) {
+    console.error('Error creating persona:', err);
+    showToast('Error creating persona');
+  } finally {
+    isCreatingPersona = false;
+    btn.disabled = false;
+    btn.textContent = 'Create Persona';
+  }
+}
+
+async function deletePersona(personaId) {
+  if (!confirm('Delete this persona?')) return;
+  
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence?id=eq.${personaId}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    
+    personas = personas.filter(p => p.id !== personaId);
+    renderPersonas();
+    renderPersonaSelect();
+    showToast('Persona deleted');
+  } catch (err) {
+    console.error('Error deleting persona:', err);
+    showToast('Error deleting persona');
+  }
+}
+
+// ============ ASSET FUNCTIONS ============
+function openUploadModal() {
+  if (!currentBrand) {
+    showToast('Please select a brand first');
+    return;
+  }
+  document.getElementById('uploadModal').classList.add('active');
+  document.getElementById('newAssetName').focus();
+}
+
+function closeUploadModal() {
+  document.getElementById('uploadModal').classList.remove('active');
+  document.getElementById('newAssetName').value = '';
+  document.getElementById('newAssetUrl').value = '';
+  document.getElementById('assetPreview').style.display = 'none';
+}
+
+// Preview image when URL is entered
+document.getElementById('newAssetUrl')?.addEventListener('input', (e) => {
+  const url = e.target.value.trim();
+  const preview = document.getElementById('assetPreview');
+  const img = document.getElementById('assetPreviewImg');
+  
+  if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+    img.src = url;
+    img.onload = () => { preview.style.display = 'block'; };
+    img.onerror = () => { preview.style.display = 'none'; };
+  } else {
+    preview.style.display = 'none';
+  }
+});
+
+let isCreatingAsset = false;
+
+async function createAsset() {
+  if (isCreatingAsset) return;
+  
+  const name = document.getElementById('newAssetName').value.trim();
+  const url = document.getElementById('newAssetUrl').value.trim();
+  
+  if (!name) {
+    showToast('Please enter an asset name');
+    return;
+  }
+  
+  if (!url) {
+    showToast('Please enter an image URL');
+    return;
+  }
+  
+  if (!currentBrand) {
+    showToast('Please select a brand first');
+    return;
+  }
+  
+  isCreatingAsset = true;
+  const btn = document.getElementById('createAssetBtn');
+  btn.disabled = true;
+  btn.textContent = 'Adding...';
+  
+  const data = {
+    brand_id: currentBrand.id,
+    name: name,
+    file_url: url,
+    category: document.getElementById('newAssetCategory').value,
+    file_type: 'image/jpeg'
+  };
+  
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/brand_assets`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(data)
+    });
+    
+    const newAsset = await res.json();
+    assets.unshift(newAsset[0]);
+    renderAssets();
+    renderProductSelect();
+    closeUploadModal();
+    showToast('Asset added!');
+  } catch (err) {
+    console.error('Error creating asset:', err);
+    showToast('Error adding asset');
+  } finally {
+    isCreatingAsset = false;
+    btn.disabled = false;
+    btn.textContent = 'Add Asset';
+  }
+}
+
+async function deleteAsset(assetId) {
+  if (!confirm('Delete this asset?')) return;
+  
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/brand_assets?id=eq.${assetId}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    
+    assets = assets.filter(a => a.id !== assetId);
+    renderAssets();
+    renderProductSelect();
+    showToast('Asset deleted');
+  } catch (err) {
+    console.error('Error deleting asset:', err);
+    showToast('Error deleting asset');
+  }
+}
 </script>
 </body>
 </html>
