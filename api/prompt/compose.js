@@ -31,7 +31,7 @@ export default async function handler(req, res) {
 
 Your task is to analyze a reference ad image and create a detailed JSON prompt that will recreate a similar ad with a different product and messaging.
 
-OUTPUT FORMAT - Return ONLY valid JSON with this exact structure:
+OUTPUT FORMAT - Return ONLY valid JSON (no markdown, no code blocks, no explanation). Use this exact structure:
 {
   "prompt": "Detailed visual description of the ad creative - describe what's IN the image, not instructions",
   "negative_prompt": "Elements to exclude from the image",
@@ -105,7 +105,8 @@ Return ONLY the JSON object, no markdown, no explanation.`;
           }],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 2048
+            maxOutputTokens: 2048,
+            responseMimeType: "application/json"
           }
         })
       }
@@ -132,16 +133,18 @@ Return ONLY the JSON object, no markdown, no explanation.`;
     try {
       // Clean up the response - remove markdown code blocks if present
       let cleanedText = textContent.trim();
-      if (cleanedText.startsWith('```json')) {
-        cleanedText = cleanedText.slice(7);
-      }
-      if (cleanedText.startsWith('```')) {
-        cleanedText = cleanedText.slice(3);
-      }
-      if (cleanedText.endsWith('```')) {
-        cleanedText = cleanedText.slice(0, -3);
-      }
+      
+      // Remove various markdown code block formats
+      cleanedText = cleanedText.replace(/^```json\s*/i, '');
+      cleanedText = cleanedText.replace(/^```\s*/i, '');
+      cleanedText = cleanedText.replace(/\s*```$/i, '');
       cleanedText = cleanedText.trim();
+      
+      // Try to extract JSON object from text
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       
       jsonPrompt = JSON.parse(cleanedText);
       
