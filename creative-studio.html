@@ -1383,7 +1383,11 @@ body {
 const SUPABASE_URL = 'https://ykmdpxtnmqkfcscmmjfv.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrbWRweHRubXFrZmNzY21tamZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDc0OTMsImV4cCI6MjA4NzE4MzQ5M30.EfvqLYzRdNitCpqrYlrytYwcry6T1CuGUgGzE4ZXU7Q';
 const ADMIN_PASSWORD = 'adflow2024';
-const FAL_KEY = ''; // Will be set by user
+const FAL_KEY = '076052fc-ba66-486e-a2fb-c72a61d7d287:793f2545d40b14adb1e99dd34aa81a5f';
+
+// fal.ai configuration
+const FAL_MODEL = 'fal-ai/flux-pro/v1.1'; // High quality image generation
+const FAL_ENDPOINT = 'https://fal.run';
 
 // State
 let brands = [];
@@ -1985,6 +1989,8 @@ function renderDynamicFields() {
   container.innerHTML = html;
 }
 
+let currentGeneratedImage = null;
+
 async function generateAd() {
   if (!currentBrand) {
     showToast('Please select a brand first');
@@ -1998,33 +2004,160 @@ async function generateAd() {
   // Build prompt based on selections
   const prompt = buildPrompt();
   
+  // Get aspect ratio
+  const platform = document.getElementById('platform').value;
+  const aspectRatioMap = {
+    'instagram-feed': { width: 1024, height: 1024, ratio: 'square' },
+    'instagram-stories': { width: 768, height: 1344, ratio: 'portrait_16_9' },
+    'facebook-feed': { width: 864, height: 1080, ratio: 'portrait_4_3' },
+    'tiktok': { width: 768, height: 1344, ratio: 'portrait_16_9' }
+  };
+  const dimensions = aspectRatioMap[platform] || aspectRatioMap['instagram-feed'];
+  
   // Show output card with prompt
   document.getElementById('outputCard').style.display = 'block';
   document.getElementById('promptOutput').textContent = prompt;
   document.getElementById('imagePreview').innerHTML = `
     <div class="image-placeholder">
       <div class="loading-spinner"></div>
-      <div style="margin-top: 16px;">Generating image...</div>
+      <div style="margin-top: 16px;">Generating image with AI...</div>
+      <div style="font-size: 11px; color: var(--muted); margin-top: 8px;">This may take 15-30 seconds</div>
     </div>
   `;
   
   // Scroll to output
   document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth' });
   
-  // TODO: Call fal.ai API here
-  // For now, simulate with timeout
-  setTimeout(() => {
+  try {
+    // Get product image URL if selected (for image-to-image)
+    const productAssetId = document.getElementById('productAsset').value;
+    const productAsset = assets.find(a => a.id === productAssetId);
+    
+    // Prepare fal.ai request
+    const requestBody = {
+      prompt: prompt,
+      image_size: {
+        width: dimensions.width,
+        height: dimensions.height
+      },
+      num_images: 1,
+      enable_safety_checker: false,
+      safety_tolerance: "6"
+    };
+    
+    // If product image selected, add as reference
+    if (productAsset?.file_url) {
+      requestBody.image_url = productAsset.file_url;
+      requestBody.strength = 0.75; // How much to keep from reference
+    }
+    
+    // Call fal.ai API
+    const response = await fetch(`${FAL_ENDPOINT}/${FAL_MODEL}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Key ${FAL_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API Error: ${response.status} - ${errorText}`);
+    }
+    
+    const result = await response.json();
+    
+    // Get the generated image URL
+    const imageUrl = result.images?.[0]?.url || result.image?.url;
+    
+    if (!imageUrl) {
+      throw new Error('No image URL in response');
+    }
+    
+    // Store for download
+    currentGeneratedImage = imageUrl;
+    
+    // Display the generated image
+    document.getElementById('imagePreview').innerHTML = `
+      <img src="${imageUrl}" alt="Generated Ad" style="max-width: 100%; max-height: 100%; object-fit: contain; cursor: pointer;" onclick="window.open('${imageUrl}', '_blank')">
+    `;
+    
+    // Save generation to database
+    await saveGeneration(prompt, imageUrl, productAssetId);
+    
+    showToast('Image generated successfully!');
+    
+  } catch (error) {
+    console.error('Generation error:', error);
     document.getElementById('imagePreview').innerHTML = `
       <div class="image-placeholder">
         <div class="image-placeholder-icon">⚠️</div>
-        <div>fal.ai API key not configured</div>
-        <div style="font-size: 12px; margin-top: 8px;">Copy the prompt and use it in Nano Banana Pro</div>
+        <div>Generation failed</div>
+        <div style="font-size: 12px; margin-top: 8px; color: var(--danger);">${escapeHtml(error.message)}</div>
+        <div style="font-size: 11px; margin-top: 12px; color: var(--muted);">You can still copy the prompt above and use it manually.</div>
       </div>
     `;
+    showToast('Error generating image');
+  } finally {
     btn.disabled = false;
     btn.textContent = '✨ Generate Ad';
-    showToast('Prompt generated! Configure fal.ai API for image generation.');
-  }, 1500);
+  }
+}
+
+async function saveGeneration(prompt, imageUrl, productAssetId) {
+  if (!currentBrand) return;
+  
+  const personaId = document.getElementById('targetPersona').value;
+  const platform = document.getElementById('platform').value;
+  const aspectRatioMap = {
+    'instagram-feed': '1:1',
+    'instagram-stories': '9:16',
+    'facebook-feed': '4:5',
+    'tiktok': '9:16'
+  };
+  
+  const data = {
+    brand_id: currentBrand.id,
+    mode: currentMode,
+    ad_type: selectedAdType,
+    prompt: prompt,
+    image_url: imageUrl,
+    status: 'completed',
+    model: FAL_MODEL,
+    aspect_ratio: aspectRatioMap[platform] || '1:1',
+    cost: 0.05, // Approximate cost per generation
+    product_asset_id: productAssetId || null,
+    persona_id: personaId || null
+  };
+  
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/generations`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    
+    // Reload generations
+    await loadGenerations();
+  } catch (err) {
+    console.error('Error saving generation:', err);
+  }
+}
+
+function downloadImage() {
+  if (!currentGeneratedImage) {
+    showToast('No image to download');
+    return;
+  }
+  
+  // Open in new tab (direct download not possible due to CORS)
+  window.open(currentGeneratedImage, '_blank');
+  showToast('Image opened in new tab - right click to save');
 }
 
 function buildPrompt() {
