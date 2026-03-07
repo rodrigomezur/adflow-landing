@@ -1428,12 +1428,22 @@ function closeBrandModal() {
   document.getElementById('newBrandWebsite').value = '';
 }
 
+let isCreatingBrand = false;
+
 async function createBrand() {
+  if (isCreatingBrand) return; // Prevent double-click
+  
   const name = document.getElementById('newBrandName').value.trim();
   if (!name) {
     showToast('Please enter a brand name');
     return;
   }
+  
+  // Disable button
+  isCreatingBrand = true;
+  const btn = document.querySelector('.modal-footer .btn-primary');
+  btn.disabled = true;
+  btn.textContent = 'Creating...';
   
   const data = {
     name,
@@ -1462,6 +1472,10 @@ async function createBrand() {
   } catch (err) {
     console.error('Error creating brand:', err);
     showToast('Error creating brand');
+  } finally {
+    isCreatingBrand = false;
+    btn.disabled = false;
+    btn.textContent = 'Create Brand';
   }
 }
 
