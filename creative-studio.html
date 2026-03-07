@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdFlow Creative Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #080D1A;
+  --navy-mid: #0E1525;
+  --navy-card: #121A2E;
+  --navy-light: #172035;
+  --lime: #C8FF00;
+  --lime-dim: rgba(200,255,0,0.12);
+  --lime-border: rgba(200,255,0,0.18);
+  --white: #EFF2EC;
+  --muted: #5A6478;
+  --muted-light: #8892A4;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --warning: #fbbf24;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--navy);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* Login Screen */
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-box {
+  background: var(--navy-card);
+  border: 1px solid var(--lime-border);
+  padding: 48px 40px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.login-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.login-logo em { color: var(--lime); font-style: normal; }
+
+.login-subtitle {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+.login-input {
+  width: 100%;
+  background: var(--navy-light);
+  border: 1px solid rgba(200,255,0,0.1);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.login-input:focus { outline: none; border-color: var(--lime); }
+
+.login-btn {
+  width: 100%;
+  background: var(--lime);
+  color: var(--navy);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.login-btn:hover { background: var(--white); }
+
+.login-error {
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 12px;
+  display: none;
+}
+
+/* Main Layout */
+.app { display: none; min-height: 100vh; }
+.app.active { display: flex; }
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--navy-mid);
+  border-right: 1px solid var(--lime-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--lime-border);
+}
+
+.sidebar-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.1em;
+}
+
+.sidebar-logo em { color: var(--lime); font-style: normal; }
+
+.sidebar-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--lime);
+  margin-top: 2px;
+}
+
+/* Brand Selector */
+.brand-selector {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--lime-border);
+}
+
+.brand-select-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.brand-select {
+  width: 100%;
+  background: var(--navy-light);
+  border: 1px solid var(--lime-border);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.brand-select:focus { outline: none; border-color: var(--lime); }
+
+.brand-add-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--muted);
+  color: var(--muted-light);
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  padding: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.brand-add-btn:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+/* Navigation */
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: var(--muted-light);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 2px solid transparent;
+}
+
+.nav-item:hover {
+  background: var(--navy-light);
+  color: var(--white);
+}
+
+.nav-item.active {
+  background: var(--lime-dim);
+  color: var(--lime);
+  border-left-color: var(--lime);
+}
+
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.nav-divider {
+  height: 1px;
+  background: var(--lime-border);
+  margin: 12px 20px;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--lime-border);
+}
+
+.sidebar-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.stat-mini {
+  flex: 1;
+  text-align: center;
+}
+
+.stat-mini-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--lime);
+}
+
+.stat-mini-label {
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.logout-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--muted-light);
+  font-size: 11px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-header {
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--lime-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.header-actions { display: flex; gap: 12px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--lime);
+  color: var(--navy);
+}
+
+.btn-primary:hover { background: var(--white); }
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--muted-light);
+}
+
+.btn-secondary:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+/* Page Content */
+.page-content {
+  flex: 1;
+  padding: 24px 32px;
+  overflow-y: auto;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* Cards */
+.card {
+  background: var(--navy-card);
+  border: 1px solid var(--lime-border);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lime);
+}
+
+/* Forms */
+.form-group { margin-bottom: 20px; }
+
+.form-label {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: var(--navy-light);
+  border: 1px solid var(--lime-border);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 12px 14px;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--lime);
+}
+
+.form-textarea { min-height: 100px; resize: vertical; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* Color Input */
+.color-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.color-swatch {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--lime-border);
+  cursor: pointer;
+}
+
+.color-swatch input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+}
+
+/* Generate Modes */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.mode-card {
+  background: var(--navy-light);
+  border: 2px solid transparent;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.mode-card:hover {
+  border-color: var(--lime-border);
+}
+
+.mode-card.active {
+  border-color: var(--lime);
+  background: var(--lime-dim);
+}
+
+.mode-icon { font-size: 32px; margin-bottom: 12px; }
+
+.mode-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.mode-desc {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Ad Type Grid */
+.ad-type-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.ad-type-card {
+  background: var(--navy-light);
+  border: 1px solid transparent;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.ad-type-card:hover { border-color: var(--lime-border); }
+.ad-type-card.active { border-color: var(--lime); background: var(--lime-dim); }
+
+.ad-type-icon { font-size: 24px; margin-bottom: 8px; }
+
+.ad-type-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Generation Preview */
+.generation-preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.prompt-preview {
+  background: var(--navy);
+  border: 1px solid var(--lime-border);
+  padding: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.prompt-preview pre {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted-light);
+  white-space: pre-wrap;
+}
+
+.image-preview {
+  background: var(--navy);
+  border: 1px solid var(--lime-border);
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.image-placeholder {
+  text-align: center;
+  color: var(--muted);
+}
+
+.image-placeholder-icon { font-size: 48px; margin-bottom: 12px; }
+
+/* Generation History Grid */
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.history-card {
+  background: var(--navy-card);
+  border: 1px solid var(--lime-border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.history-card:hover {
+  border-color: var(--lime);
+}
+
+.history-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.history-card-info {
+  padding: 12px;
+}
+
+.history-card-type {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--lime);
+}
+
+.history-card-date {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Personas Grid */
+.personas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.persona-card {
+  background: var(--navy-light);
+  border: 1px solid var(--lime-border);
+  padding: 20px;
+}
+
+.persona-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.persona-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.persona-actions { display: flex; gap: 8px; }
+
+.persona-action {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.persona-action:hover { color: var(--lime); }
+
+.persona-field {
+  margin-bottom: 8px;
+}
+
+.persona-field-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.persona-field-value {
+  font-size: 13px;
+  color: var(--white);
+}
+
+/* Assets Grid */
+.assets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.asset-card {
+  background: var(--navy-card);
+  border: 1px solid var(--lime-border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.asset-card:hover { border-color: var(--lime); }
+.asset-card.selected { border-color: var(--lime); border-width: 2px; }
+
+.asset-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.asset-card-info {
+  padding: 8px 10px;
+}
+
+.asset-card-name {
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.asset-card-category {
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* Loading */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--navy-light);
+  border-top-color: var(--lime);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--lime);
+  color: var(--navy);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 14px 24px;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 2000;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  z-index: 1000;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: var(--navy-card);
+  border: 1px solid var(--lime-border);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--lime-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.modal-close:hover { color: var(--white); }
+
+.modal-body { padding: 24px; }
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--lime-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+
+.empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebar { width: 220px; }
+  .form-row, .form-row-3 { grid-template-columns: 1fr; }
+  .mode-grid { grid-template-columns: 1fr; }
+  .ad-type-grid { grid-template-columns: repeat(2, 1fr); }
+  .generation-preview { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .app { flex-direction: column; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--lime-border); }
+  .sidebar-nav { display: flex; overflow-x: auto; padding: 0; }
+  .nav-item { padding: 12px 16px; border-left: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .nav-item.active { border-bottom-color: var(--lime); }
+  .nav-divider { display: none; }
+  .sidebar-footer { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Ad<em>Flow</em></div>
+    <div class="login-subtitle">Creative Studio</div>
+    <input type="password" class="login-input" id="passwordInput" placeholder="Enter password" autofocus>
+    <button class="login-btn" onclick="attemptLogin()">Access Studio</button>
+    <div class="login-error" id="loginError">Incorrect password</div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div class="app" id="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Ad<em>Flow</em></div>
+      <div class="sidebar-tag">Creative Studio</div>
+    </div>
+
+    <div class="brand-selector">
+      <div class="brand-select-label">Active Brand</div>
+      <select class="brand-select" id="brandSelect" onchange="selectBrand(this.value)">
+        <option value="">Select a brand...</option>
+      </select>
+      <button class="brand-add-btn" onclick="openBrandModal()">+ Add New Brand</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-page="generate" onclick="showPage('generate')">
+        <span class="nav-icon">✨</span>
+        Generate Ads
+      </div>
+      <div class="nav-item" data-page="brand-kit" onclick="showPage('brand-kit')">
+        <span class="nav-icon">🎨</span>
+        Brand Kit
+      </div>
+      <div class="nav-item" data-page="intelligence" onclick="showPage('intelligence')">
+        <span class="nav-icon">🧠</span>
+        Brand Intelligence
+      </div>
+      <div class="nav-item" data-page="assets" onclick="showPage('assets')">
+        <span class="nav-icon">📦</span>
+        Assets
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-page="templates" onclick="showPage('templates')">
+        <span class="nav-icon">📁</span>
+        Templates
+      </div>
+      <div class="nav-item" data-page="history" onclick="showPage('history')">
+        <span class="nav-icon">📜</span>
+        History
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-stats">
+        <div class="stat-mini">
+          <div class="stat-mini-value" id="statGenerated">0</div>
+          <div class="stat-mini-label">Generated</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-value" id="statCost">$0</div>
+          <div class="stat-mini-label">Spent</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="main-header">
+      <h1 class="page-title" id="pageTitle">Generate Ads</h1>
+      <div class="header-actions" id="headerActions"></div>
+    </header>
+
+    <div class="page-content">
+      <!-- Generate Page -->
+      <div class="page active" id="page-generate">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Select Generation Mode</div>
+          </div>
+          <div class="mode-grid">
+            <div class="mode-card active" data-mode="scratch" onclick="selectMode('scratch')">
+              <div class="mode-icon">🎯</div>
+              <div class="mode-title">From Scratch</div>
+              <div class="mode-desc">Create ads based on research & strategy</div>
+            </div>
+            <div class="mode-card" data-mode="competitor" onclick="selectMode('competitor')">
+              <div class="mode-icon">🔍</div>
+              <div class="mode-title">Competitor Inspired</div>
+              <div class="mode-desc">Recreate winning competitor ads</div>
+            </div>
+            <div class="mode-card" data-mode="iteration" onclick="selectMode('iteration')">
+              <div class="mode-icon">🔄</div>
+              <div class="mode-title">Iteration</div>
+              <div class="mode-desc">Variations of your winning ads</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scratch Mode Content -->
+        <div id="mode-scratch-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Select Ad Type</div>
+            </div>
+            <div class="ad-type-grid" id="adTypeGrid"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Ad Details</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Select Product Image</label>
+              <select class="form-select" id="productAsset">
+                <option value="">Choose a product asset...</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Target Persona (Optional)</label>
+              <select class="form-select" id="targetPersona">
+                <option value="">Use general messaging</option>
+              </select>
+            </div>
+
+            <div id="dynamicFields"></div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Platform</label>
+                <select class="form-select" id="platform">
+                  <option value="instagram-feed">Instagram Feed (1:1)</option>
+                  <option value="instagram-stories">Instagram Stories (9:16)</option>
+                  <option value="facebook-feed">Facebook Feed (4:5)</option>
+                  <option value="tiktok">TikTok (9:16)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Style</label>
+                <select class="form-select" id="style">
+                  <option value="ugc">UGC / Authentic</option>
+                  <option value="premium">Premium / Polished</option>
+                  <option value="minimal">Minimal / Clean</option>
+                  <option value="bold">Bold / High Contrast</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="generateAd()" id="generateBtn">
+              ✨ Generate Ad
+            </button>
+          </div>
+
+          <div class="card" id="outputCard" style="display: none;">
+            <div class="card-header">
+              <div class="card-title">Generated Output</div>
+            </div>
+            <div class="generation-preview">
+              <div class="prompt-preview">
+                <pre id="promptOutput"></pre>
+              </div>
+              <div class="image-preview" id="imagePreview">
+                <div class="image-placeholder">
+                  <div class="image-placeholder-icon">🖼️</div>
+                  <div>Image will appear here</div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 16px; display: flex; gap: 12px;">
+              <button class="btn btn-primary" onclick="downloadImage()">📥 Download</button>
+              <button class="btn btn-secondary" onclick="generateVariation()">🔄 Generate Variation</button>
+              <button class="btn btn-secondary" onclick="saveAsTemplate()">📁 Save as Template</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Competitor Mode Content -->
+        <div id="mode-competitor-content" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Upload Competitor Ad</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Competitor Ad Image</label>
+              <input type="file" class="form-input" id="competitorImage" accept="image/*">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Or paste Foreplay/URL</label>
+              <input type="text" class="form-input" id="competitorUrl" placeholder="https://foreplay.co/ad/...">
+            </div>
+            <button class="btn btn-secondary" onclick="analyzeCompetitorAd()">🔍 Analyze Ad</button>
+          </div>
+        </div>
+
+        <!-- Iteration Mode Content -->
+        <div id="mode-iteration-content" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Select Winning Ad to Iterate</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Upload Your Winning Ad</label>
+              <input type="file" class="form-input" id="winnerImage" accept="image/*">
+            </div>
+            <div class="form-group">
+              <label class="form-label">What to Iterate?</label>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <label><input type="checkbox" id="iterateCopy"> Copy/Headlines</label>
+                <label><input type="checkbox" id="iterateVisual"> Visual Style</label>
+                <label><input type="checkbox" id="iterateAudience"> Audience Angle</label>
+                <label><input type="checkbox" id="iterateOffer"> Offer/CTA</label>
+              </div>
+            </div>
+            <button class="btn btn-secondary" onclick="generateIterations()">🔄 Generate 5 Variations</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Brand Kit Page -->
+      <div class="page" id="page-brand-kit">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Brand Information</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Brand Name</label>
+              <input type="text" class="form-input" id="brandName">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Website</label>
+              <input type="text" class="form-input" id="brandWebsite" placeholder="https://...">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Industry</label>
+            <select class="form-select" id="brandIndustry">
+              <option value="ecommerce">E-commerce / DTC</option>
+              <option value="saas">SaaS / Software</option>
+              <option value="localService">Local Service</option>
+              <option value="b2bEnterprise">B2B Enterprise</option>
+              <option value="infoProducts">Info Products / Courses</option>
+              <option value="mobileApp">Mobile App</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brand Description</label>
+            <textarea class="form-textarea" id="brandDescription" placeholder="What does this brand do? Who is it for?"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Brand Colors</div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label">Primary Color</label>
+              <div class="color-input-group">
+                <div class="color-swatch"><input type="color" id="primaryColor" value="#C8FF00"></div>
+                <input type="text" class="form-input" id="primaryColorText" value="#C8FF00">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Secondary Color</label>
+              <div class="color-input-group">
+                <div class="color-swatch"><input type="color" id="secondaryColor" value="#080D1A"></div>
+                <input type="text" class="form-input" id="secondaryColorText" value="#080D1A">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Accent Color</label>
+              <div class="color-input-group">
+                <div class="color-swatch"><input type="color" id="accentColor" value="#FFFFFF"></div>
+                <input type="text" class="form-input" id="accentColorText" value="#FFFFFF">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Typography</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Headline Font</label>
+              <input type="text" class="form-input" id="fontHeadline" value="Inter">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Body Font</label>
+              <input type="text" class="form-input" id="fontBody" value="Inter">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Brand Voice</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tone</label>
+              <select class="form-select" id="brandTone">
+                <option value="professional">Professional</option>
+                <option value="casual">Casual / Friendly</option>
+                <option value="playful">Playful / Fun</option>
+                <option value="premium">Premium / Luxury</option>
+                <option value="bold">Bold / Confident</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Target Audience</label>
+              <input type="text" class="form-input" id="targetAudience" placeholder="e.g., Health-conscious women 25-45">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Unique Selling Points (one per line)</label>
+            <textarea class="form-textarea" id="usps" placeholder="All-natural ingredients&#10;Made in USA&#10;60-day money back guarantee"></textarea>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="saveBrandKit()">💾 Save Brand Kit</button>
+      </div>
+
+      <!-- Brand Intelligence Page -->
+      <div class="page" id="page-intelligence">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Customer Personas</div>
+            <button class="btn btn-secondary" onclick="openPersonaModal()">+ Add Persona</button>
+          </div>
+          <div class="personas-grid" id="personasGrid">
+            <div class="empty-state">
+              <div class="empty-state-icon">🧠</div>
+              <div>No personas yet. Add customer personas to improve ad targeting.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Generate Intelligence with AI</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Paste Research Report or Brand Info</label>
+            <textarea class="form-textarea" id="researchInput" style="min-height: 150px;" placeholder="Paste customer research, reviews, competitor analysis, or any brand information here. AI will generate customer personas and messaging angles."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="generateIntelligence()">🧠 Generate Personas with AI</button>
+        </div>
+      </div>
+
+      <!-- Assets Page -->
+      <div class="page" id="page-assets">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Brand Assets</div>
+            <button class="btn btn-primary" onclick="openUploadModal()">+ Upload Assets</button>
+          </div>
+          <div class="form-group">
+            <select class="form-select" id="assetFilter" onchange="filterAssets(this.value)" style="max-width: 200px;">
+              <option value="all">All Categories</option>
+              <option value="product">Product Images</option>
+              <option value="lifestyle">Lifestyle</option>
+              <option value="logo">Logos</option>
+              <option value="packaging">Packaging</option>
+              <option value="ugc">UGC</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="assets-grid" id="assetsGrid">
+            <div class="empty-state">
+              <div class="empty-state-icon">📦</div>
+              <div>No assets yet. Upload product images, logos, and lifestyle photos.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Templates Page -->
+      <div class="page" id="page-templates">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Ad Templates</div>
+            <button class="btn btn-primary" onclick="openTemplateModal()">+ Add Template</button>
+          </div>
+          <div class="assets-grid" id="templatesGrid">
+            <div class="empty-state">
+              <div class="empty-state-icon">📁</div>
+              <div>No templates yet. Save winning ads as templates for future reference.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Page -->
+      <div class="page" id="page-history">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Generation History</div>
+          </div>
+          <div class="history-grid" id="historyGrid">
+            <div class="empty-state">
+              <div class="empty-state-icon">📜</div>
+              <div>No generations yet. Start creating ads to see your history.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add Brand Modal -->
+<div class="modal-overlay" id="brandModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Brand</div>
+      <button class="modal-close" onclick="closeBrandModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Brand Name *</label>
+        <input type="text" class="form-input" id="newBrandName" placeholder="e.g., YEKE Supplements">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Website</label>
+        <input type="text" class="form-input" id="newBrandWebsite" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Industry</label>
+        <select class="form-select" id="newBrandIndustry">
+          <option value="ecommerce">E-commerce / DTC</option>
+          <option value="saas">SaaS / Software</option>
+          <option value="localService">Local Service</option>
+          <option value="b2bEnterprise">B2B Enterprise</option>
+          <option value="infoProducts">Info Products / Courses</option>
+          <option value="mobileApp">Mobile App</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeBrandModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="createBrand()">Create Brand</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">Saved</div>
+
+<script>
+// ============ CONFIG ============
+const SUPABASE_URL = 'https://ykmdpxtnmqkfcscmmjfv.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrbWRweHRubXFrZmNzY21tamZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDc0OTMsImV4cCI6MjA4NzE4MzQ5M30.EfvqLYzRdNitCpqrYlrytYwcry6T1CuGUgGzE4ZXU7Q';
+const ADMIN_PASSWORD = 'adflow2024';
+const FAL_KEY = ''; // Will be set by user
+
+// State
+let brands = [];
+let currentBrand = null;
+let currentMode = 'scratch';
+let selectedAdType = 'ugc-image';
+let personas = [];
+let assets = [];
+let templates = [];
+let generations = [];
+
+// Ad Types
+const AD_TYPES = {
+  'before-after': { name: 'Before/After', icon: '🔄' },
+  'big-callout': { name: 'Big Call-Out', icon: '📢' },
+  'feature-callout': { name: 'Feature', icon: '✨' },
+  'us-vs-them': { name: 'Us vs Them', icon: '⚔️' },
+  'testimonial': { name: 'Testimonial', icon: '💬' },
+  'pr-screenshot': { name: 'PR/Press', icon: '📰' },
+  'notes-app': { name: 'Notes App', icon: '📝' },
+  'ugc-image': { name: 'UGC Image', icon: '🤳' }
+};
+
+// ============ AUTH ============
+if (sessionStorage.getItem('adflow_studio') === 'true') {
+  showApp();
+}
+
+document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') attemptLogin();
+});
+
+function attemptLogin() {
+  const password = document.getElementById('passwordInput').value;
+  if (password === ADMIN_PASSWORD) {
+    sessionStorage.setItem('adflow_studio', 'true');
+    showApp();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    document.getElementById('passwordInput').value = '';
+  }
+}
+
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  init();
+}
+
+function logout() {
+  sessionStorage.removeItem('adflow_studio');
+  location.reload();
+}
+
+// ============ INIT ============
+async function init() {
+  await loadBrands();
+  renderAdTypeGrid();
+}
+
+// ============ BRANDS ============
+async function loadBrands() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/brands?order=created_at.desc`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    brands = await res.json();
+    renderBrandSelect();
+    
+    // Auto-select first brand
+    if (brands.length > 0) {
+      selectBrand(brands[0].id);
+    }
+  } catch (err) {
+    console.error('Error loading brands:', err);
+  }
+}
+
+function renderBrandSelect() {
+  const select = document.getElementById('brandSelect');
+  select.innerHTML = '<option value="">Select a brand...</option>' +
+    brands.map(b => `<option value="${b.id}">${escapeHtml(b.name)}</option>`).join('');
+  
+  if (currentBrand) {
+    select.value = currentBrand.id;
+  }
+}
+
+async function selectBrand(brandId) {
+  if (!brandId) {
+    currentBrand = null;
+    return;
+  }
+  
+  currentBrand = brands.find(b => b.id === brandId);
+  document.getElementById('brandSelect').value = brandId;
+  
+  // Load brand data
+  await Promise.all([
+    loadPersonas(),
+    loadAssets(),
+    loadTemplates(),
+    loadGenerations()
+  ]);
+  
+  // Update brand kit form
+  if (currentBrand) {
+    document.getElementById('brandName').value = currentBrand.name || '';
+    document.getElementById('brandWebsite').value = currentBrand.website || '';
+    document.getElementById('brandIndustry').value = currentBrand.industry || 'ecommerce';
+    document.getElementById('brandDescription').value = currentBrand.description || '';
+    document.getElementById('primaryColor').value = currentBrand.primary_color || '#C8FF00';
+    document.getElementById('primaryColorText').value = currentBrand.primary_color || '#C8FF00';
+    document.getElementById('secondaryColor').value = currentBrand.secondary_color || '#080D1A';
+    document.getElementById('secondaryColorText').value = currentBrand.secondary_color || '#080D1A';
+    document.getElementById('accentColor').value = currentBrand.accent_color || '#FFFFFF';
+    document.getElementById('accentColorText').value = currentBrand.accent_color || '#FFFFFF';
+    document.getElementById('fontHeadline').value = currentBrand.font_headline || 'Inter';
+    document.getElementById('fontBody').value = currentBrand.font_body || 'Inter';
+    document.getElementById('brandTone').value = currentBrand.tone || 'professional';
+    document.getElementById('targetAudience').value = currentBrand.target_audience || '';
+    document.getElementById('usps').value = (currentBrand.unique_selling_points || []).join('\n');
+  }
+  
+  // Update product asset select
+  renderProductSelect();
+  renderPersonaSelect();
+}
+
+function openBrandModal() {
+  document.getElementById('brandModal').classList.add('active');
+  document.getElementById('newBrandName').focus();
+}
+
+function closeBrandModal() {
+  document.getElementById('brandModal').classList.remove('active');
+  document.getElementById('newBrandName').value = '';
+  document.getElementById('newBrandWebsite').value = '';
+}
+
+async function createBrand() {
+  const name = document.getElementById('newBrandName').value.trim();
+  if (!name) {
+    showToast('Please enter a brand name');
+    return;
+  }
+  
+  const data = {
+    name,
+    website: document.getElementById('newBrandWebsite').value.trim(),
+    industry: document.getElementById('newBrandIndustry').value
+  };
+  
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/brands`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(data)
+    });
+    
+    const newBrand = await res.json();
+    brands.unshift(newBrand[0]);
+    renderBrandSelect();
+    selectBrand(newBrand[0].id);
+    closeBrandModal();
+    showToast('Brand created!');
+  } catch (err) {
+    console.error('Error creating brand:', err);
+    showToast('Error creating brand');
+  }
+}
+
+async function saveBrandKit() {
+  if (!currentBrand) {
+    showToast('Please select a brand first');
+    return;
+  }
+  
+  const data = {
+    name: document.getElementById('brandName').value,
+    website: document.getElementById('brandWebsite').value,
+    industry: document.getElementById('brandIndustry').value,
+    description: document.getElementById('brandDescription').value,
+    primary_color: document.getElementById('primaryColorText').value,
+    secondary_color: document.getElementById('secondaryColorText').value,
+    accent_color: document.getElementById('accentColorText').value,
+    font_headline: document.getElementById('fontHeadline').value,
+    font_body: document.getElementById('fontBody').value,
+    tone: document.getElementById('brandTone').value,
+    target_audience: document.getElementById('targetAudience').value,
+    unique_selling_points: document.getElementById('usps').value.split('\n').filter(u => u.trim()),
+    updated_at: new Date().toISOString()
+  };
+  
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/brands?id=eq.${currentBrand.id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    
+    // Update local state
+    Object.assign(currentBrand, data);
+    renderBrandSelect();
+    showToast('Brand kit saved!');
+  } catch (err) {
+    console.error('Error saving brand kit:', err);
+    showToast('Error saving brand kit');
+  }
+}
+
+// ============ PERSONAS ============
+async function loadPersonas() {
+  if (!currentBrand) return;
+  
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence?brand_id=eq.${currentBrand.id}&order=created_at.desc`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    personas = await res.json();
+    renderPersonas();
+    renderPersonaSelect();
+  } catch (err) {
+    console.error('Error loading personas:', err);
+  }
+}
+
+function renderPersonas() {
+  const grid = document.getElementById('personasGrid');
+  
+  if (personas.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">🧠</div>
+        <div>No personas yet. Add customer personas to improve ad targeting.</div>
+      </div>
+    `;
+    return;
+  }
+  
+  grid.innerHTML = personas.map(p => `
+    <div class="persona-card">
+      <div class="persona-header">
+        <div class="persona-name">${escapeHtml(p.persona_name)}</div>
+        <div class="persona-actions">
+          <button class="persona-action" onclick="editPersona('${p.id}')">✏️</button>
+          <button class="persona-action" onclick="deletePersona('${p.id}')">🗑️</button>
+        </div>
+      </div>
+      ${p.pain_points ? `
+        <div class="persona-field">
+          <div class="persona-field-label">Pain Points</div>
+          <div class="persona-field-value">${p.pain_points.join(', ')}</div>
+        </div>
+      ` : ''}
+      ${p.emotional_trigger ? `
+        <div class="persona-field">
+          <div class="persona-field-label">Emotion</div>
+          <div class="persona-field-value">${p.emotional_trigger}</div>
+        </div>
+      ` : ''}
+      ${p.messaging_angle ? `
+        <div class="persona-field">
+          <div class="persona-field-label">Angle</div>
+          <div class="persona-field-value">${p.messaging_angle}</div>
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+}
+
+function renderPersonaSelect() {
+  const select = document.getElementById('targetPersona');
+  select.innerHTML = '<option value="">Use general messaging</option>' +
+    personas.map(p => `<option value="${p.id}">${escapeHtml(p.persona_name)}</option>`).join('');
+}
+
+// ============ ASSETS ============
+async function loadAssets() {
+  if (!currentBrand) return;
+  
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/brand_assets?brand_id=eq.${currentBrand.id}&order=created_at.desc`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    assets = await res.json();
+    renderAssets();
+    renderProductSelect();
+  } catch (err) {
+    console.error('Error loading assets:', err);
+  }
+}
+
+function renderAssets(filter = 'all') {
+  const grid = document.getElementById('assetsGrid');
+  const filtered = filter === 'all' ? assets : assets.filter(a => a.category === filter);
+  
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📦</div>
+        <div>No assets${filter !== 'all' ? ' in this category' : ''}. Upload product images, logos, and lifestyle photos.</div>
+      </div>
+    `;
+    return;
+  }
+  
+  grid.innerHTML = filtered.map(a => `
+    <div class="asset-card" onclick="selectAsset('${a.id}')">
+      <img src="${a.file_url}" alt="${escapeHtml(a.name)}">
+      <div class="asset-card-info">
+        <div class="asset-card-name">${escapeHtml(a.name)}</div>
+        <div class="asset-card-category">${a.category}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterAssets(category) {
+  renderAssets(category);
+}
+
+function renderProductSelect() {
+  const select = document.getElementById('productAsset');
+  const productAssets = assets.filter(a => a.category === 'product');
+  select.innerHTML = '<option value="">Choose a product asset...</option>' +
+    productAssets.map(a => `<option value="${a.id}">${escapeHtml(a.name)}</option>`).join('');
+}
+
+// ============ TEMPLATES ============
+async function loadTemplates() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/ad_templates?order=created_at.desc`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    templates = await res.json();
+    renderTemplates();
+  } catch (err) {
+    console.error('Error loading templates:', err);
+  }
+}
+
+function renderTemplates() {
+  const grid = document.getElementById('templatesGrid');
+  
+  if (templates.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📁</div>
+        <div>No templates yet. Save winning ads as templates for future reference.</div>
+      </div>
+    `;
+    return;
+  }
+  
+  grid.innerHTML = templates.map(t => `
+    <div class="asset-card" onclick="useTemplate('${t.id}')">
+      <img src="${t.image_url}" alt="${escapeHtml(t.name)}">
+      <div class="asset-card-info">
+        <div class="asset-card-name">${escapeHtml(t.name)}</div>
+        <div class="asset-card-category">${t.category || 'template'}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============ GENERATIONS ============
+async function loadGenerations() {
+  if (!currentBrand) return;
+  
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/generations?brand_id=eq.${currentBrand.id}&order=created_at.desc&limit=50`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    generations = await res.json();
+    renderGenerations();
+    updateStats();
+  } catch (err) {
+    console.error('Error loading generations:', err);
+  }
+}
+
+function renderGenerations() {
+  const grid = document.getElementById('historyGrid');
+  
+  if (generations.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📜</div>
+        <div>No generations yet. Start creating ads to see your history.</div>
+      </div>
+    `;
+    return;
+  }
+  
+  grid.innerHTML = generations.filter(g => g.image_url).map(g => `
+    <div class="history-card" onclick="viewGeneration('${g.id}')">
+      <img src="${g.image_url}" alt="Generated ad">
+      <div class="history-card-info">
+        <div class="history-card-type">${g.ad_type || 'Ad'}</div>
+        <div class="history-card-date">${formatDate(g.created_at)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateStats() {
+  document.getElementById('statGenerated').textContent = generations.length;
+  const totalCost = generations.reduce((sum, g) => sum + (parseFloat(g.cost) || 0), 0);
+  document.getElementById('statCost').textContent = '$' + totalCost.toFixed(2);
+}
+
+// ============ AD GENERATION ============
+function renderAdTypeGrid() {
+  const grid = document.getElementById('adTypeGrid');
+  grid.innerHTML = Object.entries(AD_TYPES).map(([id, type]) => `
+    <div class="ad-type-card ${id === selectedAdType ? 'active' : ''}" onclick="selectAdType('${id}')">
+      <div class="ad-type-icon">${type.icon}</div>
+      <div class="ad-type-name">${type.name}</div>
+    </div>
+  `).join('');
+}
+
+function selectAdType(typeId) {
+  selectedAdType = typeId;
+  document.querySelectorAll('.ad-type-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.ad-type-card[onclick="selectAdType('${typeId}')"]`)?.classList.add('active');
+  renderDynamicFields();
+}
+
+function selectMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.mode-card[data-mode="${mode}"]`).classList.add('active');
+  
+  // Show/hide mode content
+  document.getElementById('mode-scratch-content').style.display = mode === 'scratch' ? 'block' : 'none';
+  document.getElementById('mode-competitor-content').style.display = mode === 'competitor' ? 'block' : 'none';
+  document.getElementById('mode-iteration-content').style.display = mode === 'iteration' ? 'block' : 'none';
+}
+
+function renderDynamicFields() {
+  const container = document.getElementById('dynamicFields');
+  let html = '';
+  
+  switch(selectedAdType) {
+    case 'before-after':
+      html = `
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Before State</label>
+            <input type="text" class="form-input" id="beforeState" placeholder="Problem/pain state">
+          </div>
+          <div class="form-group">
+            <label class="form-label">After State</label>
+            <input type="text" class="form-input" id="afterState" placeholder="Result/benefit state">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Timeframe</label>
+          <input type="text" class="form-input" id="timeframe" placeholder="e.g., 30 Days">
+        </div>
+      `;
+      break;
+    case 'big-callout':
+      html = `
+        <div class="form-group">
+          <label class="form-label">Main Headline</label>
+          <input type="text" class="form-input" id="headline" placeholder="e.g., 50% OFF TODAY">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Secondary Text</label>
+          <input type="text" class="form-input" id="subheadline" placeholder="e.g., Use code SAVE50">
+        </div>
+      `;
+      break;
+    case 'feature-callout':
+      html = `
+        <div class="form-group">
+          <label class="form-label">Features/Benefits (one per line)</label>
+          <textarea class="form-textarea" id="features" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea>
+        </div>
+      `;
+      break;
+    case 'testimonial':
+      html = `
+        <div class="form-group">
+          <label class="form-label">Testimonial Quote</label>
+          <textarea class="form-textarea" id="testimonial" placeholder="Customer testimonial text..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Customer Name</label>
+            <input type="text" class="form-input" id="customerName" placeholder="Sarah M.">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rating</label>
+            <select class="form-select" id="rating">
+              <option value="5">5 Stars</option>
+              <option value="4">4 Stars</option>
+            </select>
+          </div>
+        </div>
+      `;
+      break;
+    case 'ugc-image':
+      html = `
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Creator Description</label>
+            <input type="text" class="form-input" id="creator" placeholder="e.g., Woman, late 20s">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Setting</label>
+            <input type="text" class="form-input" id="setting" placeholder="e.g., Bathroom, natural light">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Text Overlay</label>
+          <input type="text" class="form-input" id="overlay" placeholder="e.g., pov: you finally find skincare that works">
+        </div>
+      `;
+      break;
+  }
+  
+  container.innerHTML = html;
+}
+
+async function generateAd() {
+  if (!currentBrand) {
+    showToast('Please select a brand first');
+    return;
+  }
+  
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating...';
+  
+  // Build prompt based on selections
+  const prompt = buildPrompt();
+  
+  // Show output card with prompt
+  document.getElementById('outputCard').style.display = 'block';
+  document.getElementById('promptOutput').textContent = prompt;
+  document.getElementById('imagePreview').innerHTML = `
+    <div class="image-placeholder">
+      <div class="loading-spinner"></div>
+      <div style="margin-top: 16px;">Generating image...</div>
+    </div>
+  `;
+  
+  // Scroll to output
+  document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth' });
+  
+  // TODO: Call fal.ai API here
+  // For now, simulate with timeout
+  setTimeout(() => {
+    document.getElementById('imagePreview').innerHTML = `
+      <div class="image-placeholder">
+        <div class="image-placeholder-icon">⚠️</div>
+        <div>fal.ai API key not configured</div>
+        <div style="font-size: 12px; margin-top: 8px;">Copy the prompt and use it in Nano Banana Pro</div>
+      </div>
+    `;
+    btn.disabled = false;
+    btn.textContent = '✨ Generate Ad';
+    showToast('Prompt generated! Configure fal.ai API for image generation.');
+  }, 1500);
+}
+
+function buildPrompt() {
+  const platform = document.getElementById('platform').value;
+  const style = document.getElementById('style').value;
+  const aspectRatios = {
+    'instagram-feed': '1:1',
+    'instagram-stories': '9:16',
+    'facebook-feed': '4:5',
+    'tiktok': '9:16'
+  };
+  
+  let prompt = '';
+  const brandName = currentBrand?.name || 'Brand';
+  const primaryColor = currentBrand?.primary_color || '#C8FF00';
+  const secondaryColor = currentBrand?.secondary_color || '#080D1A';
+  
+  // Get persona if selected
+  const personaId = document.getElementById('targetPersona').value;
+  const persona = personas.find(p => p.id === personaId);
+  
+  switch(selectedAdType) {
+    case 'ugc-image':
+      const creator = document.getElementById('creator')?.value || 'person, mid-20s';
+      const setting = document.getElementById('setting')?.value || 'bathroom, natural light';
+      const overlay = document.getElementById('overlay')?.value || '';
+      prompt = `A UGC-style selfie ad for ${brandName}.
+
+Creator: ${creator}, natural makeup, casual style.
+Setting: ${setting}, real home environment.
+Pose: Selfie angle, holding product, genuine excited expression.
+Product: Clearly visible, label readable.
+${overlay ? `Text overlay: "${overlay}"` : ''}
+
+${persona ? `Target persona: ${persona.persona_name}. Emotion: ${persona.emotional_trigger || 'authentic'}.` : ''}
+
+Style: ${style === 'ugc' ? 'Authentic iPhone selfie, natural lighting, not overly edited' : 'Premium UGC style'}.
+Brand colors: ${primaryColor}, ${secondaryColor}.
+Aspect ratio: ${aspectRatios[platform]}
+Resolution: 2K`;
+      break;
+      
+    case 'before-after':
+      const before = document.getElementById('beforeState')?.value || 'problem state';
+      const after = document.getElementById('afterState')?.value || 'improved state';
+      const timeframe = document.getElementById('timeframe')?.value || '30 Days';
+      prompt = `A before/after transformation ad for ${brandName}.
+
+Split screen horizontal layout.
+Left side (Before): ${before}. Slightly desaturated, flat lighting.
+Right side (After): ${after}. Warm lighting, vibrant colors.
+Center: "${timeframe}" text badge.
+Bottom corner: Product, small elegant placement.
+
+${persona ? `Targeting: ${persona.persona_name}` : ''}
+
+Style: ${style === 'ugc' ? 'Authentic, real results' : 'Premium transformation'}.
+Brand colors: ${primaryColor}, ${secondaryColor}.
+Aspect ratio: ${aspectRatios[platform]}
+Resolution: 2K`;
+      break;
+      
+    default:
+      prompt = `Create a ${selectedAdType} ad for ${brandName}.
+
+Style: ${style}
+Platform: ${platform} (${aspectRatios[platform]})
+Brand colors: Primary ${primaryColor}, Secondary ${secondaryColor}
+
+${persona ? `Target audience: ${persona.persona_name}
+Pain points: ${(persona.pain_points || []).join(', ')}
+Emotional trigger: ${persona.emotional_trigger || 'trust'}` : ''}
+
+Resolution: 2K`;
+  }
+  
+  return prompt;
+}
+
+// ============ NAVIGATION ============
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  
+  document.getElementById(`page-${pageId}`).classList.add('active');
+  document.querySelector(`.nav-item[data-page="${pageId}"]`).classList.add('active');
+  
+  const titles = {
+    'generate': 'Generate Ads',
+    'brand-kit': 'Brand Kit',
+    'intelligence': 'Brand Intelligence',
+    'assets': 'Assets',
+    'templates': 'Templates',
+    'history': 'History'
+  };
+  document.getElementById('pageTitle').textContent = titles[pageId] || pageId;
+}
+
+// ============ HELPERS ============
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// Color sync
+document.querySelectorAll('input[type="color"]').forEach(input => {
+  input.addEventListener('input', (e) => {
+    const textInput = document.getElementById(e.target.id + 'Text');
+    if (textInput) textInput.value = e.target.value;
+  });
+});
+</script>
+</body>
+</html>
