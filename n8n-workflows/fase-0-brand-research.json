@@ -1,0 +1,210 @@
+{
+  "name": "AdFlow - Fase 0: Brand Research",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "brand-research",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "brand-research"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.body.client_url }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "scrape-website",
+      "name": "Scrape Client Website",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract text content from HTML\nconst html = $input.first().json.body;\n\n// Simple HTML to text extraction\nlet text = html\n  .replace(/<script[^>]*>[\\s\\S]*?<\\/script>/gi, '')\n  .replace(/<style[^>]*>[\\s\\S]*?<\\/style>/gi, '')\n  .replace(/<[^>]+>/g, ' ')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\n// Limit to first 8000 chars for AI processing\ntext = text.substring(0, 8000);\n\n// Get the original input data\nconst inputData = $('Webhook Trigger').first().json.body;\n\nreturn {\n  website_text: text,\n  client_url: inputData.client_url,\n  client_name: inputData.client_name || 'Unknown',\n  project_id: inputData.project_id || null,\n  competitors_hint: inputData.competitors || ''\n};"
+      },
+      "id": "extract-text",
+      "name": "Extract Text from HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a senior marketing strategist. Analyze the website content and extract key brand information. Always respond in valid JSON format."
+            },
+            {
+              "role": "user",
+              "content": "=Analyze this website content and extract brand intelligence:\n\nURL: {{ $json.client_url }}\nClient Name: {{ $json.client_name }}\nCompetitors Hint: {{ $json.competitors_hint }}\n\nWebsite Content:\n{{ $json.website_text }}\n\n---\n\nRespond with a JSON object containing:\n\n{\n  \"brand_name\": \"extracted brand name\",\n  \"product_category\": \"main product/service category\",\n  \"products\": [\"list of main products or services\"],\n  \"usp\": \"unique selling proposition - what makes them different\",\n  \"target_audience\": {\n    \"demographics\": \"age, gender, location\",\n    \"psychographics\": \"interests, values, lifestyle\",\n    \"pain_points\": [\"problems they solve\"]\n  },\n  \"brand_voice\": {\n    \"tone\": \"professional/casual/luxury/playful/etc\",\n    \"personality\": \"brand personality traits\",\n    \"key_messages\": [\"main messaging themes\"]\n  },\n  \"price_positioning\": \"budget/mid-range/premium/luxury\",\n  \"competitors\": [\n    {\n      \"name\": \"competitor name\",\n      \"domain\": \"competitor.com\",\n      \"why_competitor\": \"reason they compete\"\n    }\n  ],\n  \"visual_style\": \"description of visual aesthetic based on website\",\n  \"call_to_actions\": [\"CTAs used on the website\"],\n  \"trust_signals\": [\"reviews, certifications, press mentions\"],\n  \"content_themes\": [\"main content/messaging themes\"]\n}\n\nBe specific and actionable. If you can't determine something, make an educated guess based on the content."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "ai-analysis",
+      "name": "AI Brand Analysis",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [910, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse AI response and structure output\nconst aiResponse = $input.first().json.message.content;\n\nlet brandProfile;\ntry {\n  // Try to parse the JSON from AI response\n  const jsonMatch = aiResponse.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    brandProfile = JSON.parse(jsonMatch[0]);\n  } else {\n    throw new Error('No JSON found in response');\n  }\n} catch (e) {\n  brandProfile = {\n    error: 'Failed to parse AI response',\n    raw_response: aiResponse\n  };\n}\n\n// Get original input data\nconst inputData = $('Extract Text from HTML').first().json;\n\nreturn {\n  project_id: inputData.project_id,\n  client_url: inputData.client_url,\n  client_name: inputData.client_name,\n  brand_profile: brandProfile,\n  generated_at: new Date().toISOString(),\n  status: 'completed'\n};"
+      },
+      "id": "format-output",
+      "name": "Format Brand Profile",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1130, 300]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://ykmdpxtnmqkfcscmmjfv.supabase.co/rest/v1/projects?id=eq.{{ $json.project_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrbWRweHRubXFrZmNzY21tamZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDc0OTMsImV4cCI6MjA4NzE4MzQ5M30.EfvqLYzRdNitCpqrYlrytYwcry6T1CuGUgGzE4ZXU7Q"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrbWRweHRubXFrZmNzY21tamZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDc0OTMsImV4cCI6MjA4NzE4MzQ5M30.EfvqLYzRdNitCpqrYlrytYwcry6T1CuGUgGzE4ZXU7Q"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"brief\": {{ JSON.stringify(JSON.stringify($json.brand_profile)) }},\n  \"status\": \"strategy\",\n  \"progress\": {\n    \"intake\": true,\n    \"strategy\": false,\n    \"images\": false,\n    \"videos\": false,\n    \"copy\": false,\n    \"qa\": false,\n    \"delivery\": false\n  }\n}",
+        "options": {}
+      },
+      "id": "update-supabase",
+      "name": "Update Project in Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1350, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $('Format Brand Profile').first().json }}",
+        "options": {}
+      },
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1570, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Scrape Client Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Client Website": {
+      "main": [
+        [
+          {
+            "node": "Extract Text from HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Text from HTML": {
+      "main": [
+        [
+          {
+            "node": "AI Brand Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Brand Analysis": {
+      "main": [
+        [
+          {
+            "node": "Format Brand Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Brand Profile": {
+      "main": [
+        [
+          {
+            "node": "Update Project in Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Project in Supabase": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-04T22:45:00.000Z",
+  "versionId": "1"
+}
