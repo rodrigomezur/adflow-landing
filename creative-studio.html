@@ -850,6 +850,11 @@ body {
     </div>
 
     <nav class="sidebar-nav">
+      <div class="nav-item" style="background: var(--lime-dim); border-left: 2px solid var(--lime);" onclick="launchCampaignBuilder()">
+        <span class="nav-icon">🚀</span>
+        <span style="color: var(--lime);">Campaign Builder</span>
+      </div>
+      <div class="nav-divider"></div>
       <div class="nav-item active" data-page="generate" onclick="showPage('generate')">
         <span class="nav-icon">✨</span>
         Generate Ads
@@ -1532,6 +1537,15 @@ function showApp() {
 function logout() {
   sessionStorage.removeItem('adflow_studio');
   location.reload();
+}
+
+function launchCampaignBuilder() {
+  if (!currentBrand) {
+    showToast('Please select a brand first');
+    return;
+  }
+  sessionStorage.setItem('adflow_brand', currentBrand.id);
+  window.location.href = `/campaign-builder.html?brand=${currentBrand.id}`;
 }
 
 // ============ INIT ============

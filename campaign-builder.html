@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdFlow Campaign Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #080D1A;
+  --navy-mid: #0E1525;
+  --navy-card: #121A2E;
+  --navy-light: #172035;
+  --lime: #C8FF00;
+  --lime-dim: rgba(200,255,0,0.12);
+  --lime-border: rgba(200,255,0,0.18);
+  --white: #EFF2EC;
+  --muted: #5A6478;
+  --muted-light: #8892A4;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --warning: #fbbf24;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--navy);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* Layout */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  background: var(--navy-mid);
+  border-bottom: 1px solid var(--lime-border);
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  color: var(--white);
+}
+
+.logo em { color: var(--lime); font-style: normal; }
+
+.header-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lime);
+  padding-left: 24px;
+  border-left: 1px solid var(--lime-border);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-badge {
+  background: var(--lime-dim);
+  border: 1px solid var(--lime-border);
+  padding: 8px 16px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-badge-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--lime);
+  border-radius: 50%;
+}
+
+.btn-back {
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--muted-light);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+/* Main Content */
+.main {
+  flex: 1;
+  display: flex;
+}
+
+/* Steps Sidebar */
+.steps-sidebar {
+  width: 280px;
+  background: var(--navy-mid);
+  border-right: 1px solid var(--lime-border);
+  padding: 24px 0;
+  flex-shrink: 0;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.step-item:hover {
+  background: var(--navy-light);
+}
+
+.step-item.active {
+  background: var(--lime-dim);
+  border-left-color: var(--lime);
+}
+
+.step-item.completed .step-number {
+  background: var(--success);
+  color: var(--navy);
+}
+
+.step-item.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  background: var(--navy-light);
+  border: 1px solid var(--lime-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-item.active .step-number {
+  background: var(--lime);
+  color: var(--navy);
+  border-color: var(--lime);
+}
+
+.step-info { flex: 1; }
+
+.step-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.step-item.active .step-title {
+  color: var(--lime);
+}
+
+.step-desc {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.step-item.active .step-desc {
+  color: var(--muted-light);
+}
+
+.step-status {
+  font-size: 10px;
+  color: var(--success);
+  margin-top: 4px;
+}
+
+/* Content Area */
+.content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+.step-content {
+  display: none;
+  max-width: 900px;
+}
+
+.step-content.active {
+  display: block;
+}
+
+.content-header {
+  margin-bottom: 32px;
+}
+
+.content-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.content-subtitle {
+  color: var(--muted-light);
+  font-size: 14px;
+}
+
+/* Cards */
+.card {
+  background: var(--navy-card);
+  border: 1px solid var(--lime-border);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.card-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lime);
+  margin-bottom: 16px;
+}
+
+/* Upload Zone */
+.upload-zone {
+  border: 2px dashed var(--lime-border);
+  padding: 48px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--navy-light);
+}
+
+.upload-zone:hover {
+  border-color: var(--lime);
+  background: var(--lime-dim);
+}
+
+.upload-zone.has-image {
+  padding: 16px;
+  border-style: solid;
+}
+
+.upload-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.upload-text {
+  font-size: 14px;
+  color: var(--muted-light);
+  margin-bottom: 8px;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.upload-preview {
+  max-width: 300px;
+  max-height: 400px;
+  margin: 0 auto;
+}
+
+.upload-preview img {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+/* URL Input Alternative */
+.url-input-group {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--lime-border);
+}
+
+.url-input-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.url-input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-input {
+  flex: 1;
+  background: var(--navy-light);
+  border: 1px solid var(--lime-border);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 12px 16px;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--lime);
+}
+
+.form-select {
+  background: var(--navy-light);
+  border: 1px solid var(--lime-border);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--lime);
+}
+
+/* Buttons */
+.btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--lime);
+  color: var(--navy);
+}
+
+.btn-primary:hover {
+  background: var(--white);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--muted-light);
+}
+
+.btn-secondary:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+.btn-large {
+  padding: 16px 32px;
+  font-size: 12px;
+}
+
+/* Assets Grid */
+.assets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.asset-card {
+  background: var(--navy-light);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+
+.asset-card:hover {
+  border-color: var(--lime-border);
+}
+
+.asset-card.selected {
+  border-color: var(--lime);
+  box-shadow: 0 0 0 2px var(--lime-dim);
+}
+
+.asset-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.asset-card-name {
+  padding: 8px;
+  font-size: 11px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Profiles */
+.profiles-section {
+  margin-top: 24px;
+}
+
+.profiles-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.profiles-count {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.profiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.profile-card {
+  background: var(--navy-light);
+  border: 2px solid transparent;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-card:hover {
+  border-color: var(--lime-border);
+}
+
+.profile-card.selected {
+  border-color: var(--lime);
+  background: var(--lime-dim);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.profile-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.profile-card.selected .profile-name {
+  color: var(--lime);
+}
+
+.profile-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.profile-card.selected .profile-checkbox {
+  background: var(--lime);
+  border-color: var(--lime);
+  color: var(--navy);
+}
+
+.profile-field {
+  margin-bottom: 8px;
+}
+
+.profile-field-label {
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.profile-field-value {
+  font-size: 12px;
+  color: var(--white);
+}
+
+/* Config Form */
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.config-item {
+  background: var(--navy-light);
+  padding: 20px;
+  text-align: center;
+}
+
+.config-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.config-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--lime);
+  margin-bottom: 12px;
+}
+
+.config-select {
+  width: 100%;
+  background: var(--navy-card);
+  border: 1px solid var(--lime-border);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Plan Preview */
+.plan-summary {
+  background: var(--lime-dim);
+  border: 1px solid var(--lime-border);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  text-align: center;
+}
+
+.plan-stat-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--lime);
+}
+
+.plan-stat-label {
+  font-size: 11px;
+  color: var(--muted-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.plan-item {
+  background: var(--navy-light);
+  border: 1px solid var(--lime-border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.plan-item-number {
+  width: 28px;
+  height: 28px;
+  background: var(--navy-card);
+  border: 1px solid var(--lime-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.plan-item-info { flex: 1; min-width: 0; }
+
+.plan-item-profile {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plan-item-angle {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Generation Progress */
+.generation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.generation-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.gen-stat {
+  text-align: center;
+}
+
+.gen-stat-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.gen-stat-value.success { color: var(--success); }
+.gen-stat-value.pending { color: var(--warning); }
+.gen-stat-value.error { color: var(--danger); }
+
+.gen-stat-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--navy-light);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--lime);
+  transition: width 0.3s;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.result-card {
+  background: var(--navy-light);
+  border: 1px solid var(--lime-border);
+  overflow: hidden;
+  position: relative;
+}
+
+.result-card.generating {
+  border-color: var(--warning);
+}
+
+.result-card.success {
+  border-color: var(--success);
+}
+
+.result-card.error {
+  border-color: var(--danger);
+}
+
+.result-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+.result-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--navy-card);
+}
+
+.result-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--navy-light);
+  border-top-color: var(--lime);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.result-error-icon {
+  font-size: 32px;
+  color: var(--danger);
+}
+
+.result-info {
+  padding: 12px;
+}
+
+.result-profile {
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-status {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.result-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.result-card:hover .result-actions {
+  opacity: 1;
+}
+
+.result-action {
+  width: 28px;
+  height: 28px;
+  background: var(--navy);
+  border: 1px solid var(--lime-border);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.result-action:hover {
+  background: var(--lime);
+  color: var(--navy);
+}
+
+/* Navigation Buttons */
+.step-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--lime-border);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--lime);
+  color: var(--navy);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 14px 24px;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 2000;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 48px;
+  color: var(--muted);
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .steps-sidebar { width: 220px; }
+  .config-grid { grid-template-columns: 1fr; }
+  .plan-summary { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .header { padding: 12px 16px; }
+  .header-title { display: none; }
+  .main { flex-direction: column; }
+  .steps-sidebar { 
+    width: 100%; 
+    border-right: none; 
+    border-bottom: 1px solid var(--lime-border);
+    padding: 12px 0;
+    display: flex;
+    overflow-x: auto;
+  }
+  .step-item { 
+    flex-direction: column; 
+    align-items: center; 
+    padding: 12px 16px;
+    min-width: 80px;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+  }
+  .step-item.active { border-bottom-color: var(--lime); }
+  .step-desc { display: none; }
+  .content { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <a href="/creative-studio.html" class="logo">Ad<em>Flow</em></a>
+      <span class="header-title">Campaign Builder</span>
+    </div>
+    <div class="header-right">
+      <div class="brand-badge" id="brandBadge">
+        <span class="brand-badge-dot"></span>
+        <span id="brandName">Loading...</span>
+      </div>
+      <a href="/creative-studio.html" class="btn-back">← Back to Studio</a>
+    </div>
+  </header>
+
+  <div class="main">
+    <!-- Steps Sidebar -->
+    <aside class="steps-sidebar">
+      <div class="step-item active" data-step="1" onclick="goToStep(1)">
+        <div class="step-number">1</div>
+        <div class="step-info">
+          <div class="step-title">Reference Ad</div>
+          <div class="step-desc">Upload winning ad template</div>
+          <div class="step-status" id="step1Status"></div>
+        </div>
+      </div>
+      <div class="step-item locked" data-step="2" onclick="goToStep(2)">
+        <div class="step-number">2</div>
+        <div class="step-info">
+          <div class="step-title">Product</div>
+          <div class="step-desc">Select product image</div>
+          <div class="step-status" id="step2Status"></div>
+        </div>
+      </div>
+      <div class="step-item locked" data-step="3" onclick="goToStep(3)">
+        <div class="step-number">3</div>
+        <div class="step-info">
+          <div class="step-title">Profiles</div>
+          <div class="step-desc">Select customer profiles</div>
+          <div class="step-status" id="step3Status"></div>
+        </div>
+      </div>
+      <div class="step-item locked" data-step="4" onclick="goToStep(4)">
+        <div class="step-number">4</div>
+        <div class="step-info">
+          <div class="step-title">Configure</div>
+          <div class="step-desc">Set output options</div>
+          <div class="step-status" id="step4Status"></div>
+        </div>
+      </div>
+      <div class="step-item locked" data-step="5" onclick="goToStep(5)">
+        <div class="step-number">5</div>
+        <div class="step-info">
+          <div class="step-title">Preview</div>
+          <div class="step-desc">Review generation plan</div>
+        </div>
+      </div>
+      <div class="step-item locked" data-step="6" onclick="goToStep(6)">
+        <div class="step-number">6</div>
+        <div class="step-info">
+          <div class="step-title">Generate</div>
+          <div class="step-desc">Create your ads</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="content">
+      
+      <!-- Step 1: Reference Ad -->
+      <div class="step-content active" id="step1">
+        <div class="content-header">
+          <h1 class="content-title">Upload Reference Ad</h1>
+          <p class="content-subtitle">Upload a winning ad that you want to use as a template. The AI will recreate this layout and style with your brand.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Winning Ad Reference</div>
+          <div class="upload-zone" id="referenceUpload" onclick="document.getElementById('referenceFile').click()">
+            <div class="upload-icon">📤</div>
+            <div class="upload-text">Click to upload or drag & drop</div>
+            <div class="upload-hint">PNG, JPG up to 10MB • From Creative OS, Foreplay, Meta Ad Library</div>
+          </div>
+          <input type="file" id="referenceFile" accept="image/*" style="display: none;" onchange="handleReferenceUpload(event)">
+          
+          <div class="url-input-group">
+            <label class="url-input-label">Or paste image URL:</label>
+            <div class="url-input-row">
+              <input type="text" class="form-input" id="referenceUrl" placeholder="https://...">
+              <button class="btn btn-secondary" onclick="loadReferenceUrl()">Load</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <div></div>
+          <button class="btn btn-primary btn-large" onclick="nextStep()" id="step1Next" disabled>
+            Continue to Product →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Product Selection -->
+      <div class="step-content" id="step2">
+        <div class="content-header">
+          <h1 class="content-title">Select Product Image</h1>
+          <p class="content-subtitle">Choose the product image that will appear in your generated ads.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Product Assets</div>
+          <div class="assets-grid" id="productAssetsGrid">
+            <div class="empty-state">
+              <div class="empty-icon">📦</div>
+              <div>No product assets found. Add products in Brand Assets first.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+          <button class="btn btn-primary btn-large" onclick="nextStep()" id="step2Next" disabled>
+            Continue to Profiles →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Profile Selection -->
+      <div class="step-content" id="step3">
+        <div class="content-header">
+          <h1 class="content-title">Select Customer Profiles</h1>
+          <p class="content-subtitle">Choose which customer profiles to target. Each profile will generate ads with different messaging angles.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Available Profiles</div>
+          
+          <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+            <button class="btn btn-secondary" onclick="selectAllProfiles()">Select All</button>
+            <button class="btn btn-secondary" onclick="deselectAllProfiles()">Deselect All</button>
+          </div>
+
+          <div class="profiles-grid" id="profilesGrid">
+            <div class="empty-state">
+              <div class="empty-icon">🧠</div>
+              <div>No profiles found. Generate profiles in Brand Intelligence first.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+          <button class="btn btn-primary btn-large" onclick="nextStep()" id="step3Next" disabled>
+            Continue to Configure →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 4: Configuration -->
+      <div class="step-content" id="step4">
+        <div class="content-header">
+          <h1 class="content-title">Configure Output</h1>
+          <p class="content-subtitle">Set how many ads to generate and the output format.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Generation Settings</div>
+          
+          <div class="config-grid">
+            <div class="config-item">
+              <div class="config-label">Ads Per Profile</div>
+              <div class="config-value" id="adsPerProfileValue">1</div>
+              <select class="config-select" id="adsPerProfile" onchange="updateConfig()">
+                <option value="1">1 ad each</option>
+                <option value="2">2 ads each</option>
+                <option value="3">3 ads each</option>
+              </select>
+            </div>
+            <div class="config-item">
+              <div class="config-label">Aspect Ratio</div>
+              <div class="config-value" id="aspectRatioValue">4:5</div>
+              <select class="config-select" id="aspectRatio" onchange="updateConfig()">
+                <option value="1:1">1:1 (Square)</option>
+                <option value="4:5" selected>4:5 (Facebook)</option>
+                <option value="9:16">9:16 (Stories)</option>
+              </select>
+            </div>
+            <div class="config-item">
+              <div class="config-label">Total Ads</div>
+              <div class="config-value" id="totalAdsValue">0</div>
+              <div style="font-size: 11px; color: var(--muted);">
+                <span id="profileCount">0</span> profiles × <span id="adsCount">1</span> ads
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Optional Settings</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+              <label class="url-input-label">Custom CTA (optional)</label>
+              <input type="text" class="form-input" id="customCta" placeholder="e.g., Shop Now, Learn More">
+            </div>
+            <div>
+              <label class="url-input-label">Visual Style</label>
+              <select class="form-select" id="visualStyle" style="width: 100%;">
+                <option value="match">Match Reference Ad</option>
+                <option value="ugc">UGC / Authentic</option>
+                <option value="premium">Premium / Polished</option>
+                <option value="minimal">Minimal / Clean</option>
+                <option value="bold">Bold / High Contrast</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+          <button class="btn btn-primary btn-large" onclick="nextStep()">
+            Preview Plan →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 5: Preview Plan -->
+      <div class="step-content" id="step5">
+        <div class="content-header">
+          <h1 class="content-title">Preview Generation Plan</h1>
+          <p class="content-subtitle">Review what will be generated before starting.</p>
+        </div>
+
+        <div class="plan-summary">
+          <div>
+            <div class="plan-stat-value" id="planTotalAds">0</div>
+            <div class="plan-stat-label">Total Ads</div>
+          </div>
+          <div>
+            <div class="plan-stat-value" id="planProfiles">0</div>
+            <div class="plan-stat-label">Profiles</div>
+          </div>
+          <div>
+            <div class="plan-stat-value" id="planPerProfile">1</div>
+            <div class="plan-stat-label">Per Profile</div>
+          </div>
+          <div>
+            <div class="plan-stat-value" id="planEstTime">~2 min</div>
+            <div class="plan-stat-label">Est. Time</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Generation Queue</div>
+          <div class="plan-grid" id="planGrid"></div>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+          <button class="btn btn-primary btn-large" onclick="startGeneration()">
+            🚀 Generate <span id="generateCount">0</span> Ads
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 6: Generation -->
+      <div class="step-content" id="step6">
+        <div class="content-header">
+          <h1 class="content-title">Generating Ads</h1>
+          <p class="content-subtitle" id="generationStatus">Starting generation...</p>
+        </div>
+
+        <div class="generation-header">
+          <div class="generation-stats">
+            <div class="gen-stat">
+              <div class="gen-stat-value success" id="successCount">0</div>
+              <div class="gen-stat-label">Completed</div>
+            </div>
+            <div class="gen-stat">
+              <div class="gen-stat-value pending" id="pendingCount">0</div>
+              <div class="gen-stat-label">In Progress</div>
+            </div>
+            <div class="gen-stat">
+              <div class="gen-stat-value error" id="errorCount">0</div>
+              <div class="gen-stat-label">Failed</div>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-secondary" id="downloadAllBtn" onclick="downloadAll()" disabled>📥 Download All</button>
+          </div>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="results-grid" id="resultsGrid"></div>
+
+        <div class="step-nav" style="margin-top: 32px;">
+          <button class="btn btn-secondary" onclick="window.location.href='/creative-studio.html'">← Back to Studio</button>
+          <button class="btn btn-primary btn-large" onclick="startNewCampaign()">🔄 New Campaign</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ CONFIG ============
+const SUPABASE_URL = 'https://ykmdpxtnmqkfcscmmjfv.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrbWRweHRubXFrZmNzY21tamZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDc0OTMsImV4cCI6MjA4NzE4MzQ5M30.EfvqLYzRdNitCpqrYlrytYwcry6T1CuGUgGzE4ZXU7Q';
+const GENERATE_API = '/api/generate';
+const COMPOSE_API = '/api/prompt/compose';
+
+// ============ STATE ============
+let currentStep = 1;
+let currentBrand = null;
+let assets = [];
+let profiles = [];
+
+// Campaign state
+let referenceImageUrl = null;
+let selectedProductId = null;
+let selectedProductUrl = null;
+let selectedProfiles = [];
+let config = {
+  adsPerProfile: 1,
+  aspectRatio: '4:5',
+  customCta: '',
+  visualStyle: 'match'
+};
+
+// Generation state
+let generationPlan = [];
+let generationResults = [];
+let isGenerating = false;
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', init);
+
+async function init() {
+  // Check auth
+  if (sessionStorage.getItem('adflow_studio') !== 'true') {
+    window.location.href = '/creative-studio.html';
+    return;
+  }
+  
+  // Get brand from URL or session
+  const urlParams = new URLSearchParams(window.location.search);
+  const brandId = urlParams.get('brand') || sessionStorage.getItem('adflow_brand');
+  
+  if (!brandId) {
+    showToast('No brand selected');
+    setTimeout(() => window.location.href = '/creative-studio.html', 1500);
+    return;
+  }
+  
+  await loadBrand(brandId);
+  await loadAssets();
+  await loadProfiles();
+}
+
+async function loadBrand(brandId) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/brands?id=eq.${brandId}`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    const data = await res.json();
+    if (data.length > 0) {
+      currentBrand = data[0];
+      document.getElementById('brandName').textContent = currentBrand.name;
+      sessionStorage.setItem('adflow_brand', brandId);
+    }
+  } catch (err) {
+    console.error('Error loading brand:', err);
+  }
+}
+
+async function loadAssets() {
+  if (!currentBrand) return;
+  
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/brand_assets?brand_id=eq.${currentBrand.id}&category=eq.product&order=created_at.desc`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    assets = await res.json();
+    renderProductAssets();
+  } catch (err) {
+    console.error('Error loading assets:', err);
+  }
+}
+
+async function loadProfiles() {
+  if (!currentBrand) return;
+  
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence?brand_id=eq.${currentBrand.id}&order=created_at.desc`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    profiles = await res.json();
+    renderProfiles();
+  } catch (err) {
+    console.error('Error loading profiles:', err);
+  }
+}
+
+// ============ STEP NAVIGATION ============
+function goToStep(step) {
+  const stepEl = document.querySelector(`.step-item[data-step="${step}"]`);
+  if (stepEl.classList.contains('locked')) return;
+  
+  currentStep = step;
+  updateStepUI();
+}
+
+function nextStep() {
+  if (currentStep < 6) {
+    // Unlock next step
+    const nextStepEl = document.querySelector(`.step-item[data-step="${currentStep + 1}"]`);
+    nextStepEl.classList.remove('locked');
+    
+    // Mark current as completed
+    const currentStepEl = document.querySelector(`.step-item[data-step="${currentStep}"]`);
+    currentStepEl.classList.add('completed');
+    
+    currentStep++;
+    updateStepUI();
+    
+    // Special handling for step 5 (preview)
+    if (currentStep === 5) {
+      buildPlan();
+    }
+  }
+}
+
+function prevStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    updateStepUI();
+  }
+}
+
+function updateStepUI() {
+  // Update step items
+  document.querySelectorAll('.step-item').forEach(el => {
+    el.classList.remove('active');
+  });
+  document.querySelector(`.step-item[data-step="${currentStep}"]`).classList.add('active');
+  
+  // Update content
+  document.querySelectorAll('.step-content').forEach(el => {
+    el.classList.remove('active');
+  });
+  document.getElementById(`step${currentStep}`).classList.add('active');
+  
+  // Scroll to top
+  document.querySelector('.content').scrollTop = 0;
+}
+
+// ============ STEP 1: REFERENCE AD ============
+function handleReferenceUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    setReferenceImage(e.target.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+function loadReferenceUrl() {
+  const url = document.getElementById('referenceUrl').value.trim();
+  if (!url) {
+    showToast('Please enter a URL');
+    return;
+  }
+  setReferenceImage(url);
+}
+
+function setReferenceImage(url) {
+  referenceImageUrl = url;
+  
+  const uploadZone = document.getElementById('referenceUpload');
+  uploadZone.classList.add('has-image');
+  uploadZone.innerHTML = `
+    <div class="upload-preview">
+      <img src="${url}" alt="Reference Ad">
+    </div>
+    <div style="margin-top: 12px;">
+      <button class="btn btn-secondary" onclick="clearReference(event)">Change Image</button>
+    </div>
+  `;
+  
+  document.getElementById('step1Next').disabled = false;
+  document.getElementById('step1Status').textContent = '✓ Reference uploaded';
+  showToast('Reference ad loaded!');
+}
+
+function clearReference(event) {
+  event.stopPropagation();
+  referenceImageUrl = null;
+  
+  const uploadZone = document.getElementById('referenceUpload');
+  uploadZone.classList.remove('has-image');
+  uploadZone.innerHTML = `
+    <div class="upload-icon">📤</div>
+    <div class="upload-text">Click to upload or drag & drop</div>
+    <div class="upload-hint">PNG, JPG up to 10MB • From Creative OS, Foreplay, Meta Ad Library</div>
+  `;
+  
+  document.getElementById('step1Next').disabled = true;
+  document.getElementById('step1Status').textContent = '';
+}
+
+// ============ STEP 2: PRODUCT SELECTION ============
+function renderProductAssets() {
+  const grid = document.getElementById('productAssetsGrid');
+  
+  if (assets.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column: 1 / -1;">
+        <div class="empty-icon">📦</div>
+        <div>No product assets found.</div>
+        <a href="/creative-studio.html" class="btn btn-secondary" style="margin-top: 16px;">Add Products in Studio</a>
+      </div>
+    `;
+    return;
+  }
+  
+  grid.innerHTML = assets.map(a => `
+    <div class="asset-card ${selectedProductId === a.id ? 'selected' : ''}" onclick="selectProduct('${a.id}', '${a.file_url}')">
+      <img src="${a.file_url}" alt="${escapeHtml(a.name)}" loading="lazy">
+      <div class="asset-card-name">${escapeHtml(a.name)}</div>
+    </div>
+  `).join('');
+}
+
+function selectProduct(id, url) {
+  selectedProductId = id;
+  selectedProductUrl = url;
+  
+  document.querySelectorAll('#productAssetsGrid .asset-card').forEach(el => {
+    el.classList.remove('selected');
+  });
+  event.currentTarget.classList.add('selected');
+  
+  document.getElementById('step2Next').disabled = false;
+  document.getElementById('step2Status').textContent = '✓ Product selected';
+}
+
+// ============ STEP 3: PROFILE SELECTION ============
+function renderProfiles() {
+  const grid = document.getElementById('profilesGrid');
+  
+  if (profiles.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column: 1 / -1;">
+        <div class="empty-icon">🧠</div>
+        <div>No customer profiles found.</div>
+        <a href="/creative-studio.html" class="btn btn-secondary" style="margin-top: 16px;">Generate Profiles in Studio</a>
+      </div>
+    `;
+    return;
+  }
+  
+  grid.innerHTML = profiles.map(p => `
+    <div class="profile-card ${selectedProfiles.includes(p.id) ? 'selected' : ''}" onclick="toggleProfile('${p.id}')">
+      <div class="profile-header">
+        <div class="profile-name">${escapeHtml(p.persona_name)}</div>
+        <div class="profile-checkbox">${selectedProfiles.includes(p.id) ? '✓' : ''}</div>
+      </div>
+      ${p.pain_points?.length ? `
+        <div class="profile-field">
+          <div class="profile-field-label">Pain Point</div>
+          <div class="profile-field-value">${escapeHtml(p.pain_points[0])}</div>
+        </div>
+      ` : ''}
+      ${p.emotional_trigger ? `
+        <div class="profile-field">
+          <div class="profile-field-label">Emotion</div>
+          <div class="profile-field-value">${escapeHtml(p.emotional_trigger)}</div>
+        </div>
+      ` : ''}
+      ${p.messaging_angle ? `
+        <div class="profile-field">
+          <div class="profile-field-label">Angle</div>
+          <div class="profile-field-value">${escapeHtml(p.messaging_angle)}</div>
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+  
+  updateProfileCount();
+}
+
+function toggleProfile(id) {
+  const idx = selectedProfiles.indexOf(id);
+  if (idx > -1) {
+    selectedProfiles.splice(idx, 1);
+  } else {
+    selectedProfiles.push(id);
+  }
+  renderProfiles();
+}
+
+function selectAllProfiles() {
+  selectedProfiles = profiles.map(p => p.id);
+  renderProfiles();
+}
+
+function deselectAllProfiles() {
+  selectedProfiles = [];
+  renderProfiles();
+}
+
+function updateProfileCount() {
+  const count = selectedProfiles.length;
+  document.getElementById('step3Next').disabled = count === 0;
+  document.getElementById('step3Status').textContent = count > 0 ? `✓ ${count} profiles selected` : '';
+  updateConfig();
+}
+
+// ============ STEP 4: CONFIGURATION ============
+function updateConfig() {
+  config.adsPerProfile = parseInt(document.getElementById('adsPerProfile').value);
+  config.aspectRatio = document.getElementById('aspectRatio').value;
+  config.customCta = document.getElementById('customCta').value;
+  config.visualStyle = document.getElementById('visualStyle').value;
+  
+  document.getElementById('adsPerProfileValue').textContent = config.adsPerProfile;
+  document.getElementById('aspectRatioValue').textContent = config.aspectRatio;
+  
+  const totalAds = selectedProfiles.length * config.adsPerProfile;
+  document.getElementById('totalAdsValue').textContent = totalAds;
+  document.getElementById('profileCount').textContent = selectedProfiles.length;
+  document.getElementById('adsCount').textContent = config.adsPerProfile;
+  document.getElementById('step4Status').textContent = `✓ ${totalAds} ads configured`;
+}
+
+// ============ STEP 5: PREVIEW PLAN ============
+function buildPlan() {
+  generationPlan = [];
+  
+  selectedProfiles.forEach(profileId => {
+    const profile = profiles.find(p => p.id === profileId);
+    if (!profile) return;
+    
+    for (let i = 0; i < config.adsPerProfile; i++) {
+      generationPlan.push({
+        id: `${profileId}-${i}`,
+        profile: profile,
+        variation: i + 1,
+        status: 'pending',
+        imageUrl: null
+      });
+    }
+  });
+  
+  renderPlan();
+}
+
+function renderPlan() {
+  const totalAds = generationPlan.length;
+  const estTime = Math.ceil(totalAds * 15 / 60); // ~15 sec per ad
+  
+  document.getElementById('planTotalAds').textContent = totalAds;
+  document.getElementById('planProfiles').textContent = selectedProfiles.length;
+  document.getElementById('planPerProfile').textContent = config.adsPerProfile;
+  document.getElementById('planEstTime').textContent = `~${estTime} min`;
+  document.getElementById('generateCount').textContent = totalAds;
+  
+  const grid = document.getElementById('planGrid');
+  grid.innerHTML = generationPlan.map((item, idx) => `
+    <div class="plan-item">
+      <div class="plan-item-number">${idx + 1}</div>
+      <div class="plan-item-info">
+        <div class="plan-item-profile">${escapeHtml(item.profile.persona_name)}</div>
+        <div class="plan-item-angle">${escapeHtml(item.profile.messaging_angle || item.profile.emotional_trigger || 'General')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============ STEP 6: GENERATION ============
+async function startGeneration() {
+  if (isGenerating) return;
+  isGenerating = true;
+  
+  // Move to step 6
+  currentStep = 6;
+  updateStepUI();
+  
+  // Reset results
+  generationResults = [];
+  document.getElementById('successCount').textContent = '0';
+  document.getElementById('pendingCount').textContent = generationPlan.length;
+  document.getElementById('errorCount').textContent = '0';
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('generationStatus').textContent = `Generating ${generationPlan.length} ads...`;
+  
+  // Render initial grid
+  renderResultsGrid();
+  
+  // Process each item
+  let completed = 0;
+  let errors = 0;
+  
+  for (let i = 0; i < generationPlan.length; i++) {
+    const item = generationPlan[i];
+    item.status = 'generating';
+    renderResultsGrid();
+    
+    try {
+      const imageUrl = await generateSingleAd(item);
+      item.status = 'success';
+      item.imageUrl = imageUrl;
+      completed++;
+      
+      // Save to database
+      await saveGeneration(item);
+      
+    } catch (error) {
+      console.error('Generation error:', error);
+      item.status = 'error';
+      item.error = error.message;
+      errors++;
+    }
+    
+    // Update progress
+    const progress = ((i + 1) / generationPlan.length) * 100;
+    document.getElementById('progressFill').style.width = `${progress}%`;
+    document.getElementById('successCount').textContent = completed;
+    document.getElementById('pendingCount').textContent = generationPlan.length - i - 1;
+    document.getElementById('errorCount').textContent = errors;
+    
+    renderResultsGrid();
+  }
+  
+  // Done
+  isGenerating = false;
+  document.getElementById('generationStatus').textContent = `Complete! ${completed} ads generated, ${errors} failed.`;
+  document.getElementById('downloadAllBtn').disabled = completed === 0;
+  
+  showToast(`🎉 Generated ${completed} ads!`);
+}
+
+async function generateSingleAd(item) {
+  const profile = item.profile;
+  
+  // Build prompt for this profile
+  const prompt = buildAdPrompt(profile);
+  
+  // Call generation API
+  const response = await fetch(GENERATE_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      prompt: prompt,
+      image_url: selectedProductUrl,
+      aspect_ratio: config.aspectRatio
+    })
+  });
+  
+  if (!response.ok) {
+    throw new Error(`API error: ${response.status}`);
+  }
+  
+  const result = await response.json();
+  const imageUrl = result.images?.[0]?.url || result.image?.url;
+  
+  if (!imageUrl) {
+    throw new Error('No image in response');
+  }
+  
+  return imageUrl;
+}
+
+function buildAdPrompt(profile) {
+  const brandName = currentBrand?.name || 'Brand';
+  const brandDesc = currentBrand?.description || '';
+  const primaryColor = currentBrand?.primary_color || '#000000';
+  const secondaryColor = currentBrand?.secondary_color || '#FFFFFF';
+  
+  const styleDesc = {
+    'match': 'Match the exact style, layout, and visual feel of the reference ad',
+    'ugc': 'UGC authentic style - iPhone photo quality, natural lighting, real person feel',
+    'premium': 'Premium polished style - studio lighting, professional photography',
+    'minimal': 'Minimal clean style - lots of white space, simple composition',
+    'bold': 'Bold high-contrast style - saturated colors, strong typography'
+  };
+  
+  return `Create a Facebook/Instagram static ad for ${brandName}.
+
+REFERENCE AD STYLE:
+Recreate the layout, structure, and visual composition of the reference image.
+${styleDesc[config.visualStyle] || styleDesc['match']}
+
+BRAND:
+- Name: ${brandName}
+- Description: ${brandDesc}
+- Primary Color: ${primaryColor}
+- Secondary Color: ${secondaryColor}
+
+TARGET CUSTOMER PROFILE:
+- Persona: ${profile.persona_name}
+- Pain Point: ${(profile.pain_points || [])[0] || 'general concern'}
+- Desire: ${(profile.desires || [])[0] || 'solution'}
+- Emotional Trigger: ${profile.emotional_trigger || 'trust'}
+- Messaging Angle: ${profile.messaging_angle || 'benefit-focused'}
+
+REQUIREMENTS:
+1. Use the reference ad's layout structure as a template
+2. Replace the product with our product image
+3. Adapt the headline and copy to target this specific customer profile's pain point
+4. Use brand colors: ${primaryColor} and ${secondaryColor}
+5. Make it scroll-stopping and conversion-focused
+${config.customCta ? `6. Include CTA: "${config.customCta}"` : ''}
+
+HEADLINE DIRECTION:
+Write a headline that speaks directly to "${profile.persona_name}" addressing their pain point of "${(profile.pain_points || [])[0] || 'their needs'}".
+Emotion to convey: ${profile.emotional_trigger || 'trust'}
+
+Aspect ratio: ${config.aspectRatio}
+Resolution: High quality, 2K`;
+}
+
+async function saveGeneration(item) {
+  if (!currentBrand) return;
+  
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/generations`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        brand_id: currentBrand.id,
+        mode: 'campaign',
+        ad_type: 'campaign-batch',
+        prompt: buildAdPrompt(item.profile).substring(0, 5000),
+        image_url: item.imageUrl,
+        status: 'completed',
+        model: 'nano-banana-2',
+        aspect_ratio: config.aspectRatio,
+        cost: 0.05,
+        persona_id: item.profile.id
+      })
+    });
+  } catch (err) {
+    console.error('Error saving generation:', err);
+  }
+}
+
+function renderResultsGrid() {
+  const grid = document.getElementById('resultsGrid');
+  
+  grid.innerHTML = generationPlan.map((item, idx) => {
+    const statusClass = item.status === 'generating' ? 'generating' : 
+                        item.status === 'success' ? 'success' : 
+                        item.status === 'error' ? 'error' : '';
+    
+    return `
+      <div class="result-card ${statusClass}">
+        ${item.status === 'success' && item.imageUrl ? `
+          <img src="${item.imageUrl}" alt="Generated Ad" class="result-image" loading="lazy">
+          <div class="result-actions">
+            <button class="result-action" onclick="window.open('${item.imageUrl}', '_blank')" title="Open">↗</button>
+            <button class="result-action" onclick="downloadImage('${item.imageUrl}')" title="Download">📥</button>
+          </div>
+        ` : item.status === 'generating' ? `
+          <div class="result-placeholder">
+            <div class="result-spinner"></div>
+          </div>
+        ` : item.status === 'error' ? `
+          <div class="result-placeholder">
+            <div class="result-error-icon">⚠️</div>
+          </div>
+        ` : `
+          <div class="result-placeholder">
+            <div style="color: var(--muted);">${idx + 1}</div>
+          </div>
+        `}
+        <div class="result-info">
+          <div class="result-profile">${escapeHtml(item.profile.persona_name)}</div>
+          <div class="result-status">${
+            item.status === 'generating' ? 'Generating...' :
+            item.status === 'success' ? 'Complete' :
+            item.status === 'error' ? 'Failed' : 'Pending'
+          }</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function downloadAll() {
+  const successful = generationPlan.filter(item => item.status === 'success' && item.imageUrl);
+  if (successful.length === 0) {
+    showToast('No images to download');
+    return;
+  }
+  
+  successful.forEach((item, i) => {
+    setTimeout(() => {
+      window.open(item.imageUrl, '_blank');
+    }, i * 500);
+  });
+  
+  showToast(`Opening ${successful.length} images...`);
+}
+
+function downloadImage(url) {
+  window.open(url, '_blank');
+}
+
+function startNewCampaign() {
+  // Reset state
+  referenceImageUrl = null;
+  selectedProductId = null;
+  selectedProductUrl = null;
+  selectedProfiles = [];
+  generationPlan = [];
+  generationResults = [];
+  isGenerating = false;
+  
+  // Reset UI
+  document.querySelectorAll('.step-item').forEach(el => {
+    el.classList.remove('completed', 'active');
+  });
+  document.querySelector('.step-item[data-step="1"]').classList.add('active');
+  document.querySelectorAll('.step-item:not([data-step="1"])').forEach(el => {
+    el.classList.add('locked');
+  });
+  
+  clearReference({ stopPropagation: () => {} });
+  renderProductAssets();
+  renderProfiles();
+  
+  currentStep = 1;
+  updateStepUI();
+}
+
+// ============ HELPERS ============
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// Drag and drop support
+const uploadZone = document.getElementById('referenceUpload');
+if (uploadZone) {
+  uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.style.borderColor = 'var(--lime)';
+    uploadZone.style.background = 'var(--lime-dim)';
+  });
+  
+  uploadZone.addEventListener('dragleave', () => {
+    uploadZone.style.borderColor = '';
+    uploadZone.style.background = '';
+  });
+  
+  uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.style.borderColor = '';
+    uploadZone.style.background = '';
+    
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (ev) => setReferenceImage(ev.target.result);
+      reader.readAsDataURL(file);
+    }
+  });
+}
+</script>
+</body>
+</html>
