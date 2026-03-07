@@ -78,7 +78,7 @@ Make each variant prompt specific enough to paste directly into an image generat
 
     // Call Gemini API with vision
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -137,7 +137,7 @@ Make each variant prompt specific enough to paste directly into an image generat
       success: true,
       analysis: analysis,
       sourceImage: imageUrl,
-      model: 'gemini-2.0-flash'
+      model: 'gemini-2.5-flash-preview-05-20'
     });
 
   } catch (error) {
