@@ -1022,18 +1022,47 @@ body {
           <p class="content-subtitle">Choose which customer profiles to target. Each profile will generate ads with different messaging angles.</p>
         </div>
 
+        <!-- Generate Profiles Card -->
+        <div class="card" id="generateProfilesCard">
+          <div class="card-title">Generate Customer Profiles</div>
+          <p style="color: var(--muted-light); margin-bottom: 16px;">
+            AI will analyze your product and create 6 distinct customer profiles with unique pain points, desires, and messaging angles.
+          </p>
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="generateProfiles()" id="generateProfilesBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                <path d="M12 3v18M3 12h18"/>
+              </svg>
+              Generate with AI
+            </button>
+            <div id="generateStatus" style="font-size: 12px; color: var(--muted);"></div>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-title">Available Profiles</div>
           
           <div style="display: flex; gap: 12px; margin-bottom: 16px;">
             <button class="btn btn-secondary" onclick="selectAllProfiles()">Select All</button>
             <button class="btn btn-secondary" onclick="deselectAllProfiles()">Deselect All</button>
+            <button class="btn btn-secondary" onclick="generateProfiles()" style="margin-left: auto;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                <path d="M21 12a9 9 0 1 1-9-9"/>
+                <path d="M21 3v9h-9"/>
+              </svg>
+              Regenerate
+            </button>
           </div>
 
           <div class="profiles-grid" id="profilesGrid">
             <div class="empty-state">
-              <div class="empty-icon">🧠</div>
-              <div>No profiles found. Generate profiles in Brand Intelligence first.</div>
+              <div class="empty-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+                </svg>
+              </div>
+              <div>No profiles yet. Click "Generate with AI" above to create customer profiles.</div>
             </div>
           </div>
         </div>
@@ -1451,19 +1480,146 @@ function selectProduct(id, url) {
 }
 
 // ============ STEP 3: PROFILE SELECTION ============
+async function generateProfiles() {
+  const btn = document.getElementById('generateProfilesBtn');
+  const status = document.getElementById('generateStatus');
+  
+  if (!currentBrand) {
+    showToast('Please select a brand first');
+    return;
+  }
+  
+  // Get product context
+  let productContext = '';
+  if (selectedProductAsset) {
+    const asset = productAssets.find(a => a.id === selectedProductAsset);
+    if (asset) {
+      productContext = `Product: ${asset.name || 'Product image selected'}`;
+    }
+  }
+  
+  btn.disabled = true;
+  btn.innerHTML = `
+    <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; animation: spin 1s linear infinite;">
+      <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+      <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+    </svg>
+    Generating...
+  `;
+  status.textContent = 'AI is analyzing your product and creating profiles...';
+  
+  try {
+    const response = await fetch('/api/intelligence/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        brandName: currentBrand.name,
+        brandDescription: currentBrand.description || productContext,
+        numProfiles: 6
+      })
+    });
+    
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error || 'Failed to generate profiles');
+    }
+    
+    const data = await response.json();
+    
+    if (!data.profiles || data.profiles.length === 0) {
+      throw new Error('No profiles generated');
+    }
+    
+    // Save profiles to Supabase
+    const profilesToSave = data.profiles.map(p => ({
+      brand_id: currentBrand.id,
+      persona_name: p.name,
+      pain_points: p.painPoints || [],
+      desires: p.desires || [],
+      emotional_trigger: p.emotion || '',
+      messaging_angle: p.angle || '',
+      copy_hooks: p.copyHooks || [],
+      visual_direction: p.visualDirection || '',
+      objections: p.objections || [],
+      source: 'ai_generated'
+    }));
+    
+    // Delete old AI-generated profiles for this brand
+    await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence?brand_id=eq.${currentBrand.id}&source=eq.ai_generated`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    
+    // Insert new profiles
+    const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(profilesToSave)
+    });
+    
+    if (!insertRes.ok) {
+      console.error('Supabase insert error:', await insertRes.text());
+      throw new Error('Failed to save profiles');
+    }
+    
+    // Reload profiles
+    await loadProfiles();
+    
+    // Auto-select all new profiles
+    selectAllProfiles();
+    
+    status.textContent = `✓ ${data.profiles.length} profiles generated`;
+    status.style.color = 'var(--success)';
+    showToast(`${data.profiles.length} customer profiles created!`);
+    
+  } catch (err) {
+    console.error('Profile generation error:', err);
+    status.textContent = `Error: ${err.message}`;
+    status.style.color = 'var(--danger)';
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+        <path d="M12 3v18M3 12h18"/>
+      </svg>
+      Generate with AI
+    `;
+  }
+}
+
 function renderProfiles() {
   const grid = document.getElementById('profilesGrid');
+  const generateCard = document.getElementById('generateProfilesCard');
   
   if (profiles.length === 0) {
+    // Show generate card prominently when no profiles
+    if (generateCard) generateCard.style.display = 'block';
+    
     grid.innerHTML = `
       <div class="empty-state" style="grid-column: 1 / -1;">
-        <div class="empty-icon">🧠</div>
-        <div>No customer profiles found.</div>
-        <a href="/creative-studio.html" class="btn btn-secondary" style="margin-top: 16px;">Generate Profiles in Studio</a>
+        <div class="empty-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+          </svg>
+        </div>
+        <div>No profiles yet. Click "Generate with AI" above.</div>
       </div>
     `;
     return;
   }
+  
+  // Collapse generate card when we have profiles
+  if (generateCard) generateCard.style.display = 'none';
   
   grid.innerHTML = profiles.map(p => `
     <div class="profile-card ${selectedProfiles.includes(p.id) ? 'selected' : ''}" onclick="toggleProfile('${p.id}')">
