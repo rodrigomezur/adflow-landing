@@ -1383,11 +1383,9 @@ body {
 const SUPABASE_URL = 'https://ykmdpxtnmqkfcscmmjfv.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrbWRweHRubXFrZmNzY21tamZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDc0OTMsImV4cCI6MjA4NzE4MzQ5M30.EfvqLYzRdNitCpqrYlrytYwcry6T1CuGUgGzE4ZXU7Q';
 const ADMIN_PASSWORD = 'adflow2024';
-const FAL_KEY = '076052fc-ba66-486e-a2fb-c72a61d7d287:793f2545d40b14adb1e99dd34aa81a5f';
 
-// fal.ai configuration
-const FAL_MODEL = 'fal-ai/flux-pro/v1.1'; // High quality image generation
-const FAL_ENDPOINT = 'https://fal.run';
+// API endpoint (serverless function handles fal.ai securely)
+const GENERATE_API = '/api/generate';
 
 // State
 let brands = [];
@@ -2033,16 +2031,11 @@ async function generateAd() {
     const productAssetId = document.getElementById('productAsset').value;
     const productAsset = assets.find(a => a.id === productAssetId);
     
-    // Prepare fal.ai request
+    // Prepare request for our serverless API
     const requestBody = {
       prompt: prompt,
-      image_size: {
-        width: dimensions.width,
-        height: dimensions.height
-      },
-      num_images: 1,
-      enable_safety_checker: false,
-      safety_tolerance: "6"
+      width: dimensions.width,
+      height: dimensions.height
     };
     
     // If product image selected, add as reference
@@ -2051,11 +2044,10 @@ async function generateAd() {
       requestBody.strength = 0.75; // How much to keep from reference
     }
     
-    // Call fal.ai API
-    const response = await fetch(`${FAL_ENDPOINT}/${FAL_MODEL}`, {
+    // Call our serverless API (which calls fal.ai securely)
+    const response = await fetch(GENERATE_API, {
       method: 'POST',
       headers: {
-        'Authorization': `Key ${FAL_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(requestBody)
@@ -2124,7 +2116,7 @@ async function saveGeneration(prompt, imageUrl, productAssetId) {
     prompt: prompt,
     image_url: imageUrl,
     status: 'completed',
-    model: FAL_MODEL,
+    model: 'fal-ai/flux-pro/v1.1',
     aspect_ratio: aspectRatioMap[platform] || '1:1',
     cost: 0.05, // Approximate cost per generation
     product_asset_id: productAssetId || null,
