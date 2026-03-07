@@ -100,9 +100,14 @@ OUTPUT FORMAT - Return ONLY valid JSON (no markdown, no explanation):
 RULES:
 - The prompt should describe the EXACT layout from the reference image
 - Describe WHERE elements are positioned (top, center, bottom, left, right)
-- Include specific text that should appear (headlines, CTAs)
+- ALWAYS include the exact TEXT that should appear on the ad:
+  * Write out the EXACT headline text in quotes
+  * Write out any subheadline or body text in quotes
+  * Write out the CTA button text in quotes
+  * Example: 'Large white text at top reading "TRANSFORM YOUR SKIN IN 30 DAYS"'
 - For the product: describe the EXACT product from the product image, not a generic version
-- Keep prompt under 400 words but highly detailed`
+- Keep prompt under 400 words but highly detailed
+- Text is CRITICAL - the ad MUST have readable text overlays`
     });
 
     // Add reference image if we have it

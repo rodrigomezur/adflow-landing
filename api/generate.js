@@ -103,13 +103,20 @@ export default async function handler(req, res) {
         enhancedPrompt += ` The product shown should match exactly: ${product_image_url}`;
       }
       
+      // IMPORTANT: Do NOT use "auto" - explicitly set the aspect ratio
+      // Valid values: 21:9, 16:9, 3:2, 4:3, 5:4, 1:1, 4:5, 3:4, 2:3, 9:16
+      const validAspectRatios = ['21:9', '16:9', '3:2', '4:3', '5:4', '1:1', '4:5', '3:4', '2:3', '9:16'];
+      const aspectRatioToUse = validAspectRatios.includes(finalAspectRatio) ? finalAspectRatio : '4:5';
+      
       requestBody = {
         prompt: enhancedPrompt,
         image_url: refImage,
-        aspect_ratio: finalAspectRatio
+        aspect_ratio: aspectRatioToUse,  // Force specific aspect ratio, NOT auto
+        num_images: 1
       };
       
       console.log('Using Nano Banana Pro Edit (image-to-image)');
+      console.log('Forcing aspect ratio:', aspectRatioToUse);
       console.log('Reference image:', refImage.substring(0, 100));
       
     } else {
