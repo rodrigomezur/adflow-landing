@@ -1132,8 +1132,13 @@ body {
           <div class="card-title">Optional Settings</div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div>
-              <label class="url-input-label">Custom CTA (optional)</label>
-              <input type="text" class="form-input" id="customCta" placeholder="e.g., Shop Now, Learn More">
+              <label class="url-input-label">Ad Language</label>
+              <select class="form-select" id="adLanguage" style="width: 100%;" onchange="updateConfig()">
+                <option value="es" selected>Español</option>
+                <option value="en">English</option>
+                <option value="pt">Português</option>
+                <option value="fr">Français</option>
+              </select>
             </div>
             <div>
               <label class="url-input-label">Visual Style</label>
@@ -1144,6 +1149,10 @@ body {
                 <option value="minimal">Minimal / Clean</option>
                 <option value="bold">Bold / High Contrast</option>
               </select>
+            </div>
+            <div>
+              <label class="url-input-label">Custom CTA (optional)</label>
+              <input type="text" class="form-input" id="customCta" placeholder="Ej: Comprar Ahora, Ver Más">
             </div>
           </div>
         </div>
@@ -1262,7 +1271,8 @@ let config = {
   adsPerProfile: 1,
   aspectRatio: '4:5',
   customCta: '',
-  visualStyle: 'match'
+  visualStyle: 'match',
+  language: 'es'
 };
 
 // Generation state
@@ -1731,6 +1741,7 @@ function updateConfig() {
   config.aspectRatio = document.getElementById('aspectRatio').value;
   config.customCta = document.getElementById('customCta').value;
   config.visualStyle = document.getElementById('visualStyle').value;
+  config.language = document.getElementById('adLanguage').value;
   
   document.getElementById('adsPerProfileValue').textContent = config.adsPerProfile;
   document.getElementById('aspectRatioValue').textContent = config.aspectRatio;
@@ -1832,7 +1843,10 @@ async function startGeneration() {
         },
         profiles: selectedProfiles.map(id => profiles.find(p => p.id === id)).filter(Boolean),
         numVariations: generationPlan.length,
-        aspectRatio: config.aspectRatio
+        aspectRatio: config.aspectRatio,
+        language: config.language,
+        visualStyle: config.visualStyle,
+        customCta: config.customCta
       })
     });
     

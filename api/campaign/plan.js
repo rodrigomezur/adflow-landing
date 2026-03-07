@@ -20,8 +20,20 @@ export default async function handler(req, res) {
       profiles,             // Array of customer profiles
       numVariations,        // Total number of variations to generate
       aspectRatio,          // '1:1', '4:5', '9:16'
+      language,             // 'es', 'en', 'pt', 'fr'
+      visualStyle,          // 'match', 'ugc', 'premium', etc.
+      customCta,            // Custom CTA text
       variationStrategy     // 'profiles' | 'angles' | 'mixed'
     } = req.body;
+
+    // Language mapping
+    const languageNames = {
+      'es': 'Spanish (Español)',
+      'en': 'English',
+      'pt': 'Portuguese (Português)',
+      'fr': 'French (Français)'
+    };
+    const outputLanguage = languageNames[language] || 'Spanish (Español)';
 
     if (!referenceImageUrl) {
       return res.status(400).json({ error: 'referenceImageUrl is required' });
@@ -62,6 +74,8 @@ export default async function handler(req, res) {
     // System prompt for Creative Director
     parts.push({
       text: `You are a Creative Director for Facebook/Instagram advertising. Your job is to analyze a reference ad and create ${totalVariations} unique ad variations.
+
+CRITICAL: All text content (headlines, subheadlines, CTAs) MUST be in ${outputLanguage}. This is mandatory.
 
 TASK:
 1. Analyze the reference ad image in detail (layout, style, colors, text placement, product placement)
@@ -114,13 +128,16 @@ Create variations targeting these angles:
 `}
 
 RULES FOR EACH PROMPT:
+- ALL TEXT (headlines, subheadlines, CTAs) MUST BE IN ${outputLanguage}
 - Include EXACT text that should appear (headlines in quotes)
 - Describe the layout based on the reference ad
 - Specify the product from the product image
 - Use brand colors: ${brandKit?.colors?.primary || '#000'} and ${brandKit?.colors?.secondary || '#FFF'}
 - Each prompt should be 150-250 words
 - Include negative_prompt for each variation
+${customCta ? `- Use this CTA when appropriate: "${customCta}"` : ''}
 
+LANGUAGE: ${outputLanguage} (ALL ad copy must be in this language)
 Aspect ratio for all: ${aspectRatio || '4:5'}`
     });
 
