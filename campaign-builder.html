@@ -1788,7 +1788,14 @@ function renderPlan() {
 
 // ============ STEP 6: GENERATION ============
 async function startGeneration() {
-  if (isGenerating) return;
+  console.log('startGeneration called!');
+  console.log('isGenerating:', isGenerating);
+  console.log('generationPlan:', generationPlan);
+  
+  if (isGenerating) {
+    console.log('Already generating, returning');
+    return;
+  }
   isGenerating = true;
   
   // Move to step 6
