@@ -2968,9 +2968,85 @@ async function deleteAsset(assetId) {
   }
 }
 
+// ============ BRAND INTELLIGENCE FUNCTIONS ============
+async function generateIntelligence() {
+  if (!currentBrand) {
+    showToast('Please select a brand first');
+    return;
+  }
+  
+  const researchInput = document.getElementById('researchInput').value.trim();
+  
+  const btn = document.querySelector('#page-intelligence .btn-primary');
+  btn.disabled = true;
+  btn.textContent = '🧠 Generating...';
+  
+  try {
+    const response = await fetch('/api/intelligence/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        brandName: currentBrand.name,
+        brandDescription: currentBrand.description,
+        researchReport: researchInput,
+        numProfiles: 10
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to generate profiles');
+    }
+    
+    const result = await response.json();
+    
+    if (result.profiles && result.profiles.length > 0) {
+      // Save each profile to database
+      for (const profile of result.profiles) {
+        const data = {
+          brand_id: currentBrand.id,
+          persona_name: profile.name,
+          persona_description: profile.description,
+          pain_points: profile.painPoints || [],
+          desires: profile.desires || [],
+          objections: profile.objections || [],
+          emotional_trigger: profile.emotion,
+          messaging_angle: profile.angle,
+          visual_style: profile.visualDirection,
+          copy_hooks: profile.copyHooks || [],
+          source: 'ai_generated'
+        };
+        
+        await fetch(`${SUPABASE_URL}/rest/v1/brand_intelligence`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+      }
+      
+      // Reload personas
+      await loadPersonas();
+      showToast(`${result.profiles.length} profiles generated!`);
+    } else {
+      showToast('No profiles generated');
+    }
+    
+  } catch (error) {
+    console.error('Error generating intelligence:', error);
+    showToast('Error generating profiles');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🧠 Generate Personas with AI';
+  }
+}
+
 // ============ COMPETITOR MODE FUNCTIONS ============
 let competitorImageUrl = null;
 let generatedVariations = [];
+let reverseAnalysis = null;
 
 // Preview competitor image when URL changes
 document.getElementById('competitorUrl')?.addEventListener('input', (e) => {
@@ -3004,25 +3080,94 @@ async function analyzeCompetitorAd() {
   
   const btn = document.getElementById('analyzeBtn');
   btn.disabled = true;
-  btn.textContent = '🔍 Analyzing...';
+  btn.textContent = '🔍 Analyzing with AI...';
   
   competitorImageUrl = url;
   
-  // For now, we'll do a basic analysis based on common ad patterns
-  // In a full implementation, this would use Claude Vision API
-  setTimeout(() => {
+  try {
+    // Call reverse engineering API
+    const response = await fetch('/api/prompt/reverse', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        imageUrl: url,
+        brandName: currentBrand?.name || '',
+        numVariants: 5
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Analysis failed');
+    }
+    
+    const result = await response.json();
+    reverseAnalysis = result.analysis;
+    
     // Show analysis steps
     document.getElementById('competitor-step-2').style.display = 'block';
     document.getElementById('competitor-step-3').style.display = 'block';
     
-    // Pre-fill with placeholder analysis (user can adjust)
-    document.getElementById('extractedDescription').value = 
-      'Analyze the uploaded ad and describe its key visual elements here. Include:\n' +
-      '- Layout structure (split screen, centered product, etc.)\n' +
-      '- Color scheme\n' +
-      '- Text placement and style\n' +
-      '- Product positioning\n' +
-      '- Overall mood/aesthetic';
+    // Fill in analysis results
+    if (reverseAnalysis) {
+      // Set detected ad type
+      if (reverseAnalysis.adType) {
+        const adTypeMap = {
+          'ugc': 'ugc-image',
+          'before-after': 'before-after',
+          'testimonial': 'testimonial',
+          'social proof': 'testimonial',
+          'feature': 'feature-callout',
+          'comparison': 'us-vs-them',
+          'offer': 'big-callout',
+          'notes': 'notes-app'
+        };
+        const detected = Object.entries(adTypeMap).find(([key]) => 
+          reverseAnalysis.adType.toLowerCase().includes(key)
+        );
+        if (detected) {
+          document.getElementById('detectedAdType').value = detected[1];
+        }
+      }
+      
+      // Set visual style
+      if (reverseAnalysis.layoutAnalysis?.visualStyle) {
+        const styleMap = {
+          'ugc': 'ugc',
+          'authentic': 'ugc',
+          'premium': 'premium',
+          'polished': 'premium',
+          'minimal': 'minimal',
+          'clean': 'minimal',
+          'bold': 'bold'
+        };
+        const detected = Object.entries(styleMap).find(([key]) => 
+          reverseAnalysis.layoutAnalysis.visualStyle.toLowerCase().includes(key)
+        );
+        if (detected) {
+          document.getElementById('detectedStyle').value = detected[1];
+        }
+      }
+      
+      // Set extracted hook
+      if (reverseAnalysis.copySkeleton?.headline) {
+        document.getElementById('extractedHook').value = reverseAnalysis.copySkeleton.headline;
+      }
+      
+      // Set description
+      let description = '';
+      if (reverseAnalysis.layoutAnalysis) {
+        const la = reverseAnalysis.layoutAnalysis;
+        description = `Layout: ${la.structure || 'N/A'}\n`;
+        description += `Text Placement: ${la.textPlacement || 'N/A'}\n`;
+        description += `Product Placement: ${la.productPlacement || 'N/A'}\n`;
+        description += `Colors: ${la.colorScheme || 'N/A'}\n`;
+        description += `Style: ${la.visualStyle || 'N/A'}`;
+      }
+      if (reverseAnalysis.basePrompt) {
+        description += `\n\nBase Prompt:\n${reverseAnalysis.basePrompt}`;
+      }
+      document.getElementById('extractedDescription').value = description;
+    }
     
     // Populate product asset dropdown
     const select = document.getElementById('competitorProductAsset');
@@ -3030,13 +3175,34 @@ async function analyzeCompetitorAd() {
     select.innerHTML = '<option value="">Choose a product asset...</option>' +
       productAssets.map(a => `<option value="${a.id}">${escapeHtml(a.name)}</option>`).join('');
     
+    showToast('Ad analyzed! Customize and generate variations.');
+    document.getElementById('competitor-step-2').scrollIntoView({ behavior: 'smooth' });
+    
+  } catch (error) {
+    console.error('Analysis error:', error);
+    
+    // Fallback to manual mode
+    document.getElementById('competitor-step-2').style.display = 'block';
+    document.getElementById('competitor-step-3').style.display = 'block';
+    
+    document.getElementById('extractedDescription').value = 
+      'AI analysis unavailable. Please describe the ad manually:\n' +
+      '- Layout structure (split screen, centered product, etc.)\n' +
+      '- Color scheme\n' +
+      '- Text placement and style\n' +
+      '- Product positioning\n' +
+      '- Overall mood/aesthetic';
+    
+    const select = document.getElementById('competitorProductAsset');
+    const productAssets = assets.filter(a => a.category === 'product');
+    select.innerHTML = '<option value="">Choose a product asset...</option>' +
+      productAssets.map(a => `<option value="${a.id}">${escapeHtml(a.name)}</option>`).join('');
+    
+    showToast('Using manual mode - describe the ad yourself');
+  } finally {
     btn.disabled = false;
     btn.textContent = '🔍 Analyze Ad';
-    showToast('Ad analyzed! Customize and generate variations.');
-    
-    // Scroll to analysis
-    document.getElementById('competitor-step-2').scrollIntoView({ behavior: 'smooth' });
-  }, 1500);
+  }
 }
 
 async function generateCompetitorVariations() {
