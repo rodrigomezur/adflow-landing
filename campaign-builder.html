@@ -1600,10 +1600,10 @@ function renderProfiles() {
   const grid = document.getElementById('profilesGrid');
   const generateCard = document.getElementById('generateProfilesCard');
   
+  // Always show generate card
+  if (generateCard) generateCard.style.display = 'block';
+  
   if (profiles.length === 0) {
-    // Show generate card prominently when no profiles
-    if (generateCard) generateCard.style.display = 'block';
-    
     grid.innerHTML = `
       <div class="empty-state" style="grid-column: 1 / -1;">
         <div class="empty-icon">
@@ -1617,9 +1617,6 @@ function renderProfiles() {
     `;
     return;
   }
-  
-  // Collapse generate card when we have profiles
-  if (generateCard) generateCard.style.display = 'none';
   
   grid.innerHTML = profiles.map(p => `
     <div class="profile-card ${selectedProfiles.includes(p.id) ? 'selected' : ''}" onclick="toggleProfile('${p.id}')">
