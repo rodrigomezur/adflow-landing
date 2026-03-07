@@ -1867,84 +1867,119 @@ function renderDynamicFields() {
   const container = document.getElementById('dynamicFields');
   let html = '';
   
+  // Common tip about product image
+  const productTip = `<div style="background: var(--lime-dim); border: 1px solid var(--lime-border); padding: 12px; margin-bottom: 16px; font-size: 12px;">
+    <strong style="color: var(--lime);">TIP:</strong> Select a product image above. The AI will use it as reference for the ad.
+  </div>`;
+  
   switch(selectedAdType) {
     case 'before-after':
-      html = `
+      html = productTip + `
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Before State</label>
-            <input type="text" class="form-input" id="beforeState" placeholder="Problem/pain state">
+            <label class="form-label">Before State (visual description)</label>
+            <textarea class="form-textarea" id="beforeState" style="min-height: 80px;" placeholder="Describe the 'before' state visually:&#10;e.g., Tired expression, dull skin, visible dark circles, hunched posture, low energy body language"></textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">After State</label>
-            <input type="text" class="form-input" id="afterState" placeholder="Result/benefit state">
+            <label class="form-label">After State (visual description)</label>
+            <textarea class="form-textarea" id="afterState" style="min-height: 80px;" placeholder="Describe the 'after' state visually:&#10;e.g., Radiant glowing skin, bright eyes, confident smile, energetic posture, healthy appearance"></textarea>
           </div>
         </div>
         <div class="form-group">
           <label class="form-label">Timeframe</label>
-          <input type="text" class="form-input" id="timeframe" placeholder="e.g., 30 Days">
+          <input type="text" class="form-input" id="timeframe" placeholder="e.g., 30 Days, 2 Weeks, Day 1 vs Day 90">
         </div>
       `;
       break;
     case 'big-callout':
-      html = `
+      html = productTip + `
         <div class="form-group">
-          <label class="form-label">Main Headline</label>
-          <input type="text" class="form-input" id="headline" placeholder="e.g., 50% OFF TODAY">
+          <label class="form-label">Main Headline (keep under 6 words for impact)</label>
+          <input type="text" class="form-input" id="headline" placeholder="e.g., 50% OFF TODAY ONLY" style="font-size: 18px; font-weight: bold;">
         </div>
         <div class="form-group">
           <label class="form-label">Secondary Text</label>
-          <input type="text" class="form-input" id="subheadline" placeholder="e.g., Use code SAVE50">
+          <input type="text" class="form-input" id="subheadline" placeholder="e.g., Use code SAVE50 at checkout">
+        </div>
+        <div style="font-size: 11px; color: var(--muted); margin-top: 8px;">
+          This ad type prioritizes MASSIVE readable text. Best for sales, offers, and direct response.
         </div>
       `;
       break;
     case 'feature-callout':
-      html = `
+      html = productTip + `
         <div class="form-group">
-          <label class="form-label">Features/Benefits (one per line)</label>
-          <textarea class="form-textarea" id="features" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea>
+          <label class="form-label">Features/Benefits (3-6 points, one per line)</label>
+          <textarea class="form-textarea" id="features" style="min-height: 120px;" placeholder="List your key selling points:&#10;Premium Quality Materials&#10;30-Day Money Back Guarantee&#10;Free Shipping Worldwide&#10;Lab Tested & Certified&#10;Made in USA"></textarea>
+        </div>
+        <div style="font-size: 11px; color: var(--muted); margin-top: 8px;">
+          Product will be center hero with features arranged around it in infographic style.
         </div>
       `;
       break;
     case 'testimonial':
-      html = `
+      html = productTip + `
         <div class="form-group">
-          <label class="form-label">Testimonial Quote</label>
-          <textarea class="form-textarea" id="testimonial" placeholder="Customer testimonial text..."></textarea>
+          <label class="form-label">Testimonial Quote (authentic customer voice)</label>
+          <textarea class="form-textarea" id="testimonial" style="min-height: 100px;" placeholder="Write like a real customer would:&#10;e.g., I was skeptical at first, but after 3 weeks I noticed real changes. My husband even commented on it! Finally something that actually works. 10/10 recommend."></textarea>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Customer Name</label>
-            <input type="text" class="form-input" id="customerName" placeholder="Sarah M.">
+            <input type="text" class="form-input" id="customerName" placeholder="e.g., Sarah M., Austin TX">
           </div>
           <div class="form-group">
-            <label class="form-label">Rating</label>
+            <label class="form-label">Star Rating</label>
             <select class="form-select" id="rating">
-              <option value="5">5 Stars</option>
-              <option value="4">4 Stars</option>
+              <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+              <option value="4">⭐⭐⭐⭐ 4 Stars</option>
             </select>
           </div>
         </div>
       `;
       break;
     case 'ugc-image':
-      html = `
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Creator Description</label>
-            <input type="text" class="form-input" id="creator" placeholder="e.g., Woman, late 20s">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Setting</label>
-            <input type="text" class="form-input" id="setting" placeholder="e.g., Bathroom, natural light">
-          </div>
+      html = productTip + `
+        <div class="form-group">
+          <label class="form-label">Creator Description (who appears in the ad)</label>
+          <textarea class="form-textarea" id="creator" style="min-height: 60px;" placeholder="Describe the person in the ad:&#10;e.g., Woman, late 20s, natural makeup, casual oversized sweater, approachable smile, relatable not model-perfect"></textarea>
         </div>
         <div class="form-group">
-          <label class="form-label">Text Overlay</label>
-          <input type="text" class="form-input" id="overlay" placeholder="e.g., pov: you finally find skincare that works">
+          <label class="form-label">Setting / Environment</label>
+          <input type="text" class="form-input" id="setting" placeholder="e.g., Bathroom with natural window light, lived-in but clean, morning routine vibe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Text Overlay (optional, casual tone)</label>
+          <input type="text" class="form-input" id="overlay" placeholder="e.g., pov: you finally find something that works 😭">
+        </div>
+        <div style="font-size: 11px; color: var(--muted); margin-top: 8px;">
+          UGC style = authentic, not polished. Should look like a real person's Instagram story.
         </div>
       `;
       break;
+    case 'us-vs-them':
+      html = productTip + `
+        <div style="font-size: 11px; color: var(--muted); margin-bottom: 16px;">
+          This ad compares your brand vs competitors. Uses your Brand Kit USPs automatically.
+        </div>
+      `;
+      break;
+    case 'pr-screenshot':
+      html = productTip + `
+        <div style="font-size: 11px; color: var(--muted); margin-bottom: 16px;">
+          Creates an "As Seen In" credibility ad. Product centered with publication logo bar below.
+        </div>
+      `;
+      break;
+    case 'notes-app':
+      html = productTip + `
+        <div style="font-size: 11px; color: var(--muted); margin-bottom: 16px;">
+          Pattern-interrupt format. Looks like someone's iPhone notes with product discovery. High CTR format.
+        </div>
+      `;
+      break;
+    default:
+      html = productTip;
   }
   
   container.innerHTML = html;
@@ -1996,74 +2031,445 @@ function buildPrompt() {
   const platform = document.getElementById('platform').value;
   const style = document.getElementById('style').value;
   const aspectRatios = {
-    'instagram-feed': '1:1',
-    'instagram-stories': '9:16',
-    'facebook-feed': '4:5',
-    'tiktok': '9:16'
+    'instagram-feed': '1:1 (1080x1080)',
+    'instagram-stories': '9:16 (1080x1920)',
+    'facebook-feed': '4:5 (1080x1350)',
+    'tiktok': '9:16 (1080x1920)'
   };
   
-  let prompt = '';
   const brandName = currentBrand?.name || 'Brand';
+  const brandDesc = currentBrand?.description || '';
   const primaryColor = currentBrand?.primary_color || '#C8FF00';
   const secondaryColor = currentBrand?.secondary_color || '#080D1A';
+  const accentColor = currentBrand?.accent_color || '#FFFFFF';
+  const tone = currentBrand?.tone || 'professional';
+  const usps = currentBrand?.unique_selling_points || [];
+  const audience = currentBrand?.target_audience || '';
+  const industry = currentBrand?.industry || 'ecommerce';
+  
+  // Get selected product asset
+  const productAssetId = document.getElementById('productAsset').value;
+  const productAsset = assets.find(a => a.id === productAssetId);
   
   // Get persona if selected
   const personaId = document.getElementById('targetPersona').value;
   const persona = personas.find(p => p.id === personaId);
   
+  // Style descriptions
+  const styleDescriptions = {
+    'ugc': 'Authentic UGC aesthetic - iPhone photo quality, natural lighting, slight grain, not overly edited. Real person, real environment. Looks like content a real customer would post.',
+    'premium': 'Premium brand photography - studio lighting, perfect composition, high-end aesthetic. Clean, polished, aspirational but not cold.',
+    'minimal': 'Minimal clean design - lots of white space, simple composition, elegant typography. Less is more approach.',
+    'bold': 'Bold high-contrast design - saturated colors, strong typography, eye-catching. Designed to stop the scroll.'
+  };
+  
+  let prompt = '';
+  
   switch(selectedAdType) {
     case 'ugc-image':
-      const creator = document.getElementById('creator')?.value || 'person, mid-20s';
-      const setting = document.getElementById('setting')?.value || 'bathroom, natural light';
+      const creator = document.getElementById('creator')?.value || 'woman, late 20s, relatable, casual style';
+      const setting = document.getElementById('setting')?.value || 'bathroom with natural window light';
       const overlay = document.getElementById('overlay')?.value || '';
-      prompt = `A UGC-style selfie ad for ${brandName}.
+      
+      prompt = `[TASK]
+Create a UGC-style selfie ad for ${brandName}
 
-Creator: ${creator}, natural makeup, casual style.
-Setting: ${setting}, real home environment.
-Pose: Selfie angle, holding product, genuine excited expression.
-Product: Clearly visible, label readable.
-${overlay ? `Text overlay: "${overlay}"` : ''}
+[CONTEXT]
+- Product: ${brandName} ${brandDesc ? `- ${brandDesc}` : ''}
+- Brand tone: ${tone}
+- Target audience: ${audience || (persona?.persona_name || 'general consumer')}
+${persona ? `- Emotional trigger: ${persona.emotional_trigger || 'trust'}` : ''}
+${usps.length > 0 ? `- Key benefits: ${usps.slice(0, 3).join(', ')}` : ''}
 
-${persona ? `Target persona: ${persona.persona_name}. Emotion: ${persona.emotional_trigger || 'authentic'}.` : ''}
+[VISUAL DESCRIPTION]
+Creator appearance: ${creator}. Natural makeup, approachable, genuine expression of excitement/satisfaction.
+Setting: ${setting}. Real home environment, not a studio. Authentic lived-in space.
+Pose: Selfie angle from slightly above, one hand holding phone, other hand holding/showing the product.
+Expression: Genuine "OMG this actually works" excitement. Not forced smile - real delight.
 
-Style: ${style === 'ugc' ? 'Authentic iPhone selfie, natural lighting, not overly edited' : 'Premium UGC style'}.
-Brand colors: ${primaryColor}, ${secondaryColor}.
+Product placement: ${productAsset ? 'Product clearly visible in frame, held up near face or on counter beside creator. Label/branding readable.' : 'Product clearly visible in frame, held up near face. Label readable, colors match brand palette.'}
+${productAsset ? `\n[REFERENCE IMAGE]\nUse this product image as reference for the product appearance: ${productAsset.file_url}` : ''}
+
+${overlay ? `Text overlay: "${overlay}" - positioned at bottom third, white text with subtle shadow for readability. Casual font, not corporate.` : ''}
+
+[STYLE & TECHNICAL]
+${styleDescriptions[style]}
+Lighting: Natural window light, warm tones, no harsh shadows.
+Color grading: Slightly warm, natural skin tones, not over-filtered.
+Brand colors: Primary ${primaryColor}, Secondary ${secondaryColor}
 Aspect ratio: ${aspectRatios[platform]}
-Resolution: 2K`;
+Resolution: 2K (high detail on face and product)
+
+[IMPORTANT]
+- This should look like a real person's Instagram story, NOT a polished brand ad
+- Imperfect is good - slightly messy background, casual outfit, natural expression
+- The product should feel like a genuine recommendation, not an advertisement`;
       break;
       
     case 'before-after':
-      const before = document.getElementById('beforeState')?.value || 'problem state';
-      const after = document.getElementById('afterState')?.value || 'improved state';
+      const before = document.getElementById('beforeState')?.value || 'tired, struggling, frustrated expression';
+      const after = document.getElementById('afterState')?.value || 'energized, confident, glowing';
       const timeframe = document.getElementById('timeframe')?.value || '30 Days';
-      prompt = `A before/after transformation ad for ${brandName}.
+      
+      prompt = `[TASK]
+Create a before/after transformation ad for ${brandName}
 
-Split screen horizontal layout.
-Left side (Before): ${before}. Slightly desaturated, flat lighting.
-Right side (After): ${after}. Warm lighting, vibrant colors.
-Center: "${timeframe}" text badge.
-Bottom corner: Product, small elegant placement.
+[CONTEXT]
+- Product: ${brandName} ${brandDesc ? `- ${brandDesc}` : ''}
+- Transformation timeframe: ${timeframe}
+- Target audience: ${audience || (persona?.persona_name || 'people seeking transformation')}
+${persona ? `- Pain points being solved: ${(persona.pain_points || []).join(', ')}` : ''}
+${usps.length > 0 ? `- Key benefits: ${usps.slice(0, 3).join(', ')}` : ''}
 
-${persona ? `Targeting: ${persona.persona_name}` : ''}
+[VISUAL DESCRIPTION]
+Layout: Split screen horizontal - clear visual division between left and right.
 
-Style: ${style === 'ugc' ? 'Authentic, real results' : 'Premium transformation'}.
-Brand colors: ${primaryColor}, ${secondaryColor}.
+LEFT SIDE (BEFORE):
+- Visual state: ${before}
+- Lighting: Slightly flat, neutral, not unflattering but not glowing
+- Color grading: Slightly desaturated, cooler tones
+- Expression/mood: The "before" state - relatable struggle
+- Small label: "BEFORE" or "Day 1" in corner
+
+RIGHT SIDE (AFTER):
+- Visual state: ${after}  
+- Lighting: Warm, glowing, flattering golden hour feel
+- Color grading: Vibrant, warm, healthy
+- Expression/mood: Confident, happy, transformed
+- Small label: "AFTER" or "${timeframe}" in corner
+
+CENTER DIVIDER: Thin line or "${timeframe}" badge connecting both sides
+
+PRODUCT PLACEMENT: ${productAsset ? `Small product image in bottom right corner. Use this as reference: ${productAsset.file_url}` : 'Small product placement in bottom right corner, subtle but visible.'}
+
+[STYLE & TECHNICAL]
+${styleDescriptions[style]}
+The transformation should feel believable, not exaggerated.
+Same person/model on both sides for credibility.
+Brand colors: Primary ${primaryColor}, Secondary ${secondaryColor}
 Aspect ratio: ${aspectRatios[platform]}
-Resolution: 2K`;
+Resolution: 2K
+
+[IMPORTANT]
+- The "before" should be relatable, not mocking
+- The "after" should be aspirational but achievable
+- This needs to feel like a REAL transformation, not stock photos`;
+      break;
+      
+    case 'big-callout':
+      const headline = document.getElementById('headline')?.value || '50% OFF TODAY';
+      const subheadline = document.getElementById('subheadline')?.value || '';
+      
+      prompt = `[TASK]
+Create a big call-out promotional ad for ${brandName}
+
+[CONTEXT]
+- Brand: ${brandName}
+- Main message: ${headline}
+- Secondary text: ${subheadline || 'Limited time offer'}
+- Brand tone: ${tone}
+
+[VISUAL DESCRIPTION]
+Layout: Typography-forward design where text dominates 60-70% of visual space.
+
+MAIN HEADLINE: "${headline}"
+- Font: Extra bold, high-impact sans-serif (like Impact, Bebas Neue, or similar)
+- Size: MASSIVE - takes up majority of the image
+- Color: ${accentColor} (contrasting against background)
+- Position: Center, commanding attention
+
+SECONDARY TEXT: "${subheadline || ''}"
+- Font: Clean sans-serif, readable
+- Size: Smaller but still prominent
+- Color: ${primaryColor}
+- Position: Below main headline
+
+BACKGROUND: 
+- Solid ${secondaryColor} or gradient from ${secondaryColor} to darker shade
+- Clean, uncluttered - text is the hero
+${productAsset ? `- Optional: Product image at 20% opacity behind text, or small product in corner. Reference: ${productAsset.file_url}` : ''}
+
+VISUAL ACCENTS:
+- Subtle starburst or emphasis element behind main text
+- Thin accent line or shape in ${primaryColor}
+
+[STYLE & TECHNICAL]
+${styleDescriptions[style]}
+High contrast for maximum readability at small sizes.
+This ad needs to be readable in 0.3 seconds while scrolling.
+Brand colors: Primary ${primaryColor}, Secondary ${secondaryColor}, Accent ${accentColor}
+Aspect ratio: ${aspectRatios[platform]}
+Resolution: 2K
+
+[IMPORTANT]
+- TEXT CLARITY IS EVERYTHING - must be readable at thumbnail size
+- No clutter - every element serves the message
+- This is a direct response ad - it should create urgency`;
+      break;
+      
+    case 'feature-callout':
+      const features = document.getElementById('features')?.value?.split('\\n').filter(f => f.trim()) || ['Premium quality', 'Fast results', 'Money-back guarantee'];
+      
+      prompt = `[TASK]
+Create a feature callout infographic ad for ${brandName}
+
+[CONTEXT]
+- Product: ${brandName} ${brandDesc ? `- ${brandDesc}` : ''}
+- Key features/benefits to highlight:
+${features.map((f, i) => `  ${i + 1}. ${f}`).join('\\n')}
+- Target audience: ${audience || 'potential customers evaluating purchase'}
+
+[VISUAL DESCRIPTION]
+Layout: Product as center hero with feature callouts arranged around it.
+
+PRODUCT (CENTER):
+${productAsset ? `- Product hero shot, floating with subtle shadow, dramatic lighting. Reference: ${productAsset.file_url}` : '- Product hero shot, center of image, occupying ~40% of space. Dramatic lighting, floating with subtle shadow.'}
+- Slight 3D angle to add depth
+- Clean, professional product photography style
+
+FEATURE CALLOUTS (ARRANGED AROUND PRODUCT):
+${features.map((f, i) => `- Callout ${i + 1}: "${f}" with relevant icon, connected to product by thin elegant line/arrow`).join('\\n')}
+
+Each callout includes:
+- Simple line icon (matching ${primaryColor})
+- Short text label (max 3-4 words)
+- Thin connector line pointing to product
+
+BACKGROUND:
+- Clean gradient from white to light ${secondaryColor}
+- Or solid light color that makes product pop
+- Subtle shadow under product for depth
+
+[STYLE & TECHNICAL]
+${styleDescriptions[style]}
+Clean, scannable, informational layout.
+Icons: Modern line-style, consistent weight.
+Typography: Clean sans-serif, easy to read at any size.
+Brand colors: Primary ${primaryColor}, Secondary ${secondaryColor}
+Aspect ratio: ${aspectRatios[platform]}
+Resolution: 2K
+
+[IMPORTANT]
+- This is an INFOGRAPHIC - information hierarchy matters
+- Each feature should be scannable in under 1 second
+- Product is the hero, features support the story`;
+      break;
+      
+    case 'us-vs-them':
+      prompt = `[TASK]
+Create a competitive comparison "Us vs Them" ad for ${brandName}
+
+[CONTEXT]
+- Our product: ${brandName}
+- Comparing against: Generic competitors / "Other brands"
+- Our advantages: ${usps.length > 0 ? usps.join(', ') : 'Higher quality, Better value, Real results'}
+- Target audience: ${audience || (persona?.persona_name || 'comparison shoppers')}
+
+[VISUAL DESCRIPTION]
+Layout: Split comparison - left side (them) vs right side (us).
+
+LEFT SIDE ("OTHER BRANDS" / "THEM"):
+- Generic/blurred product representation or simple "X" pattern
+- Header: "Other Brands" in neutral gray
+- Listed cons or missing features with red X marks:
+  • Artificial ingredients ✗
+  • No guarantee ✗
+  • Overpriced ✗
+- Slightly duller lighting, less appealing (subtle, not unfair)
+
+RIGHT SIDE ("${brandName.toUpperCase()}" / "US"):
+${productAsset ? `- Our product, beautifully lit, hero treatment. Reference: ${productAsset.file_url}` : '- Our product, beautifully lit, premium presentation'}
+- Header: "${brandName}" in ${primaryColor}
+- Listed benefits with green checkmarks:
+${usps.slice(0, 4).map(u => `  • ${u} ✓`).join('\\n') || '  • Clean ingredients ✓\\n  • Money-back guarantee ✓\\n  • Fair pricing ✓'}
+- Brighter, more vibrant lighting
+
+CENTER: Subtle "VS" badge or thin dividing line
+
+[STYLE & TECHNICAL]
+${styleDescriptions[style]}
+Clear visual winner - our side should feel premium without bashing competitors.
+Comparison should feel factual, not aggressive.
+Brand colors: Primary ${primaryColor}, Secondary ${secondaryColor}
+Aspect ratio: ${aspectRatios[platform]}
+Resolution: 2K
+
+[IMPORTANT]
+- Fair comparison - don't make competitors look bad, make us look GREAT
+- The visual hierarchy should naturally draw eyes to our side
+- Checkmarks and X marks need to be instantly readable`;
+      break;
+      
+    case 'testimonial':
+      const testimonial = document.getElementById('testimonial')?.value || 'This product completely changed my life. I cannot recommend it enough!';
+      const customerName = document.getElementById('customerName')?.value || 'Verified Customer';
+      const rating = document.getElementById('rating')?.value || '5';
+      
+      prompt = `[TASK]
+Create a testimonial social proof ad for ${brandName}
+
+[CONTEXT]
+- Product: ${brandName}
+- Testimonial: "${testimonial}"
+- Customer: ${customerName}
+- Rating: ${rating} stars
+- Trust angle: Real customer results
+
+[VISUAL DESCRIPTION]
+Layout: Quote card design with testimonial as hero element.
+
+TESTIMONIAL QUOTE:
+- Large decorative quotation marks (") in ${primaryColor} as design element
+- Quote text: "${testimonial}"
+- Font: Elegant, readable serif or clean sans-serif
+- Color: White or light text on darker background
+- Position: Center, taking up 50-60% of image
+
+ATTRIBUTION:
+- Customer name: "— ${customerName}"
+- Star rating: ${rating} gold/yellow stars in a row
+- Optional: "Verified Buyer" badge
+- Position: Below quote
+
+PRODUCT:
+${productAsset ? `- Small product image in corner, subtle. Reference: ${productAsset.file_url}` : '- Small product placement in bottom corner, subtle but visible'}
+
+BACKGROUND:
+- Soft gradient using brand colors
+- Or elegant solid color (${secondaryColor})
+- Clean, not distracting from testimonial
+
+[STYLE & TECHNICAL]
+${styleDescriptions[style]}
+Trustworthy, credible, authentic feel.
+The testimonial should feel like a real person sharing their experience.
+Brand colors: Primary ${primaryColor}, Secondary ${secondaryColor}
+Aspect ratio: ${aspectRatios[platform]}
+Resolution: 2K
+
+[IMPORTANT]
+- AUTHENTICITY is key - this should feel like real social proof
+- Stars need to be clearly visible (social proof shortcut)
+- The quote should be the emotional center of the image`;
+      break;
+      
+    case 'pr-screenshot':
+      prompt = `[TASK]
+Create a PR/press credibility ad for ${brandName}
+
+[CONTEXT]
+- Product: ${brandName}
+- Credibility angle: Featured in major publications / Expert recommended
+- Target feeling: "This brand is legitimate and trending"
+
+[VISUAL DESCRIPTION]
+Layout: "As Seen In" credibility display
+
+TOP SECTION:
+${productAsset ? `- Product hero shot with premium lighting. Reference: ${productAsset.file_url}` : '- Product hero shot with dramatic, premium lighting'}
+- Clean, editorial product photography style
+- Subtle glow or spotlight effect
+
+MIDDLE SECTION:
+- Text: "AS SEEN IN" in elegant small caps, letter-spaced
+- Clean horizontal line above and below
+
+BOTTOM SECTION - PUBLICATION LOGOS:
+- Row of 5-6 generic publication logo styles (grayscale):
+  • Fashion magazine style logo
+  • Health/wellness publication style
+  • Business publication style
+  • Morning TV show style
+  • Lifestyle website style
+- All logos in grayscale/muted to not overpower product
+- Evenly spaced, professional layout
+
+FOOTER:
+- Brand name and tagline
+- Optional: "Trusted by 50,000+ customers" or similar
+
+[STYLE & TECHNICAL]
+${styleDescriptions[style]}
+Premium, established, credible brand feel.
+This should position ${brandName} as a serious, trusted brand.
+Brand colors: Primary ${primaryColor}, Secondary ${secondaryColor}
+Aspect ratio: ${aspectRatios[platform]}
+Resolution: 2K
+
+[IMPORTANT]
+- Creates instant credibility through association
+- Logos should be generic/stylized, not actual trademarked logos
+- Overall feeling: "This is a brand that matters"`;
+      break;
+      
+    case 'notes-app':
+      prompt = `[TASK]
+Create a Notes App style ad for ${brandName}
+
+[CONTEXT]
+- Product: ${brandName} ${brandDesc ? `- ${brandDesc}` : ''}
+- Hook: Personal discovery / secret tip / honest review feel
+${usps.length > 0 ? `- Key benefits to mention: ${usps.slice(0, 2).join(', ')}` : ''}
+
+[VISUAL DESCRIPTION]
+Layout: iPhone Notes app screenshot style - authentic, casual.
+
+NOTES APP INTERFACE:
+- Realistic iPhone Notes app UI
+- Note title: "stuff i wish i knew sooner" or "things that actually work"
+- Note content (bullet list style):
+  "• [common advice related to ${industry}]
+   • [another common tip]
+   • [another tip]
+   • ${brandName} - [genuine-sounding discovery statement about why it works]"
+- Last bullet highlighted with yellow marker effect
+- Optional: "edit: been using for 3 months, still working 🙌" at bottom
+
+VISUAL FEEL:
+- Exact iPhone Notes app styling
+- Feels like someone's real personal notes
+- Casual, first-person voice
+- The product mention should feel like a genuine discovery, not an ad
+
+BACKGROUND (if not full-screen notes):
+${productAsset ? `- Product bottles arranged behind phone. Reference: ${productAsset.file_url}` : '- Product subtly visible beside phone or behind it'}
+
+[STYLE & TECHNICAL]
+Authentic screenshot aesthetic - must look like a real phone screenshot.
+Pattern interrupt format - doesn't look like typical ad.
+Personal, relatable, like a friend sharing a secret.
+Brand colors: Use default Notes app colors, brand colors only on product
+Aspect ratio: ${aspectRatios[platform]}
+Resolution: 2K
+
+[IMPORTANT]
+- This format works because it DOESN'T look like an ad
+- The notes should read like someone's actual personal notes
+- Discovery/recommendation should feel organic, not salesy`;
       break;
       
     default:
-      prompt = `Create a ${selectedAdType} ad for ${brandName}.
+      prompt = `[TASK]
+Create a ${selectedAdType.replace(/-/g, ' ')} ad for ${brandName}
 
-Style: ${style}
-Platform: ${platform} (${aspectRatios[platform]})
-Brand colors: Primary ${primaryColor}, Secondary ${secondaryColor}
+[CONTEXT]
+- Product: ${brandName}
+- Industry: ${industry}
+- Target audience: ${audience || persona?.persona_name || 'general consumers'}
+${persona ? `- Emotional trigger: ${persona.emotional_trigger}` : ''}
+${usps.length > 0 ? `- Key selling points: ${usps.join(', ')}` : ''}
 
-${persona ? `Target audience: ${persona.persona_name}
-Pain points: ${(persona.pain_points || []).join(', ')}
-Emotional trigger: ${persona.emotional_trigger || 'trust'}` : ''}
+[VISUAL DESCRIPTION]
+${productAsset ? `Use this product image as reference: ${productAsset.file_url}` : ''}
+Create a compelling ${selectedAdType} style advertisement.
+Style: ${styleDescriptions[style]}
 
-Resolution: 2K`;
+[TECHNICAL]
+Brand colors: Primary ${primaryColor}, Secondary ${secondaryColor}, Accent ${accentColor}
+Aspect ratio: ${aspectRatios[platform]}
+Resolution: 2K
+
+Generate a high-converting ad that captures attention and communicates value quickly.`;
   }
   
   return prompt;
