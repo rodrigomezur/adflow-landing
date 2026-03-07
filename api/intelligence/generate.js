@@ -67,9 +67,9 @@ Create ${numProfiles || 10} unique customer profiles. Each should have distinct 
 
 Make the profiles specific and actionable for ad creation.`;
 
-    // Call Gemini API
+    // Call Gemini API (using 1.5-flash for better quota handling)
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
