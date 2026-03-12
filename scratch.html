@@ -595,6 +595,11 @@
     .hidden-input {
       display: none;
     }
+    
+    .headline-suggestion:hover {
+      border-color: var(--accent) !important;
+      background: var(--accent-dim) !important;
+    }
   </style>
 </head>
 <body>
@@ -606,6 +611,33 @@
   <div class="container">
     <!-- Sidebar Form -->
     <aside class="sidebar">
+      <!-- Step 0: Research (Optional) -->
+      <div class="section" id="researchSection">
+        <div class="section-title">
+          <span class="step" style="background: #8b5cf6;">🔍</span>
+          Smart Research (Optional)
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          Paste a product URL and we'll extract info + suggest headlines
+        </p>
+        
+        <div class="form-group">
+          <div style="display: flex; gap: 8px;">
+            <input type="url" id="productUrl" placeholder="https://brand.com/product" style="flex: 1;">
+            <button type="button" onclick="runResearch()" id="researchBtn" style="padding: 12px 16px; background: #8b5cf6; border: none; border-radius: var(--radius); color: white; font-weight: 600; cursor: pointer; white-space: nowrap;">
+              🧠 Research
+            </button>
+          </div>
+          <div id="researchStatus" style="font-size: 12px; margin-top: 8px; color: var(--text-muted);"></div>
+        </div>
+        
+        <!-- Research Results (hidden by default) -->
+        <div id="researchResults" style="display: none; margin-top: 15px; padding: 15px; background: var(--surface-2); border-radius: var(--radius); border: 1px solid #8b5cf6;">
+          <div style="font-size: 12px; color: #8b5cf6; margin-bottom: 10px; font-weight: 600;">✨ INTELLIGENCE FOUND</div>
+          <div id="researchContent"></div>
+        </div>
+      </div>
+      
       <!-- Step 1: Product -->
       <div class="section">
         <div class="section-title">
@@ -778,6 +810,7 @@
     let currentSlot = 0;
     let generationPlan = [];
     let isGenerating = false;
+    let productIntelligence = null; // Research results
     
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
@@ -785,6 +818,111 @@
       setupCtaOptions();
       updateVariationsLabel();
     });
+    
+    // Research Agent
+    async function runResearch() {
+      const url = document.getElementById('productUrl').value.trim();
+      if (!url) {
+        showToast('Enter a product URL first', 'error');
+        return;
+      }
+      
+      const btn = document.getElementById('researchBtn');
+      const status = document.getElementById('researchStatus');
+      
+      btn.disabled = true;
+      btn.innerHTML = '⏳ Researching...';
+      status.textContent = 'Scraping product page...';
+      status.style.color = 'var(--accent)';
+      
+      try {
+        const response = await fetch('/api/scratch/research', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productUrl: url })
+        });
+        
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.error || err.details || 'Research failed');
+        }
+        
+        const data = await response.json();
+        productIntelligence = data.intelligence;
+        
+        // Auto-fill form fields
+        if (productIntelligence.productName) {
+          document.getElementById('productName').value = productIntelligence.productName;
+        }
+        
+        // Show results
+        const resultsDiv = document.getElementById('researchResults');
+        const contentDiv = document.getElementById('researchContent');
+        
+        // Build suggested headlines
+        let headlinesHtml = '';
+        if (productIntelligence.suggestedHeadlines?.length) {
+          headlinesHtml = `
+            <div style="margin-bottom: 12px;">
+              <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">SUGGESTED HEADLINES (click to use):</div>
+              ${productIntelligence.suggestedHeadlines.map(h => `
+                <div class="headline-suggestion" onclick="useHeadline('${escapeHtml(h).replace(/'/g, "\\'")}');" style="padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s;">
+                  "${h}"
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+        
+        // Build angles
+        let anglesHtml = '';
+        if (productIntelligence.suggestedAngles?.length) {
+          anglesHtml = `
+            <div style="margin-bottom: 12px;">
+              <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">AD ANGLES:</div>
+              ${productIntelligence.suggestedAngles.slice(0, 3).map(a => `
+                <div style="padding: 8px 12px; background: var(--surface); border-radius: 8px; margin-bottom: 6px; font-size: 12px;">
+                  <strong style="color: #8b5cf6;">${a.angle}:</strong> ${a.headline}
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+        
+        // Key info
+        let infoHtml = `
+          <div style="font-size: 12px; margin-bottom: 12px;">
+            <div><strong>Product:</strong> ${productIntelligence.productName || 'Unknown'}</div>
+            <div><strong>Category:</strong> ${productIntelligence.category || 'Unknown'}</div>
+            <div><strong>Core Benefit:</strong> ${productIntelligence.coreBenefit || 'Unknown'}</div>
+            ${productIntelligence.price ? `<div><strong>Price:</strong> ${productIntelligence.price}</div>` : ''}
+          </div>
+        `;
+        
+        contentDiv.innerHTML = infoHtml + headlinesHtml + anglesHtml;
+        resultsDiv.style.display = 'block';
+        
+        status.textContent = '✓ Intelligence extracted!';
+        status.style.color = 'var(--success)';
+        showToast('🧠 Product intelligence loaded!');
+        
+      } catch (error) {
+        console.error('Research error:', error);
+        status.textContent = `❌ ${error.message}`;
+        status.style.color = 'var(--danger)';
+        showToast(error.message, 'error');
+      }
+      
+      btn.disabled = false;
+      btn.innerHTML = '🧠 Research';
+    }
+    
+    function useHeadline(headline) {
+      document.getElementById('headline').value = headline;
+      showToast('Headline applied!');
+      // Scroll to headline field
+      document.getElementById('headline').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
     
     // Reference Slots
     function renderReferenceSlots() {
