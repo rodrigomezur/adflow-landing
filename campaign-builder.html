@@ -1963,7 +1963,14 @@ async function generateSingleAd(item) {
   if (!generateResponse.ok) {
     const errorText = await generateResponse.text();
     console.error('Generate error:', errorText);
-    throw new Error('Failed to generate image');
+    let errorDetail = 'Failed to generate image';
+    try {
+      const errorJson = JSON.parse(errorText);
+      errorDetail = errorJson.error || errorJson.details || errorDetail;
+    } catch (e) {
+      errorDetail = errorText.substring(0, 200);
+    }
+    throw new Error(errorDetail);
   }
   
   const result = await generateResponse.json();
@@ -2106,10 +2113,10 @@ function renderResultsGrid() {
         `}
         <div class="result-info">
           <div class="result-profile">${escapeHtml(item.headline || item.variation?.headline || item.profile.persona_name)}</div>
-          <div class="result-status">${
+          <div class="result-status" title="${item.error ? escapeHtml(item.error) : ''}">${
             item.status === 'generating' ? 'Generating...' :
             item.status === 'success' ? '✓ ' + escapeHtml(item.profile.persona_name) :
-            item.status === 'error' ? 'Failed' : 'Pending'
+            item.status === 'error' ? '❌ ' + (item.error ? escapeHtml(item.error.substring(0, 30)) : 'Failed') : 'Pending'
           }</div>
         </div>
       </div>
