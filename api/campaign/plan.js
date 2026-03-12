@@ -187,9 +187,9 @@ Return ONLY the JSON object.`
     console.log('Calling Gemini Creative Director...');
     console.log('Generating', totalVariations, 'variations');
     
-    // Call Gemini API
+    // Call Gemini API (use gemini-2.0-flash-001 for latest stable)
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -223,25 +223,37 @@ Return ONLY the JSON object.`
 
     console.log('Creative Director response received, parsing...');
 
-    // Parse JSON
+    // Parse JSON with robust error handling
     let campaignPlan;
     try {
       let cleanedText = textContent.trim();
+      
+      // Remove markdown code blocks
       cleanedText = cleanedText.replace(/^```json\s*/i, '');
       cleanedText = cleanedText.replace(/^```\s*/i, '');
       cleanedText = cleanedText.replace(/\s*```$/i, '');
       cleanedText = cleanedText.trim();
       
+      // Extract JSON object
       const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        cleanedText = jsonMatch[0];
+      if (!jsonMatch) {
+        console.error('No JSON object found in response');
+        console.error('Raw response (first 500 chars):', textContent.substring(0, 500));
+        throw new Error('No JSON object found in Gemini response');
       }
+      
+      cleanedText = jsonMatch[0];
+      
+      // Fix common JSON issues from AI
+      cleanedText = cleanedText.replace(/,\s*}/g, '}');  // trailing commas in objects
+      cleanedText = cleanedText.replace(/,\s*]/g, ']');  // trailing commas in arrays
       
       campaignPlan = JSON.parse(cleanedText);
       
       // Ensure variations array exists
       if (!campaignPlan.variations || !Array.isArray(campaignPlan.variations)) {
-        throw new Error('Missing variations array');
+        console.error('Response missing variations array:', Object.keys(campaignPlan));
+        throw new Error('Missing variations array in response');
       }
       
       // Add settings to each variation
@@ -264,11 +276,13 @@ Return ONLY the JSON object.`
       
     } catch (parseError) {
       console.error('JSON parse error:', parseError);
-      console.error('Raw text (first 1000):', textContent.substring(0, 1000));
+      console.error('Raw text (first 1500):', textContent.substring(0, 1500));
       
       return res.status(500).json({ 
         error: 'Failed to parse campaign plan',
-        details: parseError.message
+        details: parseError.message,
+        rawPreview: textContent.substring(0, 300),
+        hint: 'Gemini may have returned invalid JSON. Check if response was truncated.'
       });
     }
 
@@ -278,7 +292,7 @@ Return ONLY the JSON object.`
       success: true,
       plan: campaignPlan,
       totalVariations: campaignPlan.variations.length,
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       referenceImageAnalyzed: !!referenceImageBase64,
       productImageAnalyzed: !!productImageBase64
     });
