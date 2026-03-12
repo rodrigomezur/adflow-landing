@@ -45,41 +45,64 @@ export default async function handler(req, res) {
     console.log('References:', referenceUrls.length);
     console.log('Variations:', variations);
 
-    // Fetch all images
+    // Helper to extract base64 from data URL or fetch from URL
+    async function loadImage(url) {
+      // Check if it's a data URL (base64)
+      if (url.startsWith('data:')) {
+        const matches = url.match(/^data:([^;]+);base64,(.+)$/);
+        if (matches) {
+          return {
+            base64: matches[2],
+            mimeType: matches[1]
+          };
+        }
+        return null;
+      }
+      
+      // Otherwise fetch the URL
+      try {
+        const response = await fetch(url);
+        if (response.ok) {
+          const buffer = await response.arrayBuffer();
+          const contentType = response.headers.get('content-type') || 'image/jpeg';
+          return {
+            base64: Buffer.from(buffer).toString('base64'),
+            mimeType: contentType.split(';')[0]
+          };
+        }
+      } catch (err) {
+        console.error('Failed to fetch image:', err.message);
+      }
+      return null;
+    }
+
+    // Load all images
     const images = [];
 
     // 1. Product image
-    try {
-      const prodResponse = await fetch(productImageUrl);
-      if (prodResponse.ok) {
-        const buffer = await prodResponse.arrayBuffer();
-        images.push({
-          type: 'product',
-          base64: Buffer.from(buffer).toString('base64'),
-          mimeType: 'image/jpeg'
-        });
-        console.log('✓ Product image loaded');
-      }
-    } catch (err) {
-      console.error('Failed to load product image:', err.message);
+    const productImg = await loadImage(productImageUrl);
+    if (productImg) {
+      images.push({
+        type: 'product',
+        ...productImg
+      });
+      console.log('✓ Product image loaded');
+    } else {
+      console.error('Failed to load product image');
     }
 
     // 2. Reference images
     for (let i = 0; i < referenceUrls.length; i++) {
-      try {
-        const refResponse = await fetch(referenceUrls[i]);
-        if (refResponse.ok) {
-          const buffer = await refResponse.arrayBuffer();
-          images.push({
-            type: 'reference',
-            index: i + 1,
-            base64: Buffer.from(buffer).toString('base64'),
-            mimeType: 'image/jpeg'
-          });
-          console.log(`✓ Reference ${i + 1} loaded`);
-        }
-      } catch (err) {
-        console.error(`Failed to load reference ${i + 1}:`, err.message);
+      const refImg = await loadImage(referenceUrls[i]);
+      if (refImg) {
+        images.push({
+          type: 'reference',
+          index: i + 1,
+          ...refImg
+        });
+        console.log(`✓ Reference ${i + 1} loaded`);
+      } else {
+        console.error(`Failed to load reference ${i + 1}`);
       }
     }
 

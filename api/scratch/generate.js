@@ -34,19 +34,28 @@ export default async function handler(req, res) {
     console.log('Reference count:', referenceUrls.length);
 
     // Build image URLs array for Nano Banana Pro Edit
-    // Product image first (most important for fidelity)
+    // Only use actual URLs, not data URLs (base64)
     const imageUrls = [];
     
-    if (productImageUrl) {
+    // Helper to check if URL is usable (not a data URL)
+    const isValidUrl = (url) => url && !url.startsWith('data:');
+    
+    if (isValidUrl(productImageUrl)) {
       imageUrls.push(productImageUrl);
     }
     
     // Add up to 2 reference images for style guidance
     const refsToUse = referenceUrls.slice(0, 2);
     for (const refUrl of refsToUse) {
-      if (refUrl && refUrl !== productImageUrl) {
+      if (isValidUrl(refUrl) && refUrl !== productImageUrl) {
         imageUrls.push(refUrl);
       }
+    }
+    
+    // Log if we're falling back due to data URLs
+    const hasDataUrls = productImageUrl?.startsWith('data:') || referenceUrls.some(u => u?.startsWith('data:'));
+    if (hasDataUrls) {
+      console.log('⚠️ Data URLs detected - using text-to-image mode (no image references)');
     }
 
     // Enhance prompt with product fidelity instruction
