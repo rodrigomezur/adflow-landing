@@ -46,32 +46,56 @@ export default async function handler(req, res) {
     console.log('Variations:', variations);
 
     // Helper to extract base64 from data URL or fetch from URL
-    async function loadImage(url) {
+    async function loadImage(url, label = 'image') {
+      if (!url) {
+        console.error(`${label}: No URL provided`);
+        return null;
+      }
+      
+      console.log(`${label}: URL type = ${url.substring(0, 30)}...`);
+      
       // Check if it's a data URL (base64)
       if (url.startsWith('data:')) {
-        const matches = url.match(/^data:([^;]+);base64,(.+)$/);
-        if (matches) {
-          return {
-            base64: matches[2],
-            mimeType: matches[1]
-          };
+        // More flexible regex to handle various data URL formats
+        const commaIndex = url.indexOf(',');
+        if (commaIndex === -1) {
+          console.error(`${label}: Invalid data URL - no comma found`);
+          return null;
         }
-        return null;
+        
+        const header = url.substring(0, commaIndex);
+        const base64Data = url.substring(commaIndex + 1);
+        
+        // Extract mime type from header like "data:image/jpeg;base64"
+        const mimeMatch = header.match(/data:([^;,]+)/);
+        const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+        
+        console.log(`${label}: Data URL parsed - mimeType=${mimeType}, base64Length=${base64Data.length}`);
+        
+        return {
+          base64: base64Data,
+          mimeType: mimeType
+        };
       }
       
       // Otherwise fetch the URL
       try {
+        console.log(`${label}: Fetching URL...`);
         const response = await fetch(url);
         if (response.ok) {
           const buffer = await response.arrayBuffer();
           const contentType = response.headers.get('content-type') || 'image/jpeg';
+          const base64 = Buffer.from(buffer).toString('base64');
+          console.log(`${label}: Fetched - mimeType=${contentType}, base64Length=${base64.length}`);
           return {
-            base64: Buffer.from(buffer).toString('base64'),
+            base64: base64,
             mimeType: contentType.split(';')[0]
           };
+        } else {
+          console.error(`${label}: Fetch failed with status ${response.status}`);
         }
       } catch (err) {
-        console.error('Failed to fetch image:', err.message);
+        console.error(`${label}: Fetch error - ${err.message}`);
       }
       return null;
     }
@@ -80,7 +104,7 @@ export default async function handler(req, res) {
     const images = [];
 
     // 1. Product image
-    const productImg = await loadImage(productImageUrl);
+    const productImg = await loadImage(productImageUrl, 'Product');
     if (productImg) {
       images.push({
         type: 'product',
@@ -88,12 +112,12 @@ export default async function handler(req, res) {
       });
       console.log('✓ Product image loaded');
     } else {
-      console.error('Failed to load product image');
+      console.error('✗ Failed to load product image');
     }
 
     // 2. Reference images
     for (let i = 0; i < referenceUrls.length; i++) {
-      const refImg = await loadImage(referenceUrls[i]);
+      const refImg = await loadImage(referenceUrls[i], `Reference ${i + 1}`);
       if (refImg) {
         images.push({
           type: 'reference',
@@ -102,7 +126,7 @@ export default async function handler(req, res) {
         });
         console.log(`✓ Reference ${i + 1} loaded`);
       } else {
-        console.error(`Failed to load reference ${i + 1}`);
+        console.error(`✗ Failed to load reference ${i + 1}`);
       }
     }
 
