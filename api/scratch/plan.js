@@ -289,7 +289,7 @@ Return ONLY the JSON. No markdown, no explanation.`
     
     // Call Gemini
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -398,7 +398,8 @@ Return ONLY the JSON. No markdown, no explanation.`
     console.error('Plan creation error:', error);
     return res.status(500).json({ 
       error: 'Failed to create plan',
-      details: error.message 
+      details: error.message,
+      stack: error.stack?.substring(0, 500)
     });
   }
 }
