@@ -600,6 +600,11 @@
       border-color: var(--accent) !important;
       background: var(--accent-dim) !important;
     }
+    
+    .angle-suggestion:hover {
+      border-color: #8b5cf6 !important;
+      background: rgba(139, 92, 246, 0.1) !important;
+    }
   </style>
 </head>
 <body>
@@ -879,10 +884,12 @@
         if (productIntelligence.suggestedAngles?.length) {
           anglesHtml = `
             <div style="margin-bottom: 12px;">
-              <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">AD ANGLES:</div>
-              ${productIntelligence.suggestedAngles.slice(0, 3).map(a => `
-                <div style="padding: 8px 12px; background: var(--surface); border-radius: 8px; margin-bottom: 6px; font-size: 12px;">
-                  <strong style="color: #8b5cf6;">${a.angle}:</strong> ${a.headline}
+              <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">AD ANGLES (click to use):</div>
+              ${productIntelligence.suggestedAngles.slice(0, 3).map((a, idx) => `
+                <div class="angle-suggestion" onclick="useAngle(${idx});" style="padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s;">
+                  <div style="color: #8b5cf6; font-weight: 600; margin-bottom: 4px;">${a.angle}</div>
+                  <div style="color: var(--text);">"${a.headline}"</div>
+                  ${a.hook ? `<div style="color: var(--text-muted); font-size: 11px; margin-top: 4px;">Hook: ${a.hook}</div>` : ''}
                 </div>
               `).join('')}
             </div>
@@ -920,6 +927,23 @@
     function useHeadline(headline) {
       document.getElementById('headline').value = headline;
       showToast('Headline applied!');
+      // Scroll to headline field
+      document.getElementById('headline').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    
+    function useAngle(index) {
+      if (!productIntelligence?.suggestedAngles?.[index]) return;
+      
+      const angle = productIntelligence.suggestedAngles[index];
+      
+      // Apply headline from the angle
+      document.getElementById('headline').value = angle.headline;
+      
+      // Store the angle strategy for generation
+      window.selectedAngle = angle;
+      
+      showToast(`✨ "${angle.angle}" angle applied!`);
+      
       // Scroll to headline field
       document.getElementById('headline').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
