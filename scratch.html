@@ -952,6 +952,20 @@
       return true;
     }
     
+    // Helper to parse data URL into base64 + mimeType
+    function parseDataUrl(dataUrl) {
+      if (!dataUrl || !dataUrl.startsWith('data:')) return null;
+      const commaIndex = dataUrl.indexOf(',');
+      if (commaIndex === -1) return null;
+      
+      const header = dataUrl.substring(0, commaIndex);
+      const base64 = dataUrl.substring(commaIndex + 1);
+      const mimeMatch = header.match(/data:([^;,]+)/);
+      const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+      
+      return { base64, mimeType };
+    }
+    
     // Main Generation Flow
     async function startGeneration() {
       if (!validate() || isGenerating) return;
@@ -965,25 +979,48 @@
       statusBar.classList.add('show');
       
       try {
-        // Gather form data
+        // Parse product image
+        const productParsed = parseDataUrl(productImageUrl);
+        if (!productParsed) {
+          throw new Error('Invalid product image');
+        }
+        
+        // Parse reference images
+        const referencesParsed = referenceImages
+          .map(url => parseDataUrl(url))
+          .filter(r => r !== null);
+        
+        const headline = document.getElementById('headline').value.trim();
+        const aspectRatio = document.getElementById('aspectRatio').value;
+        
+        // Gather form data with base64 images
         const formData = {
           productName: document.getElementById('productName').value.trim(),
-          productImageUrl: productImageUrl,
-          referenceUrls: referenceImages,
-          headline: document.getElementById('headline').value.trim(),
+          productImageBase64: productParsed.base64,
+          productImageMimeType: productParsed.mimeType,
+          referenceImagesBase64: referencesParsed,
+          headline: headline,
           cta: selectedCta,
           options: {
             price: document.getElementById('price').value.trim(),
             subheadline: document.getElementById('subheadline').value.trim(),
-            websiteUrl: document.getElementById('website').value.trim(),
-            aspectRatio: document.getElementById('aspectRatio').value,
+            aspectRatio: aspectRatio,
             variations: parseInt(document.getElementById('variations').value),
             language: document.getElementById('language').value
           }
         };
         
+        console.log('Form data prepared:', {
+          productName: formData.productName,
+          headline: formData.headline,
+          cta: formData.cta,
+          aspectRatio: formData.options.aspectRatio,
+          productImageSize: formData.productImageBase64?.length,
+          referenceCount: formData.referenceImagesBase64?.length
+        });
+        
         // Step 1: Call Creative Director to get plan
-        document.getElementById('statusText').textContent = '🧠 Analyzing references and creating variations...';
+        document.getElementById('statusText').textContent = '🧠 Analyzing product and creating variations...';
         document.getElementById('progressFill').style.width = '10%';
         
         const planResponse = await fetch('/api/scratch/plan', {
@@ -1013,8 +1050,8 @@
         renderResultsGrid();
         updateStats();
         
-        // Step 2: Generate each image
-        document.getElementById('statusText').textContent = '🎨 Generating images...';
+        // Step 2: Generate each image with Nano Banana 2
+        document.getElementById('statusText').textContent = '🍌 Generating with Nano Banana 2...';
         document.getElementById('progressFill').style.width = '20%';
         
         for (let i = 0; i < generationPlan.length; i++) {
@@ -1028,10 +1065,12 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 prompt: item.prompt,
-                negative_prompt: item.negative_prompt,
-                productImageUrl: productImageUrl,
-                referenceUrls: referenceImages,
-                aspectRatio: formData.options.aspectRatio,
+                headline: headline,
+                cta: selectedCta,
+                productImageBase64: productParsed.base64,
+                productImageMimeType: productParsed.mimeType,
+                referenceImagesBase64: referencesParsed,
+                aspectRatio: aspectRatio,
                 variationId: item.id
               })
             });

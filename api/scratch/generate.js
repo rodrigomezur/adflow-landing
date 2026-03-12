@@ -1,23 +1,25 @@
 // AdFlow - Generate from Scratch: Image Generation
-// Takes a single variation prompt and generates the ad image
+// Uses Nano Banana 2 (gemini-3.1-flash-image-preview) via Google Gemini API
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const FAL_KEY = process.env.FAL_API_KEY;
+  const GEMINI_KEY = process.env.GEMINI_API_KEY;
   
-  if (!FAL_KEY) {
-    return res.status(500).json({ error: 'FAL_API_KEY not configured' });
+  if (!GEMINI_KEY) {
+    return res.status(500).json({ error: 'GEMINI_API_KEY not configured' });
   }
 
   try {
     const {
       prompt,
-      negative_prompt,
-      productImageUrl,
-      referenceUrls = [],
+      headline,
+      cta,
+      productImageBase64,
+      productImageMimeType,
+      referenceImagesBase64,  // Array of {base64, mimeType}
       aspectRatio = '4:5',
       variationId
     } = req.body;
@@ -26,168 +28,142 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
-    console.log('=== Scratch Generate Request ===');
+    console.log('=== Nano Banana 2 Generation ===');
     console.log('Variation ID:', variationId);
     console.log('Aspect Ratio:', aspectRatio);
-    console.log('Prompt (first 100):', prompt.substring(0, 100));
-    console.log('Has product image:', !!productImageUrl);
-    console.log('Reference count:', referenceUrls.length);
+    console.log('Headline:', headline);
+    console.log('Has product image:', !!productImageBase64);
+    console.log('Reference count:', referenceImagesBase64?.length || 0);
 
-    // Build image URLs array for Nano Banana Pro Edit
-    // Only use actual URLs, not data URLs (base64)
-    const imageUrls = [];
-    
-    // Helper to check if URL is usable (not a data URL)
-    const isValidUrl = (url) => url && !url.startsWith('data:');
-    
-    if (isValidUrl(productImageUrl)) {
-      imageUrls.push(productImageUrl);
+    // Build the prompt parts for Nano Banana 2
+    const parts = [];
+
+    // Main generation prompt using Framework 2 (Multimodal) from the skill
+    let fullPrompt = `Generate a high-quality e-commerce advertisement image in ${aspectRatio} aspect ratio.
+
+${prompt}
+
+CRITICAL REQUIREMENTS:
+1. Use the EXACT product from the provided product image - do not change or reimagine the product
+2. Render the headline text "${headline}" prominently in bold, modern sans-serif font
+3. Include the CTA button text "${cta}" at the bottom
+4. Maintain ${aspectRatio} aspect ratio exactly
+5. Make the text highly legible against the background
+
+STYLE: Professional e-commerce ad, scroll-stopping, high contrast, commercial photography quality.
+TEXT: Render "${headline}" as the main headline in bold white or contrasting text.
+CTA: Render "${cta}" as a button-style element at the bottom.`;
+
+    parts.push({ text: fullPrompt });
+
+    // Add product image (CRITICAL - this is what must be preserved)
+    if (productImageBase64) {
+      parts.push({ 
+        text: "\n\nPRODUCT IMAGE (use this exact product, do not modify or reimagine it):" 
+      });
+      parts.push({
+        inlineData: {
+          mimeType: productImageMimeType || 'image/jpeg',
+          data: productImageBase64
+        }
+      });
     }
-    
-    // Add up to 2 reference images for style guidance
-    const refsToUse = referenceUrls.slice(0, 2);
-    for (const refUrl of refsToUse) {
-      if (isValidUrl(refUrl) && refUrl !== productImageUrl) {
-        imageUrls.push(refUrl);
+
+    // Add reference images for style (limit to 2)
+    if (referenceImagesBase64 && referenceImagesBase64.length > 0) {
+      parts.push({ 
+        text: "\n\nREFERENCE ADS (use these for layout and style inspiration only, not for product):" 
+      });
+      
+      const refsToUse = referenceImagesBase64.slice(0, 2);
+      for (let i = 0; i < refsToUse.length; i++) {
+        const ref = refsToUse[i];
+        parts.push({
+          inlineData: {
+            mimeType: ref.mimeType || 'image/jpeg',
+            data: ref.base64
+          }
+        });
       }
     }
-    
-    // Log if we're falling back due to data URLs
-    const hasDataUrls = productImageUrl?.startsWith('data:') || referenceUrls.some(u => u?.startsWith('data:'));
-    if (hasDataUrls) {
-      console.log('⚠️ Data URLs detected - using text-to-image mode (no image references)');
-    }
 
-    // Enhance prompt with product fidelity instruction
-    let enhancedPrompt = prompt;
-    if (productImageUrl) {
-      // Check if prompt already mentions product preservation
-      if (!prompt.toLowerCase().includes('keep the product') && !prompt.toLowerCase().includes('product exactly')) {
-        enhancedPrompt = `CRITICAL: Keep the product from the first reference image EXACTLY as it is - same shape, colors, details, branding, packaging. Do not modify, stylize, or reimagine the product. Only change the background, scene, context, and add text overlays.\n\n${prompt}`;
-      }
-    }
-
-    // Valid aspect ratios for Nano Banana Pro Edit
-    const validAspectRatios = ['21:9', '16:9', '3:2', '4:3', '5:4', '1:1', '4:5', '3:4', '2:3', '9:16'];
-    const finalAspectRatio = validAspectRatios.includes(aspectRatio) ? aspectRatio : '4:5';
-
-    let endpoint;
-    let requestBody;
-    let response;
-
-    // Strategy: Use image-to-image if we have reference images
-    if (imageUrls.length > 0) {
-      endpoint = 'fal-ai/nano-banana-pro/edit';
-      requestBody = {
-        prompt: enhancedPrompt,
-        image_urls: imageUrls,
-        aspect_ratio: finalAspectRatio,
-        num_images: 1
-      };
-      
-      console.log('Using Nano Banana Pro Edit');
-      console.log('Image URLs:', imageUrls.length);
-    } else {
-      // Fallback to text-to-image
-      endpoint = 'fal-ai/nano-banana-2';
-      
-      // Calculate image size from aspect ratio
-      let imageSize;
-      switch (finalAspectRatio) {
-        case '1:1':
-          imageSize = { width: 1024, height: 1024 };
-          break;
-        case '4:5':
-          imageSize = { width: 1024, height: 1280 };
-          break;
-        case '9:16':
-          imageSize = { width: 768, height: 1344 };
-          break;
-        case '16:9':
-          imageSize = { width: 1344, height: 768 };
-          break;
-        default:
-          imageSize = { width: 1024, height: 1280 };
-      }
-      
-      requestBody = {
-        prompt: enhancedPrompt,
-        negative_prompt: negative_prompt || "blurry, low quality, watermark, distorted",
-        image_size: imageSize,
-        num_images: 1
-      };
-      
-      console.log('Using Nano Banana 2 (text-to-image fallback)');
-    }
-
-    // Call FAL API
-    console.log('Calling FAL API:', endpoint);
-    
-    response = await fetch(`https://fal.run/${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Key ${FAL_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
+    // Final instruction
+    parts.push({
+      text: `\n\nNow generate the advertisement image with:
+- The exact product from the product image
+- Headline text: "${headline}"
+- CTA text: "${cta}"
+- Aspect ratio: ${aspectRatio}
+- Professional, high-converting e-commerce ad style`
     });
+
+    console.log('Calling Nano Banana 2...');
+
+    // Call Nano Banana 2 (gemini-3.1-flash-image-preview)
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts }],
+          generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 8192,
+            // Request image output
+            responseModalities: ["IMAGE", "TEXT"]
+          }
+        })
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('FAL API error:', errorText);
-      
-      // Try fallback to text-to-image if image-to-image failed
-      if (endpoint.includes('edit')) {
-        console.log('Image-to-image failed, trying text-to-image fallback...');
-        
-        const fallbackResponse = await fetch('https://fal.run/fal-ai/nano-banana-2', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Key ${FAL_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            prompt: prompt,
-            negative_prompt: negative_prompt || "blurry, low quality, watermark",
-            image_size: { width: 1024, height: 1280 },
-            num_images: 1
-          })
-        });
-        
-        if (!fallbackResponse.ok) {
-          const fallbackError = await fallbackResponse.text();
-          console.error('Fallback also failed:', fallbackError);
-          return res.status(500).json({ 
-            error: 'Image generation failed',
-            details: fallbackError
-          });
-        }
-        
-        response = fallbackResponse;
-      } else {
-        return res.status(500).json({ 
-          error: 'Image generation failed',
-          details: errorText
-        });
-      }
+      console.error('Nano Banana 2 API error:', errorText);
+      return res.status(response.status).json({ 
+        error: 'Nano Banana 2 API error',
+        details: errorText.substring(0, 500)
+      });
     }
 
     const result = await response.json();
-    const imageUrl = result.images?.[0]?.url || result.image?.url;
+    console.log('Response received, extracting image...');
 
-    if (!imageUrl) {
-      console.error('No image URL in response:', JSON.stringify(result).substring(0, 500));
-      return res.status(500).json({ error: 'No image in response' });
+    // Extract image from response
+    // Nano Banana returns images in the parts array
+    const responseParts = result.candidates?.[0]?.content?.parts || [];
+    
+    let imageData = null;
+    let imageMimeType = null;
+    
+    for (const part of responseParts) {
+      if (part.inlineData) {
+        imageData = part.inlineData.data;
+        imageMimeType = part.inlineData.mimeType;
+        break;
+      }
     }
 
-    console.log('✓ Image generated:', imageUrl.substring(0, 80));
+    if (!imageData) {
+      console.error('No image in response:', JSON.stringify(result).substring(0, 500));
+      return res.status(500).json({ 
+        error: 'No image generated',
+        details: 'Nano Banana 2 did not return an image'
+      });
+    }
+
+    console.log('✓ Image generated successfully');
+
+    // Return as data URL for easy display
+    const imageUrl = `data:${imageMimeType};base64,${imageData}`;
 
     return res.status(200).json({
       success: true,
       imageUrl,
+      imageMimeType,
       variationId,
-      aspectRatio: finalAspectRatio,
-      method: endpoint.includes('edit') ? 'image-to-image' : 'text-to-image'
+      aspectRatio,
+      model: 'nano-banana-2'
     });
 
   } catch (error) {
