@@ -1145,7 +1145,9 @@
             aspectRatio: aspectRatio,
             variations: parseInt(document.getElementById('variations').value),
             language: document.getElementById('language').value
-          }
+          },
+          // Pass research intelligence if available
+          intelligence: productIntelligence || null
         };
         
         console.log('Form data prepared:', {

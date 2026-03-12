@@ -20,7 +20,8 @@ export default async function handler(req, res) {
       referenceImagesBase64,  // Array of {base64, mimeType}
       headline, 
       cta, 
-      options = {} 
+      options = {},
+      intelligence = null  // Research data from product URL
     } = req.body;
     
     const { 
@@ -38,6 +39,7 @@ export default async function handler(req, res) {
     console.log('Aspect Ratio:', aspectRatio);
     console.log('Has product image:', !!productImageBase64);
     console.log('Reference count:', referenceImagesBase64?.length || 0);
+    console.log('Has intelligence:', !!intelligence);
 
     if (!productName || !headline || !cta) {
       return res.status(400).json({ 
@@ -64,9 +66,25 @@ PRODUCT INFORMATION
 • Headline: "${headline}"
 • Subheadline: "${subheadline || '(generate one)'}"
 • CTA: "${cta}"
-• Price: ${price || '(not shown)'}
+• Price: ${price || intelligence?.price || '(not shown)'}
 • Language: ${languageName}
 • Aspect Ratio: ${aspectRatio}
+${intelligence ? `
+═══════════════════════════════════════════════════════════════
+PRODUCT INTELLIGENCE (from research)
+═══════════════════════════════════════════════════════════════
+• Category: ${intelligence.category || 'Unknown'}
+• Core Benefit: ${intelligence.coreBenefit || 'Unknown'}
+• Key Benefits: ${(intelligence.benefits || []).join(', ') || 'Unknown'}
+• Pain Points Solved: ${(intelligence.painPoints || []).join(', ') || 'Unknown'}
+• USPs: ${(intelligence.uniqueSellingPoints || []).join(', ') || 'Unknown'}
+• Target Audience: ${intelligence.targetAudience?.demographics || ''} - ${intelligence.targetAudience?.psychographics || ''}
+• Social Proof: ${(intelligence.socialProof?.trustSignals || []).join(', ') || 'None found'}
+• Visual Style Recommendation: ${intelligence.visualRecommendations?.style || 'professional'} / ${intelligence.visualRecommendations?.mood || 'trustworthy'}
+• Suggested Colors: ${(intelligence.visualRecommendations?.colors || []).join(', ') || 'brand colors'}
+
+USE THIS INTELLIGENCE to create more targeted, benefit-focused prompts that speak to the target audience's pain points.
+` : ''}
 
 ═══════════════════════════════════════════════════════════════
 NANO BANANA 2 PROMPT FRAMEWORK
