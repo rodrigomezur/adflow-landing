@@ -257,9 +257,10 @@ OUTPUT FORMAT - RETURN ONLY VALID JSON
 Return ONLY the JSON. No markdown, no explanation.`
     });
 
+    // TEMPORARILY DISABLED: Image processing causing Vercel timeout
     // Add product image
     const productImg = images.find(i => i.type === 'product');
-    if (productImg) {
+    if (productImg && false) {  // DISABLED
       parts.push({ text: "\n\n═══ PRODUCT IMAGE (keep this EXACTLY as-is in all variations) ═══" });
       parts.push({
         inlineData: {
@@ -271,7 +272,7 @@ Return ONLY the JSON. No markdown, no explanation.`
 
     // Add reference images
     const refImages = images.filter(i => i.type === 'reference');
-    if (refImages.length > 0) {
+    if (refImages.length > 0 && false) {  // DISABLED
       parts.push({ text: "\n\n═══ REFERENCE ADS (analyze these for style/layout inspiration) ═══" });
       for (const ref of refImages) {
         parts.push({ text: `\nReference ${ref.index}:` });
@@ -283,6 +284,9 @@ Return ONLY the JSON. No markdown, no explanation.`
         });
       }
     }
+    
+    // Add text description instead
+    parts.push({ text: `\n\nNOTE: Create variations based on the product name "${productName}" and headline "${headline}". Use standard e-commerce ad layouts.` });
 
     // Final instruction
     parts.push({
