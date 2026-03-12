@@ -960,7 +960,9 @@
         
         if (!planResponse.ok) {
           const err = await planResponse.json().catch(() => ({}));
-          throw new Error(err.error || 'Failed to create plan');
+          const errMsg = err.details || err.error || 'Failed to create plan';
+          console.error('Plan error:', err);
+          throw new Error(errMsg);
         }
         
         const planData = await planResponse.json();

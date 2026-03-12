@@ -107,8 +107,18 @@ export default async function handler(req, res) {
     }
 
     if (images.length === 0) {
-      return res.status(400).json({ error: 'Could not load any images' });
+      return res.status(400).json({ 
+        error: 'Could not load any images',
+        hint: 'Make sure images are valid base64 data URLs or accessible URLs'
+      });
     }
+    
+    // Log image sizes for debugging
+    console.log('Images loaded:', images.map(img => ({
+      type: img.type,
+      mimeType: img.mimeType,
+      base64Length: img.base64?.length || 0
+    })));
 
     // Language mapping
     const languageNames = {
@@ -272,9 +282,19 @@ Return ONLY the JSON. No markdown, no explanation.`
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Gemini API error:', errorText);
+      
+      // Parse error for more details
+      let errorDetails = errorText;
+      try {
+        const errJson = JSON.parse(errorText);
+        errorDetails = errJson.error?.message || errJson.error || errorText;
+      } catch (e) {}
+      
       return res.status(response.status).json({ 
         error: 'Gemini API error',
-        details: errorText
+        details: errorDetails,
+        imagesLoaded: images.length,
+        hint: 'Check if images are too large or API key is valid'
       });
     }
 
