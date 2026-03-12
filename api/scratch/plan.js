@@ -115,8 +115,9 @@ export default async function handler(req, res) {
       console.error('✗ Failed to load product image');
     }
 
-    // 2. Reference images
-    for (let i = 0; i < referenceUrls.length; i++) {
+    // 2. Reference images (limit to 2 to avoid timeout)
+    const maxRefs = Math.min(referenceUrls.length, 2);
+    for (let i = 0; i < maxRefs; i++) {
       const refImg = await loadImage(referenceUrls[i], `Reference ${i + 1}`);
       if (refImg) {
         images.push({
@@ -128,6 +129,9 @@ export default async function handler(req, res) {
       } else {
         console.error(`✗ Failed to load reference ${i + 1}`);
       }
+    }
+    if (referenceUrls.length > 2) {
+      console.log(`⚠️ Limited to 2 references (${referenceUrls.length} provided)`);
     }
 
     if (images.length === 0) {

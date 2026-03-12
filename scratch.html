@@ -889,10 +889,10 @@
       });
     }
     
-    // Upload to temp storage (with compression)
+    // Upload to temp storage (with aggressive compression)
     async function uploadToTmp(file) {
-      // Compress images to reduce size for API calls
-      return await compressImage(file, 800, 0.8);
+      // Compress images aggressively to avoid Vercel timeout
+      return await compressImage(file, 512, 0.6);
     }
     
     // CTA Options
