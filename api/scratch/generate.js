@@ -38,41 +38,22 @@ export default async function handler(req, res) {
     // Build the prompt parts for Nano Banana 2
     const parts = [];
 
-    // Main generation prompt using Framework 2 (Multimodal) from the skill
-    let fullPrompt = `Generate a high-quality e-commerce advertisement image in ${aspectRatio} aspect ratio.
+    // Check if we have reference images to match style
+    const hasReferences = referenceImagesBase64 && referenceImagesBase64.length > 0;
 
-${prompt}
-
-CRITICAL REQUIREMENTS:
-1. Use the EXACT product from the provided product image - do not change or reimagine the product
-2. Render the headline text "${headline}" prominently in bold, modern sans-serif font
-3. Include the CTA button text "${cta}" at the bottom
-4. Maintain ${aspectRatio} aspect ratio exactly
-5. Make the text highly legible against the background
-
-STYLE: Professional e-commerce ad, scroll-stopping, high contrast, commercial photography quality.
-TEXT: Render "${headline}" as the main headline in bold white or contrasting text.
-CTA: Render "${cta}" as a button-style element at the bottom.`;
-
-    parts.push({ text: fullPrompt });
-
-    // Add product image (CRITICAL - this is what must be preserved)
-    if (productImageBase64) {
+    // Add reference images FIRST so the model sees the target style
+    if (hasReferences) {
       parts.push({ 
-        text: "\n\nPRODUCT IMAGE (use this exact product, do not modify or reimagine it):" 
-      });
-      parts.push({
-        inlineData: {
-          mimeType: productImageMimeType || 'image/jpeg',
-          data: productImageBase64
-        }
-      });
-    }
+        text: `REFERENCE AD - COPY THIS EXACT STYLE:
+Analyze this reference advertisement carefully. You MUST replicate:
+- The exact visual style and aesthetic
+- The composition and layout
+- If there's a person/model/hands holding the product, include that
+- The color grading and mood
+- The text placement and typography style
+- The background style and elements
 
-    // Add reference images for style (limit to 2)
-    if (referenceImagesBase64 && referenceImagesBase64.length > 0) {
-      parts.push({ 
-        text: "\n\nREFERENCE ADS (use these for layout and style inspiration only, not for product):" 
+Study this reference ad:` 
       });
       
       const refsToUse = referenceImagesBase64.slice(0, 2);
@@ -87,15 +68,48 @@ CTA: Render "${cta}" as a button-style element at the bottom.`;
       }
     }
 
-    // Final instruction
-    parts.push({
-      text: `\n\nNow generate the advertisement image with:
-- The exact product from the product image
-- Headline text: "${headline}"
-- CTA text: "${cta}"
-- Aspect ratio: ${aspectRatio}
-- Professional, high-converting e-commerce ad style`
-    });
+    // Add product image
+    if (productImageBase64) {
+      parts.push({ 
+        text: "\n\n═══ PRODUCT TO USE (replace the product in reference with THIS exact product) ═══" 
+      });
+      parts.push({
+        inlineData: {
+          mimeType: productImageMimeType || 'image/jpeg',
+          data: productImageBase64
+        }
+      });
+    }
+
+    // Main generation prompt
+    let fullPrompt = `
+═══ GENERATE AD IMAGE ═══
+Aspect Ratio: ${aspectRatio}
+
+${hasReferences ? `STYLE MATCHING (CRITICAL):
+You MUST match the reference ad's visual style EXACTLY:
+- Same composition style (product placement, camera angle)
+- Same mood and color grading
+- If reference has a person/model/hands → include person/model/hands
+- If reference has lifestyle context → include lifestyle context
+- If reference has bold text overlay style → use same text style
+- Match the overall "vibe" of the reference
+
+DO NOT default to generic white background product shots unless the reference uses that style.
+` : ''}
+
+PRODUCT: Use the EXACT product from the product image provided. Do not modify or reimagine it.
+
+TEXT TO RENDER:
+- Headline: "${headline}" (bold, prominent, modern sans-serif)
+- CTA: "${cta}" (button-style at bottom)
+
+CREATIVE DIRECTION FROM PLANNER:
+${prompt}
+
+OUTPUT: A high-quality ${aspectRatio} e-commerce advertisement that matches the reference style with the new product and text.`;
+
+    parts.push({ text: fullPrompt });
 
     console.log('Calling Nano Banana 2...');
 

@@ -34,12 +34,13 @@ export default async function handler(req, res) {
 
     console.log('=== Scratch Plan Request ===');
     console.log('Product:', productName);
-    console.log('Headline:', headline);
+    console.log('Creative Brief:', headline);
     console.log('Variations:', variations);
     console.log('Aspect Ratio:', aspectRatio);
     console.log('Has product image:', !!productImageBase64);
     console.log('Reference count:', referenceImagesBase64?.length || 0);
     console.log('Has intelligence:', !!intelligence);
+    console.log('Mode:', intelligence ? 'Smart Research' : 'Manual');
 
     if (!productName || !headline || !cta) {
       return res.status(400).json({ 
@@ -55,16 +56,15 @@ export default async function handler(req, res) {
 
     // System prompt using Nano Banana Framework 2 (Multimodal)
     parts.push({
-      text: `You are an expert E-commerce Creative Director specializing in Nano Banana 2 image generation prompts.
+      text: `You are an expert E-commerce Creative Director and Copywriter specializing in high-converting ad creatives.
 
-Your task: Create ${variations} unique ad variation prompts for generating high-converting e-commerce ads.
+Your task: Create ${variations} unique ad variations with SHORT, PUNCHY headlines optimized for social media ads.
 
 ═══════════════════════════════════════════════════════════════
 PRODUCT INFORMATION
 ═══════════════════════════════════════════════════════════════
 • Product Name: ${productName}
-• Headline: "${headline}"
-• Subheadline: "${subheadline || '(generate one)'}"
+• Creative Brief: "${headline}"
 • CTA: "${cta}"
 • Price: ${price || intelligence?.price || '(not shown)'}
 • Language: ${languageName}
@@ -83,8 +83,39 @@ PRODUCT INTELLIGENCE (from research)
 • Visual Style Recommendation: ${intelligence.visualRecommendations?.style || 'professional'} / ${intelligence.visualRecommendations?.mood || 'trustworthy'}
 • Suggested Colors: ${(intelligence.visualRecommendations?.colors || []).join(', ') || 'brand colors'}
 
-USE THIS INTELLIGENCE to create more targeted, benefit-focused prompts that speak to the target audience's pain points.
+USE THIS INTELLIGENCE to create targeted, benefit-focused headlines that speak to the audience's pain points.
 ` : ''}
+
+═══════════════════════════════════════════════════════════════
+🎯 HEADLINE RULES (CRITICAL - FOLLOW EXACTLY)
+═══════════════════════════════════════════════════════════════
+The "Creative Brief" above is just INSPIRATION. You must CREATE NEW headlines.
+
+HEADLINE REQUIREMENTS:
+✅ Maximum 6-8 words (STRICT LIMIT)
+✅ One clear message per headline
+✅ Use power words: Free, New, Proven, Secret, Finally, Instant, Easy
+✅ Include numbers when relevant (5,000+ Reviews, 30-Day, 2X Faster)
+✅ Create DIFFERENT angles for each variation
+
+HEADLINE FORMULAS TO USE:
+• [Number] + [Benefit]: "5,000+ Five-Star Reviews"
+• [Pain Point] + [Solution]: "No Powders. No Bloat."
+• [Desire] + [Product]: "Creatine You'll Actually Crave"
+• [Social Proof]: "The Gummies Everyone's Talking About"
+• [Urgency]: "Limited Time: 30% Off"
+• [Transformation]: "From Tired to Unstoppable"
+
+❌ NEVER DO:
+- Headlines longer than 8 words
+- Multiple benefits crammed together
+- Generic phrases like "Best Quality Product"
+- Copying the creative brief verbatim
+
+SUBHEADLINE (optional):
+- Maximum 10-12 words
+- Supports the headline with secondary benefit
+- Can be omitted for cleaner designs
 
 ═══════════════════════════════════════════════════════════════
 NANO BANANA 2 PROMPT FRAMEWORK
@@ -96,14 +127,15 @@ Each prompt MUST follow this structure:
 [Location/Context]: Background, environment, setting
 [Composition]: Shot type (medium, close-up), framing (center, rule of thirds)
 [Style]: Photography style, lighting, color grading
-[Text]: EXACT text to render: headline "${headline}" and CTA "${cta}"
+[Text]: Your GENERATED short headline (in quotes) + CTA "${cta}" (in quotes)
 
 CRITICAL RULES:
 1. The product image provided MUST appear exactly as-is - never reimagine or modify the product
-2. Text MUST be enclosed in quotes for proper rendering
+2. Text MUST be enclosed in quotes for proper rendering: "Your Headline Here"
 3. Specify exact text placement (top, center, bottom)
 4. Include lighting details (softbox, natural, neon rim, etc.)
 5. Specify camera/lens feel (commercial, editorial, lifestyle)
+6. Headlines in prompt must match the short headline you generate for that variation
 
 ═══════════════════════════════════════════════════════════════
 VARIATION STRATEGIES (create ${variations} unique variations using these)
@@ -117,17 +149,32 @@ VARIATION STRATEGIES (create ${variations} unique variations using these)
 7. PREMIUM LUXURY - Dark tones, gold accents, sophisticated lighting
 
 ═══════════════════════════════════════════════════════════════
+AD ANGLES - CREATE ${variations} DIFFERENT ANGLES
+═══════════════════════════════════════════════════════════════
+Each variation should use a DIFFERENT angle:
+
+1. SOCIAL PROOF - Reviews, ratings, "bestseller", "viral"
+2. BENEFIT-FOCUSED - Main transformation or result
+3. PAIN POINT - Problem → Solution
+4. URGENCY/SCARCITY - Limited time, low stock, exclusive
+5. CURIOSITY - Question, "secret", "discover"
+6. LIFESTYLE - Aspirational identity, "for people who..."
+7. COMPARISON - "Unlike others...", "Finally, a..."
+
+═══════════════════════════════════════════════════════════════
 OUTPUT FORMAT - RETURN ONLY VALID JSON
 ═══════════════════════════════════════════════════════════════
 {
+  "referenceAnalysis": "Describe the reference ad style: hand holding product, beige background, bullet points on right, minimal aesthetic, etc.",
   "variations": [
     {
       "id": 1,
+      "angle": "social-proof | benefit | pain-point | urgency | curiosity | lifestyle | comparison",
       "strategy": "hero-product | lifestyle | bold-contrast | minimal | social-proof | urgency | premium",
-      "headline": "${headline}",
-      "subheadline": "supporting text if any",
+      "headline": "YOUR GENERATED SHORT HEADLINE (max 6-8 words)",
+      "subheadline": "Optional supporting text (max 10-12 words) or empty string",
       "cta": "${cta}",
-      "prompt": "Complete Nano Banana 2 prompt following the framework above. 150-200 words. Include exact text in quotes.",
+      "prompt": "DETAILED prompt that describes: 1) The exact composition from reference (hand/background/layout), 2) The product, 3) The headline text in quotes, 4) The CTA. Must be 150+ words with specific visual details.",
       "textPlacement": "top | center | bottom | overlay",
       "colorScheme": "describe the color palette",
       "mood": "describe the emotional feel"
@@ -135,11 +182,14 @@ OUTPUT FORMAT - RETURN ONLY VALID JSON
   ]
 }
 
-IMPORTANT: 
-- All text content (headline, subheadline, CTA) must be in ${languageName}
-- Every prompt must include: "Render the text \\"${headline}\\" in bold sans-serif font"
+CRITICAL RULES:
+- Generate NEW short headlines (do NOT copy the creative brief)
+- Each headline must be MAX 6-8 words
+- Each variation must use a DIFFERENT angle
+- All text must be in ${languageName}
+- Every prompt must include the headline text in quotes for rendering
 - Every prompt must specify aspect ratio: ${aspectRatio}
-- The product from the reference image must be preserved exactly as provided
+- The product from the reference image must be preserved exactly
 
 Return ONLY the JSON object.`
     });
@@ -160,7 +210,14 @@ Return ONLY the JSON object.`
     // Add reference images for style inspiration
     if (referenceImagesBase64 && referenceImagesBase64.length > 0) {
       parts.push({ 
-        text: "\n\n═══ REFERENCE ADS (analyze for layout/style inspiration) ═══" 
+        text: `\n\n═══ REFERENCE ADS - ANALYZE AND REPLICATE THIS STYLE ═══
+Study these reference ads carefully. In your prompts, you MUST describe and replicate:
+- Composition: Is there a hand/person holding the product? What's the framing?
+- Background: What color/style? (beige, white, gradient, lifestyle scene?)
+- Text layout: Where is text positioned? Bullet points? Single headline?
+- Overall aesthetic: Minimal? Bold? Premium? Lifestyle?
+
+DESCRIBE these elements explicitly in each prompt so the image generator copies them.` 
       });
       
       const refsToUse = referenceImagesBase64.slice(0, 2);
@@ -176,10 +233,28 @@ Return ONLY the JSON object.`
     }
 
     // Final instruction
+    const hasRefs = referenceImagesBase64 && referenceImagesBase64.length > 0;
     parts.push({
       text: `\n\n═══ NOW CREATE ${variations} VARIATIONS ═══
-Analyze the product and references, then create ${variations} unique Nano Banana 2 prompts.
-Each must include the exact headline "${headline}" and CTA "${cta}" in the prompt.
+${hasRefs ? `FIRST: Analyze the reference ad(s) above. Describe the visual style:
+- Is there a hand/person? What angle?
+- Background color/style?
+- Text placement and format?
+- Overall mood/aesthetic?
+
+Include this style description IN EACH PROMPT so the generator replicates it.
+` : ''}
+Use the creative brief "${headline}" as INSPIRATION only.
+
+For each variation:
+1. Pick a DIFFERENT angle (social-proof, benefit, pain-point, etc.)
+2. Write a NEW SHORT headline (MAX 6-8 WORDS)
+3. Create a detailed prompt that DESCRIBES the reference ad style + the new headline
+4. Include CTA "${cta}" in the prompt
+
+${hasRefs ? 'CRITICAL: Each prompt must explicitly describe: "A hand holding the product..." or "Product on beige background with bullet points to the right..." - whatever matches the reference.' : ''}
+
+Remember: Short punchy headlines. Detailed style descriptions.
 Return ONLY JSON.`
     });
 
@@ -234,14 +309,15 @@ Return ONLY JSON.`
       
       plan = JSON.parse(jsonMatch[0]);
       
-      // Ensure all variations have the correct headline and CTA
+      // Ensure all variations have required fields (but keep AI-generated headlines)
       if (plan.variations) {
         plan.variations = plan.variations.map((v, i) => ({
           ...v,
           id: v.id || i + 1,
-          headline: headline,  // Ensure correct headline
-          cta: cta,            // Ensure correct CTA
-          aspectRatio: aspectRatio
+          headline: v.headline || headline,  // Keep AI-generated headline, fallback to user input
+          cta: v.cta || cta,                 // Keep AI-generated CTA, fallback to user input
+          aspectRatio: aspectRatio,
+          creativeBrief: headline            // Store original brief for reference
         }));
       }
       
