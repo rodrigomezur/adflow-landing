@@ -224,8 +224,10 @@
        ============================================================ */
     /* Mismo lenguaje de forma que el botón MENU (pill) */
     .theme-toggle{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(244,241,235,.25);border-radius:999px;background:transparent;color:var(--mist);font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;min-height:42px;padding:0 18px;cursor:pointer;transition:.25s}
-    /* Breathing room del CTA del nav */
-    .nav-cta{padding:0 30px}
+    /* Breathing room del CTA del nav.
+       Nota: .navlinks a{padding:8px 0} (regla del tema original) le gana
+       en especificidad a .nav-cta — de ahí que se viera aplastado. */
+    .navlinks a.nav-cta{padding:0 32px;min-height:46px}
     /* Botón de menú: hamburguesa en pill alargado */
     .menu{flex-direction:column;gap:4px;min-width:60px;padding:0 18px}
     .menu i{display:block;width:18px;height:2px;background:currentColor;border-radius:2px;transition:transform .25s,opacity .25s}
