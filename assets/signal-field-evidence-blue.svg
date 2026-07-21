@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Adflow blue signal field">
+  <defs>
+    <filter id="blur"><feGaussianBlur stdDeviation="88"/></filter>
+    <radialGradient id="red"><stop stop-color="#FF4B2E"/><stop offset="1" stop-color="#FF4B2E" stop-opacity="0"/></radialGradient>
+    <radialGradient id="blue"><stop stop-color="#09B7FF"/><stop offset="1" stop-color="#09B7FF" stop-opacity="0"/></radialGradient>
+    <radialGradient id="ivory"><stop stop-color="#F4F1EB"/><stop offset="1" stop-color="#F4F1EB" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="#0A0E13"/>
+  <g filter="url(#blur)" opacity=".92"><ellipse cx="820" cy="450" rx="700" ry="380" fill="url(#blue)"/></g>
+</svg>
