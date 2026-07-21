@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mockup — Tus primeros 90 días</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <style>
+    :root{--ink:#0a0e13;--ivory:#f4f1eb;--red:#ff4b2e;--blue:#09b7ff;--mint:#b7f0e2;--surface:#111820;--mist:#98a1a8;--soft-line:rgba(244,241,235,.16);--max:1280px;--sans:'Instrument Sans',Arial,sans-serif;--mono:'IBM Plex Mono',monospace}
+    *{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--ivory);font-family:var(--sans);font-size:17px;line-height:1.5}
+    .wrap{width:min(var(--max),calc(100% - 64px));margin:auto}
+    .eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 22px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}.eyebrow:before{content:"";width:28px;height:2px;background:currentColor}
+    h2{margin:0 0 24px;font-size:clamp(40px,4.5vw,68px);line-height:1;letter-spacing:-.045em}
+    .lead{font-size:clamp(17px,1.4vw,20px);line-height:1.55;color:var(--mist);margin:0}
+
+    /* ===== Sección: Tus primeros 90 días ===== */
+    .roadmap{position:relative;padding:120px 0;overflow:hidden}
+    .roadmap:before{content:"";position:absolute;inset:-20% 0 20%;background:radial-gradient(circle at 12% 20%,rgba(255,75,46,.07),transparent 30%),radial-gradient(circle at 88% 85%,rgba(9,183,255,.08),transparent 30%);pointer-events:none}
+    .roadmap-head{position:relative;display:grid;grid-template-columns:1fr .72fr;gap:60px;align-items:end;margin-bottom:26px}
+    .roadmap-head h2 em{font-style:normal;background:linear-gradient(110deg,var(--red) 0%,#ff8f7a 45%,var(--blue) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .roadmap-head .lead{margin-bottom:6px}
+    /* Línea de señal que recorre las fases: hipótesis → testing → escala */
+    .phase-progress{position:relative;height:2px;margin:0 0 6px;background:linear-gradient(90deg,rgba(255,75,46,0),var(--red) 12%,var(--red) 34%,var(--ivory) 52%,var(--blue) 74%,var(--blue) 92%,rgba(9,183,255,0))}
+    .phases{position:relative}
+    .phase{display:grid;grid-template-columns:150px 210px 1fr;gap:34px;align-items:start;padding:34px 26px;border-bottom:1px solid rgba(244,241,235,.1);border-radius:16px;transition:background .3s}
+    .phase:last-of-type{border-bottom:0}
+    .phase:hover{background:linear-gradient(90deg,var(--tint,rgba(255,75,46,.07)),transparent 70%)}
+    .phase-num{font-size:76px;font-weight:650;line-height:.9;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1.5px rgba(244,241,235,.22);transition:.3s}
+    .phase:hover .phase-num{color:var(--stage,var(--red));-webkit-text-stroke:0}
+    .phase-when{padding-top:8px}
+    .phase-when span{display:block;font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--stage,var(--red))}
+    .phase-when b{display:block;margin-top:5px;font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mist);font-weight:500}
+    .phase-body h3{margin:0 0 8px;font-size:22px;letter-spacing:-.02em}
+    .phase-body p{margin:0;color:var(--mist);max-width:640px}
+    .phase-result{display:flex;gap:10px;margin-top:14px;font-size:15px;font-weight:550;color:var(--blue)}
+    .phase-result:before{content:"↳";font-family:var(--mono)}
+    /* Etapas semánticas: 00–02 hipótesis, 03 testing, 04–05 señal/escala */
+    .phase.stage-red{--stage:var(--red);--tint:rgba(255,75,46,.06)}
+    .phase.stage-ivory{--stage:var(--ivory);--tint:rgba(244,241,235,.05)}
+    .phase.stage-blue{--stage:var(--blue);--tint:rgba(9,183,255,.06)}
+    .roadmap-close{display:flex;justify-content:flex-end;align-items:center;gap:14px;margin-top:34px;color:var(--blue);font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase}
+    .roadmap-close i{display:block;width:96px;height:50px;background:url('assets/annotation-arrow-return-blue.svg') center/contain no-repeat;transform:rotate(7deg)}
+
+    @media(max-width:1024px){
+      .roadmap{padding:95px 0}
+      .roadmap-head{grid-template-columns:1fr;gap:16px;align-items:start}
+      .phase{grid-template-columns:86px 1fr;gap:20px;padding:28px 16px}
+      .phase-num{font-size:54px;grid-row:span 2}
+      .phase-when{padding-top:4px}
+      .phase-body{grid-column:2}
+    }
+    @media(max-width:640px){
+      .roadmap{padding:76px 0}
+      .wrap{width:calc(100% - 32px)}
+      .phase{grid-template-columns:64px 1fr;gap:16px;padding:24px 10px}
+      .phase-num{font-size:42px}
+      .phase-body h3{font-size:19px}
+      .phase-result{font-size:14px}
+      .roadmap-close{justify-content:flex-start;margin-top:24px}
+    }
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <section class="roadmap">
+    <div class="wrap">
+      <div class="roadmap-head">
+        <div>
+          <p class="eyebrow">Adflow Growth System</p>
+          <h2>Tus primeros <em>90 días.</em></h2>
+        </div>
+        <p class="lead">Cero ambigüedad: desde el día 1 sabes qué auditamos, qué queda instalado en cada fase y qué señal esperar.</p>
+      </div>
+      <div class="phase-progress" aria-hidden="true"></div>
+      <div class="phases">
+
+        <article class="phase stage-red">
+          <div class="phase-num">00</div>
+          <div class="phase-when"><span>Día 1</span><b>Diagnóstico</b></div>
+          <div class="phase-body">
+            <h3>Auditoría de cuello de botella</h3>
+            <p>Auditamos tu tienda, creativos, cuentas, tracking y unit economics para ubicar exactamente dónde se rompe tu adquisición al escalar.</p>
+            <div class="phase-result">Diagnóstico claro y hoja de ruta: sabes qué te frena y por dónde se desbloquea.</div>
+          </div>
+        </article>
+
+        <article class="phase stage-red">
+          <div class="phase-num">01</div>
+          <div class="phase-when"><span>Semana 1</span><b>Estrategia</b></div>
+          <div class="phase-body">
+            <h3>Research &amp; setup</h3>
+            <p>Buyer real, competidores y una matriz de ángulos y hooks con una hipótesis detrás de cada uno. En paralelo: tracking limpio (pixel/CAPI) y cuentas reestructuradas para testear y escalar.</p>
+            <div class="phase-result">Base estratégica y técnica lista: sabes qué vale la pena probar, con datos confiables.</div>
+          </div>
+        </article>
+
+        <article class="phase stage-red">
+          <div class="phase-num">02</div>
+          <div class="phase-when"><span>Semanas 2–3</span><b>Producción</b></div>
+          <div class="phase-body">
+            <h3>Motor creativo híbrido</h3>
+            <p>Primer flujo de creativos en volumen —UGC real, IA, estáticos, variaciones de hook y copy—, cada pieza atada a una hipótesis que vale la pena testear.</p>
+            <div class="phase-result">Flujo constante de creativos nuevos: se acabó depender de 1–2 anuncios.</div>
+          </div>
+        </article>
+
+        <article class="phase stage-ivory">
+          <div class="phase-num">03</div>
+          <div class="phase-when"><span>Semanas 3–4</span><b>Testing</b></div>
+          <div class="phase-body">
+            <h3>Testing estructurado</h3>
+            <p>Lanzamos en Meta y TikTok con estructura de testing controlado, leemos la señal temprana —qué hook, ángulo y formato funcionan— y separamos ganadores de perdedores.</p>
+            <div class="phase-result">Señal creativa validada y CAC bajo control: decisiones con evidencia, no intuición.</div>
+          </div>
+        </article>
+
+        <article class="phase stage-blue">
+          <div class="phase-num">04</div>
+          <div class="phase-when"><span>Semanas 5–8</span><b>Escala</b></div>
+          <div class="phase-body">
+            <h3>Escalar lo que funciona</h3>
+            <p>Subimos inversión en lo que demuestra señal, matamos rápido lo que no aguanta presupuesto y optimizamos el embudo en mejora continua para que el volumen no diluya la rentabilidad.</p>
+            <div class="phase-result">Crecimiento que el sistema aguanta sin romperse, cuidando margen y CAC.</div>
+          </div>
+        </article>
+
+        <article class="phase stage-blue">
+          <div class="phase-num">05</div>
+          <div class="phase-when"><span>Semanas 9–12</span><b>Compound</b></div>
+          <div class="phase-body">
+            <h3>El loop compone</h3>
+            <p>El ciclo completo corre cada mes: research → producción → testing → optimización. Reemplazamos ganadores antes de que se quemen y componemos sobre lo aprendido.</p>
+            <div class="phase-result">Un sistema de adquisición que mejora mes a mes, contigo fuera de la operación.</div>
+          </div>
+        </article>
+
+      </div>
+      <div class="roadmap-close"><span>Every cycle feeds the next one</span><i aria-hidden="true"></i></div>
+    </div>
+  </section>
+</body>
+</html>
