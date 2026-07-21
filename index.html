@@ -291,6 +291,32 @@
 
     [data-theme="light"] footer{border-top:1px solid rgba(10,14,19,.12)}
 
+    /* ============================================================
+       Dark total — las secciones que quedaban claras pasan a ink.
+       La auditoría permanece clara a propósito: única ruptura de
+       polaridad, en el punto de conversión (espejo del form oscuro
+       en modo light).
+       ============================================================ */
+    [data-theme="dark"] body{background:var(--ink)}
+    [data-theme="dark"] .section:not(.dark):not(.audit){background:var(--ink);color:var(--ivory)}
+    [data-theme="dark"] .section:not(.dark):not(.audit) .muted{color:var(--mist)}
+    [data-theme="dark"] .statement{color:var(--ivory)}
+    [data-theme="dark"] .problem-row{border-color:rgba(244,241,235,.14)}
+    [data-theme="dark"] .problem-row p{color:var(--mist)}
+    [data-theme="dark"] .test-cell{border-color:rgba(244,241,235,.14)}
+    [data-theme="dark"] .test-variable{color:var(--mist)}
+    [data-theme="dark"] .ab-sample i{border-color:rgba(244,241,235,.3)}
+    [data-theme="dark"] .ab-sample i:last-child{border-color:var(--blue)}
+    [data-theme="dark"] .compare{background:transparent;border-color:rgba(244,241,235,.16)}
+    [data-theme="dark"] .compare .adflow{background:var(--surface)}
+    [data-theme="dark"] .compare .factory{color:var(--ink)}
+    [data-theme="dark"] .fit-card{border-color:rgba(244,241,235,.16)}
+    [data-theme="dark"] .fit-card li{border-bottom-color:rgba(244,241,235,.14)}
+    [data-theme="dark"] .fit-card.no{background:rgba(255,75,46,.07)}
+
+    /* Nav: CTA pill visible dentro del menú desplegable en mobile */
+    @media(max-width:640px){.navlinks .nav-cta{display:inline-flex!important;justify-content:center}}
+
     /* La sección de auditoría es clara en ambos temas: se restaura el
        campo de señal del diseño original, ahora con el asset light. */
     .audit:before{display:block;inset:0 0 0 40%;background:linear-gradient(90deg,var(--ivory),rgba(244,241,235,.35) 45%,rgba(244,241,235,.15)),url('assets/signal-field-light-4x5.svg') right center/cover no-repeat;opacity:.85}
@@ -298,7 +324,7 @@
   </style>
 </head>
 <body>
-  <nav aria-label="Principal"><div class="wrap"><a class="brand" href="#top"><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"></a><div class="navlinks"><a data-i18n="nav_method" href="#method">Método</a><a data-i18n="nav_output" href="#outputs">Qué producimos</a><a data-i18n="nav_fit" href="#fit">Para quién</a><a data-i18n="nav_audit" href="#audit">Auditoría</a><div class="langs" aria-label="Idioma"><button class="lang" data-lang="en">EN</button><button class="lang active" data-lang="es">ES</button></div><button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema claro/oscuro">Light</button><a class="btn primary nav-cta" data-i18n="cta" href="#audit">Solicitar auditoría</a><button class="menu" aria-label="Navegación compacta">MENU</button></div></div></nav>
+  <nav aria-label="Principal"><div class="wrap"><a class="brand" href="#top"><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"></a><div class="navlinks"><a data-i18n="nav_method" href="#method">Método</a><a data-i18n="nav_output" href="#outputs">Qué producimos</a><a data-i18n="nav_fit" href="#fit">Para quién</a><a data-i18n="nav_audit" href="#audit">Auditoría</a><div class="langs" aria-label="Idioma"><button class="lang" data-lang="en">EN</button><button class="lang active" data-lang="es">ES</button></div><a class="btn primary nav-cta" data-i18n="cta" href="#audit">Solicitar auditoría</a><button class="menu" aria-label="Navegación compacta">MENU</button></div><button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema claro/oscuro">Light</button></div></nav>
   <main id="top">
     <section class="hero3 dark">
       <div class="hero3-bg" aria-hidden="true"></div>
