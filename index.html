@@ -60,12 +60,144 @@
     @media(max-width:640px){nav{height:64px}.brand img{width:142px}.hero{min-height:0;padding:50px 0 38px}.hero h1{font-size:clamp(53px,16.5vw,66px);line-height:.88}.hero-copy .lead{font-size:17px}.actions{align-items:stretch;flex-direction:column}.actions .btn{width:100%}.signal-field{min-height:330px}.signal-copy{bottom:44px}.signal-copy div{padding:10px 4px 0}.signal-copy span{font-size:7px;letter-spacing:.05em}.signal-copy b{font-size:10px}.signal-return{width:88px;height:44px}.hero-mark{width:48px}.stream-head h2 br{display:none}.creative-test-card{flex-basis:238px;height:334px;border-radius:20px}.creative-visual{height:144px}.creative-card-copy h3{font-size:18px}.visual-founder:after{display:none}.marked-idea{white-space:normal}.bottleneck-label{margin-top:24px}.creative-testing-loop>img{width:760px;max-width:none;transform:translateX(-180px)}.creative-testing-loop{height:344px}.loop-return-note{display:none}.delivery-stages{grid-template-columns:1fr}.delivery-stage{border-right:0;border-bottom:1px solid var(--soft-line)!important}.delivery-stage:last-child{border-bottom:0!important}.compare .annotation{width:100px}.compare .factory li:nth-child(3) .annotation{width:180px}.audit-grid{gap:42px}.breakpoint-map{height:180px}.breakpoint-map .annotation{left:35%;top:40px}.navlinks{left:16px;right:16px}}
     @media(max-width:1024px){.menu{display:inline-flex!important}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.creative-track{transform:none!important}.marquee-row{overflow-x:auto}.creative-group[aria-hidden="true"]{display:none}[data-reveal]{opacity:1!important;transform:none!important}}
+    /* ============================================================
+       Hero v3 — Creative Testing Surface en panel único
+       Fondo: signal-field-dark-16x9.svg oficial (sin alterar).
+       Reemplaza al hero anterior; el CSS legacy .hero/.signal-* queda
+       sin efecto porque la sección ahora usa la clase .hero3.
+       ============================================================ */
+    .hero3{position:relative;min-height:calc(100vh - 72px);padding:64px 0;display:flex;align-items:center;overflow:hidden;background:var(--ink);color:var(--ivory)}
+    .hero3-bg{position:absolute;inset:-6%;background:url('assets/signal-field-dark-16x9.svg') center/cover no-repeat;animation:sfDrift 26s ease-in-out infinite alternate;will-change:transform}
+    @keyframes sfDrift{to{transform:scale(1.05) translateY(-1.2%)}}
+    .hero3-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,14,19,.96) 0 30%,rgba(10,14,19,.72) 46%,rgba(10,14,19,.22) 62%,rgba(10,14,19,.28) 100%)}
+    .hero3-grid{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1.04fr;gap:44px;align-items:center}
+    .hero3-grid>*{min-width:0}
+    .hero3 h1{font-size:clamp(64px,6.4vw,100px);max-width:670px}
+    .hero3 .lead{color:var(--mist);max-width:600px}
+    .panel-col{display:flex;align-items:center;justify-content:center}
+    .surface-panel{position:relative;width:min(600px,100%);padding:32px 34px 28px;border:1px solid rgba(244,241,235,.14);border-radius:26px;background:rgba(10,14,19,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 46px 110px rgba(0,0,0,.42)}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .surface-label{color:var(--mist);font:600 10px var(--mono);letter-spacing:.16em;text-transform:uppercase}
+    .panel-mark{width:44px;animation:spLearn 7s ease-in-out infinite}
+    .surface-tabs{display:flex;gap:8px;margin-bottom:26px}
+    .surface-tab{border:1px solid var(--soft-line);border-radius:999px;background:transparent;color:var(--mist);font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:9px 14px;cursor:pointer;transition:.25s}
+    .surface-tab:hover{color:var(--ivory)}
+    .surface-tab[aria-selected="true"]{background:var(--ivory);border-color:var(--ivory);color:var(--ink)}
+    .track-zone{position:relative;height:72px;margin-bottom:20px}
+    .sp-track{position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,rgba(255,75,46,0),var(--red) 14%,var(--ivory) 50%,var(--blue) 82%,rgba(9,183,255,0))}
+    .sp-origin,.sp-learning{position:absolute;top:calc(50% - 4px);width:9px;height:9px;border-radius:50%}
+    .sp-origin{left:8%;background:var(--red);box-shadow:0 0 22px var(--red);animation:spWake 7s ease-in-out infinite}
+    .sp-learning{right:6%;background:var(--blue);box-shadow:0 0 24px var(--blue);animation:spLearn 7s ease-in-out infinite}
+    .sp-core{position:absolute;left:49%;top:calc(50% - 11px);width:22px;height:22px;border-radius:50%;background:var(--ivory);box-shadow:0 0 15px 4px var(--ivory),-18px 0 44px 18px rgba(255,75,46,.55),18px 0 48px 20px rgba(9,183,255,.6);animation:spCore 7s ease-in-out infinite}
+    .sp-packet{position:absolute;left:9%;top:calc(50% - 3px);width:7px;height:7px;border-radius:50%;background:var(--ivory);box-shadow:0 0 15px var(--ivory);animation:spTravel 7s cubic-bezier(.4,0,.2,1) infinite}
+    .surface-marker{position:absolute;top:calc(50% - 7px);left:8%;width:15px;height:15px;border-radius:50%;border:2px solid var(--marker,var(--red));background:rgba(10,14,19,.7);box-shadow:0 0 18px var(--marker,var(--red));transform:translateX(-50%);transition:left .7s cubic-bezier(.4,0,.2,1),border-color .4s,box-shadow .4s}
+    .sp-return{position:absolute;right:2%;top:-6px;width:96px;height:50px;transform:rotate(7deg);background:url('assets/annotation-arrow-return-blue.svg') center/contain no-repeat;opacity:.5;transition:opacity .4s}
+    .surface-panel[data-state="scale"] .sp-return{opacity:1}
+    @keyframes spWake{0%,100%{opacity:.48;transform:scale(.72)}16%,40%{opacity:1;transform:scale(1.25)}}
+    @keyframes spTravel{0%,14%{left:9%;opacity:0}24%{opacity:1}55%{left:49%;opacity:1}72%,100%{left:91%;opacity:0}}
+    @keyframes spCore{0%,34%,100%{transform:scale(.8);filter:brightness(.85)}48%,58%{transform:scale(1.22);filter:brightness(1.25)}}
+    @keyframes spLearn{0%,55%,100%{opacity:.45;transform:scale(.8)}68%,88%{opacity:1;transform:scale(1.14)}}
+    .surface-panel[data-state="creative"]{--marker:var(--red)}
+    .surface-panel[data-state="campaign"]{--marker:var(--ivory)}
+    .surface-panel[data-state="signal"]{--marker:#86d7f8}
+    .surface-panel[data-state="scale"]{--marker:var(--blue)}
+    .scenario{min-height:196px;padding:17px 20px 15px;border:1px solid rgba(244,241,235,.1);border-top:2px solid var(--marker,var(--red));border-radius:18px;background:rgba(17,24,32,.55);transition:border-color .4s;margin-bottom:22px}
+    .scenario-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .scenario-id{font:600 9px var(--mono);letter-spacing:.1em;color:var(--mist);text-transform:uppercase}
+    .scenario-status{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid currentColor;border-radius:999px;font:600 8px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+    .scenario-status:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+    .tone-red{color:var(--red)}.tone-blue{color:var(--blue)}.tone-neutral{color:var(--mist)}
+    .scenario-body{display:flex;gap:16px;align-items:flex-start}
+    .scenario-rows{display:grid;gap:8px;flex:1;min-width:0}
+    .scenario-row span{display:block;font:600 8px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin-bottom:3px}
+    .scenario-row b{display:block;font-size:15px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+    .scenario-row.next b{color:var(--blue);font-size:13px;font-weight:500}
+    .scenario-tagline{margin:11px 0 0;padding-top:9px;border-top:1px solid var(--soft-line);font:600 9px var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--blue)}
+    .scenario.swap{animation:scenarioSwap .3s ease}
+    @keyframes scenarioSwap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .spec{flex:none;position:relative}
+    .spec-creative{width:56px;aspect-ratio:9/16;border-radius:10px;border:1px solid rgba(244,241,235,.3);background:linear-gradient(165deg,rgba(255,75,46,.8),rgba(244,241,235,.14) 58%,rgba(9,183,255,.22))}
+    .spec-creative:after{content:"";position:absolute;left:8px;right:8px;top:42%;height:2px;background:linear-gradient(90deg,var(--red),var(--ivory));transform:rotate(-8deg)}
+    .spec-campaign{width:82px;height:98px;display:flex;align-items:center;gap:10px}
+    .spec-campaign i{display:block;width:30px;aspect-ratio:9/16;border-radius:6px;border:1px solid rgba(244,241,235,.45);background:linear-gradient(165deg,rgba(244,241,235,.5),rgba(244,241,235,.08))}
+    .spec-campaign u{display:grid;gap:8px;text-decoration:none;position:relative;padding-left:10px}
+    .spec-campaign u:before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--soft-line)}
+    .spec-campaign u b{display:block;width:16px;height:16px;border-radius:5px;border:1px solid rgba(244,241,235,.4)}
+    .spec-signal{width:82px;height:98px}
+    .spec-signal:before{content:"";position:absolute;left:0;right:0;top:46px;height:3px;border-radius:999px;background:linear-gradient(90deg,var(--ivory),var(--blue))}
+    .spec-signal i,.spec-signal u{position:absolute;top:38px;width:10px;height:19px;border:1px solid rgba(9,183,255,.7);border-top:0;border-bottom:0}
+    .spec-signal i{left:22%}.spec-signal u{left:58%}
+    .spec-scale{width:82px;height:80px;background:url('assets/annotation-arrow-curve-blue.svg') center/contain no-repeat;transform:scaleX(-1) rotate(14deg)}
+    .stage-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .stage-row div{padding:12px 12px 0;border-top:1px solid var(--soft-line)}
+    .stage-row div:first-child{border-color:rgba(255,75,46,.62)}.stage-row div:last-child{border-color:rgba(9,183,255,.62)}
+    .stage-row span{display:block;color:var(--mist);font:500 9px var(--mono);letter-spacing:.11em;text-transform:uppercase}
+    .stage-row b{display:block;margin-top:7px;font-size:13px;font-weight:500}
+    @media(max-width:1024px){
+      .hero3{min-height:0;padding:56px 0}
+      .hero3-grid{grid-template-columns:1fr;gap:40px}
+      .hero3-shade{background:linear-gradient(180deg,rgba(10,14,19,.95) 0 34%,rgba(10,14,19,.6) 52%,rgba(10,14,19,.28) 100%)}
+    }
+    @media(max-width:640px){
+      .hero3{padding:50px 0 38px}
+      .hero3 h1{font-size:clamp(50px,15.5vw,62px);line-height:.88}
+      .hero3 .lead{font-size:17px}
+      .surface-panel{padding:22px 18px 20px;border-radius:22px;backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(10,14,19,.9)}
+      .surface-tabs{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px;margin-bottom:18px;scrollbar-width:none}
+      .surface-tabs::-webkit-scrollbar{display:none}
+      .surface-tab{flex:none;scroll-snap-align:start}
+      .track-zone{height:58px;margin-bottom:14px}
+      .scenario{min-height:0;margin-bottom:18px}
+      .sp-return{width:74px;height:38px;top:-10px}
+      .panel-mark{width:36px}
+      .stage-row{gap:8px}.stage-row div{padding:10px 6px 0}.stage-row span{font-size:7px;letter-spacing:.06em}.stage-row b{font-size:10px}
+    }
   </style>
 </head>
 <body>
-  <nav aria-label="Principal"><div class="wrap"><a class="brand" href="#top"><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"></a><div class="navlinks"><a data-i18n="nav_method" href="#method">Método</a><a data-i18n="nav_output" href="#outputs">Qué producimos</a><a data-i18n="nav_fit" href="#fit">Para quién</a><a data-i18n="nav_audit" href="#audit">Auditoría</a><div class="langs" aria-label="Idioma"><button class="lang" data-lang="en">EN</button><button class="lang active" data-lang="es">ES</button></div><a class="btn primary nav-cta" data-i18n="cta" href="#audit">Agenda una auditoría creativa</a><button class="menu" aria-label="Navegación compacta">MENU</button></div></div></nav>
+  <nav aria-label="Principal"><div class="wrap"><a class="brand" href="#top"><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"></a><div class="navlinks"><a data-i18n="nav_method" href="#method">Método</a><a data-i18n="nav_output" href="#outputs">Qué producimos</a><a data-i18n="nav_fit" href="#fit">Para quién</a><a data-i18n="nav_audit" href="#audit">Auditoría</a><div class="langs" aria-label="Idioma"><button class="lang" data-lang="en">EN</button><button class="lang active" data-lang="es">ES</button></div><a class="btn primary nav-cta" data-i18n="cta" href="#audit">Solicitar auditoría</a><button class="menu" aria-label="Navegación compacta">MENU</button></div></div></nav>
   <main id="top">
-    <section class="hero dark"><div class="wrap hero-grid"><div class="hero-copy" data-reveal><p class="eyebrow">Meta creative testing system</p><h1 data-i18n="hero_title">Creative intelligence<br>in motion.</h1><p class="lead muted" data-i18n="hero_copy">Convertimos research, estrategia y producción en un sistema de creative testing para Meta que aprende con cada ciclo.</p><div class="actions"><a class="btn primary" data-i18n="cta" href="#audit">Agenda una auditoría creativa</a><a class="btn light" data-i18n="see_method" href="#method">Ver cómo funciona</a></div></div><div class="hero-visual" aria-label="La hipótesis se transforma en señal y aprendizaje"><img class="hero-mark" src="assets/adflow-symbol-ivory.svg" alt=""><div class="signal-axis"></div><div class="signal-core"></div><div class="signal-copy"><div><span>01 / Input</span><b>Hypothesis</b></div><div><span>02 / Process</span><b>Meta testing</b></div><div><span>03 / Output</span><b>Learning compounds</b></div></div></div></div></section>
+    <section class="hero3 dark">
+      <div class="hero3-bg" aria-hidden="true"></div>
+      <div class="hero3-shade" aria-hidden="true"></div>
+      <div class="wrap hero3-grid">
+        <div class="hero3-copy" data-reveal>
+          <p class="eyebrow">Meta creative testing system</p>
+          <h1 data-i18n="hero_title">Creative intelligence<br>in motion.</h1>
+          <p class="lead" data-i18n="hero_copy">Convertimos creative strategy, producción y media buying en un sistema de adquisición que encuentra qué vende, qué escala y qué mantiene rentable el crecimiento.</p>
+          <div class="actions"><a class="btn primary" data-i18n="cta" href="#audit">Solicitar auditoría</a><a class="btn light" data-i18n="see_method" href="#method">Ver cómo funciona</a></div>
+        </div>
+        <div class="panel-col">
+          <div class="surface-panel" data-state="creative" aria-label="Creative Testing Surface: la hipótesis creativa se convierte en campaña, señal económica y escala rentable">
+            <div class="panel-head">
+              <span class="surface-label" id="surface-label">Creative Testing Surface</span>
+              <img class="panel-mark" src="assets/adflow-symbol-signal.svg" alt="">
+            </div>
+            <div class="surface-tabs" role="tablist" aria-labelledby="surface-label">
+              <button class="surface-tab" role="tab" id="tab-creative" aria-selected="true" aria-controls="scenario-panel" data-state="creative">Creative</button>
+              <button class="surface-tab" role="tab" id="tab-campaign" aria-selected="false" aria-controls="scenario-panel" data-state="campaign" tabindex="-1">Campaign</button>
+              <button class="surface-tab" role="tab" id="tab-signal" aria-selected="false" aria-controls="scenario-panel" data-state="signal" tabindex="-1">Signal</button>
+              <button class="surface-tab" role="tab" id="tab-scale" aria-selected="false" aria-controls="scenario-panel" data-state="scale" tabindex="-1">Scale</button>
+            </div>
+            <div class="track-zone" aria-hidden="true">
+              <div class="sp-track"></div>
+              <div class="sp-origin"></div>
+              <div class="sp-packet"></div>
+              <div class="sp-core"></div>
+              <div class="sp-learning"></div>
+              <div class="surface-marker"></div>
+              <div class="sp-return"></div>
+            </div>
+            <div class="scenario" id="scenario-panel" role="tabpanel" aria-live="polite"></div>
+            <div class="stage-row">
+              <div><span>01 / Input</span><b>Hypothesis</b></div>
+              <div><span>02 / Process</span><b>Meta testing</b></div>
+              <div><span>03 / Return</span><b>Learning compounds</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
     <div class="system-ticker dark" aria-hidden="true"><div class="ticker-track"><span><i>Research</i> → Create → Test → Learn → Compound</span><span>Built to learn faster.</span><span>More signal. Less guesswork.</span><span><i>Research</i> → Create → Test → Learn → Compound</span><span>Built to learn faster.</span><span>More signal. Less guesswork.</span></div></div>
     <section class="creative-stream" id="outputs"><div class="wrap stream-head"><div><p class="eyebrow" data-i18n="output_eyebrow">Creative output / testing surface</p><h2 data-i18n="output_title">Ideas que se mueven.<br>Señales que regresan.</h2></div><p class="lead" data-i18n="output_copy">UGC, hooks, estáticos, demos y founder-led: expresiones distintas de hipótesis que vale la pena testear.</p></div><div class="marquee-row"><div class="creative-track right"><div class="creative-group"><article class="creative-tile"><span class="format">UGC · 9:16</span><div class="orb"></div><h3>Show the proof before the promise.</h3></article><article class="creative-tile"><span class="format">Hook · 9:16</span><div class="hookline"></div><h3>“I noticed it before the week was over.”</h3></article><article class="creative-tile"><span class="format">Product demo · 4:5</span><div class="bottle"></div><h3>Make the mechanism visible.</h3></article><article class="creative-tile"><span class="format">Founder-led · 4:5</span><div class="orb"></div><h3>Why we built it this way.</h3></article><article class="creative-tile"><span class="format">Static · 1:1</span><div class="hookline"></div><h3>Specificity builds belief.</h3></article><article class="creative-tile"><span class="format">Offer · 4:5</span><div class="bottle"></div><h3>A better reason to act now.</h3></article><article class="creative-tile"><span class="format">Testimonial · 9:16</span><div class="orb"></div><h3>The detail that changed the decision.</h3></article><article class="creative-tile"><span class="format">Hook study</span><div class="hookline"></div><h3>Seven openings. One tension.</h3></article></div></div></div><div class="marquee-row"><div class="creative-track left"><div class="creative-group"><article class="creative-tile"><span class="format">Static · 4:5</span><div class="bottle"></div><h3>Proof over polish.</h3></article><article class="creative-tile"><span class="format">UGC · 9:16</span><div class="orb"></div><h3>Start where the objection lives.</h3></article><article class="creative-tile"><span class="format">Founder-led</span><div class="hookline"></div><h3>The story behind the product.</h3></article><article class="creative-tile"><span class="format">Demo · 1:1</span><div class="bottle"></div><h3>See what changes.</h3></article><article class="creative-tile"><span class="format">Hook · 9:16</span><div class="orb"></div><h3>What if the problem isn’t you?</h3></article><article class="creative-tile"><span class="format">Angle test</span><div class="hookline"></div><h3>Same product. New reason to care.</h3></article><article class="creative-tile"><span class="format">Offer · 4:5</span><div class="bottle"></div><h3>Turn attention into action.</h3></article><article class="creative-tile"><span class="format">UGC · 9:16</span><div class="orb"></div><h3>Make the outcome feel real.</h3></article></div></div></div></section>
     <section class="section" id="problem"><div class="wrap"><div class="problem-grid"><div><p class="eyebrow" data-i18n="problem_eyebrow">El problema real</p><h2 data-i18n="problem_title">Las marcas no se quedan sin anuncios.</h2><p class="statement" data-i18n="problem_statement">Se quedan sin <em>nuevas ideas</em> que valga la pena testear.</p></div><div class="problem-list" data-reveal><div class="problem-row"><span class="num">01</span><div><b data-i18n="p1t">Fatiga creativa</b><p data-i18n="p1c">Los conceptos pierden fuerza y el equipo llega tarde al siguiente ángulo.</p></div></div><div class="problem-row"><span class="num">02</span><div><b data-i18n="p2t">Variaciones superficiales</b><p data-i18n="p2c">Cambiar el color o el primer frame no crea una nueva razón para comprar.</p></div></div><div class="problem-row"><span class="num">03</span><div><b data-i18n="p3t">Producción sin hipótesis</b><p data-i18n="p3c">Más piezas, sin una pregunta clara que el mercado pueda responder.</p></div></div><div class="problem-row"><span class="num">04</span><div><b data-i18n="p4t">Aprendizaje perdido</b><p data-i18n="p4c">Cada mes vuelve a empezar cuando la señal no alimenta el siguiente brief.</p></div></div></div></div></div></section>
@@ -74,14 +206,12 @@
     <section class="section dark"><div class="wrap deliverables"><div><p class="eyebrow" data-i18n="receive_eyebrow">Qué recibe el cliente</p><h2 data-i18n="receive_title">Un sistema de aprendizaje creativo operado.</h2><p class="lead muted" data-i18n="receive_copy">No un catálogo de contenido: una secuencia conectada de decisiones, producción, señal y nuevos ciclos.</p></div><div class="delivery-list"><div class="delivery"><span>01</span><b>Research + creative strategy</b></div><div class="delivery"><span>02</span><b>Conceptos creativos</b></div><div class="delivery"><span>03</span><b>Briefs + scripts</b></div><div class="delivery"><span>04</span><b>UGC, estáticos + video</b></div><div class="delivery"><span>05</span><b>Variaciones con intención</b></div><div class="delivery"><span>06</span><b>Testing structure</b></div><div class="delivery"><span>07</span><b>Creative performance review</b></div><div class="delivery"><span>08</span><b>Learning library + nuevos ciclos</b></div></div></div></section>
     <section class="section"><div class="wrap"><p class="eyebrow">Not a content factory</p><h2 data-i18n="compare_title">El output importa.<br>El aprendizaje compone.</h2><div class="compare" data-reveal><div class="factory"><span class="mono">Content factory</span><ul><li>Más anuncios</li><li>Poca diferenciación</li><li>Variaciones sin pregunta</li><li>Aprendizajes dispersos</li></ul></div><div class="adflow"><span class="mono">Adflow</span><ul><li>Más hipótesis</li><li>Conceptos realmente distintos</li><li>Señales claras</li><li>Aprendizaje acumulativo</li></ul></div></div></div></section>
     <section class="section" id="fit"><div class="wrap"><p class="eyebrow" data-i18n="fit_eyebrow">Para quién es</p><h2 data-i18n="fit_title">Para marcas ecommerce listas para aprender más rápido.</h2><div class="fit"><article class="fit-card"><h3 data-i18n="fit_yes">Es para ti si</h3><ul><li>Ya tienes ventas online</li><li>Ya has invertido en publicidad</li><li>Quieres crecer en Meta</li><li>Necesitas mejores conceptos creativos</li><li>Quieres dejar de depender de ideas aisladas</li><li>Quieres un sistema operado contigo</li></ul></article><article class="fit-card no"><h3 data-i18n="fit_no">No es para ti si</h3><ul><li>Buscas tu primera venta</li><li>No tienes presupuesto para publicidad</li><li>No estás dispuesto a testear e iterar</li><li>Quieres una solución mágica sin proceso</li></ul></article></div></div></section>
-    <section class="section audit" id="audit"><div class="wrap audit-grid"><div><p class="eyebrow">Creative testing audit</p><h2 data-i18n="audit_title">Agenda una auditoría creativa.</h2><p class="lead" data-i18n="audit_copy">Revisamos cómo tu marca convierte ideas en anuncios, señal y nuevos aprendizajes. Te mostramos dónde se rompe el ciclo.</p><ul class="audit-points"><li>Tu research y estrategia</li><li>Tus conceptos y creativos</li><li>Tu estructura de testing en Meta</li><li>Tu proceso de producción</li><li>Tu sistema de aprendizaje</li></ul></div><form class="form" id="audit-form"><div class="fields"><div class="field-group"><label for="name">Nombre *</label><input id="name" name="name" autocomplete="name" required></div><div class="field-group"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field-group full"><label for="website">Website / Tienda</label><input id="website" name="website" type="url" placeholder="https://tumarca.com"></div><div class="field-group"><label for="monthly_revenue">Facturación mensual</label><select id="monthly_revenue" name="monthly_revenue"><option value="" selected disabled>Selecciona tu facturación</option><option value="under-10k">Menos de $10,000/mes</option><option value="10k-30k">$10,000 - $30,000/mes</option><option value="30k-75k">$30,000 - $75,000/mes</option><option value="75k-150k">$75,000 - $150,000/mes</option><option value="150k-plus">$150,000+/mes</option></select></div><div class="field-group"><label for="monthly_spend">Gasto mensual en ads</label><select id="monthly_spend" name="monthly_spend"><option value="" selected disabled>Selecciona tu gasto actual</option><option value="under-5k">Menos de $5,000/mes</option><option value="5k-15k">$5,000 - $15,000/mes</option><option value="15k-30k">$15,000 - $30,000/mes</option><option value="30k-50k">$30,000 - $50,000/mes</option><option value="50k-plus">$50,000+/mes</option></select></div><div class="field-group full"><span class="group-label">Canales actuales</span><div class="checks"><label class="check"><input type="checkbox" name="current_channels" value="meta"> Meta</label><label class="check"><input type="checkbox" name="current_channels" value="tiktok"> TikTok</label><label class="check"><input type="checkbox" name="current_channels" value="google"> Google</label><label class="check"><input type="checkbox" name="current_channels" value="organic"> Orgánico</label><label class="check"><input type="checkbox" name="current_channels" value="email-sms"> Email/SMS</label><label class="check"><input type="checkbox" name="current_channels" value="other"> Otro</label></div></div><div class="field-group full"><label for="creative_setup">Setup actual</label><select id="creative_setup" name="creative_setup"><option value="" selected disabled>¿Quién opera adquisición hoy?</option><option value="in-house">Equipo interno</option><option value="agency">Agencia</option><option value="freelancers">Freelancers / Contractors</option><option value="founder">Lo hago yo mismo</option><option value="hybrid">Combinación de lo anterior</option></select></div><div class="field-group full"><label for="bottleneck">Mayor cuello de botella creativo</label><textarea id="bottleneck" name="bottleneck" placeholder="Ej. producimos mucho, pero no sabemos qué ideas vale la pena testear..."></textarea></div></div><button class="submit" type="submit" data-i18n="submit">Solicitar auditoría creativa →</button><p class="status" role="status" aria-live="polite"></p></form></div></section>
+    <section class="section audit" id="audit"><div class="wrap audit-grid"><div><p class="eyebrow">Creative testing audit</p><h2 data-i18n="audit_title">Agenda una auditoría creativa.</h2><p class="lead" data-i18n="audit_copy">Revisamos cómo tu marca convierte ideas en anuncios, señal y nuevos aprendizajes. Te mostramos dónde se rompe el ciclo.</p><ul class="audit-points"><li>Tu research y estrategia</li><li>Tus conceptos y creativos</li><li>Tu estructura de testing en Meta</li><li>Tu proceso de producción</li><li>Tu sistema de aprendizaje</li></ul></div><form class="form" id="audit-form"><div class="fields"><div class="field-group"><label for="name">Nombre *</label><input id="name" name="name" autocomplete="name" required></div><div class="field-group"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field-group full"><label for="website">Website / Tienda</label><input id="website" name="website" type="url" placeholder="https://tumarca.com"></div><div class="field-group"><label for="monthly_revenue">Facturación mensual</label><select id="monthly_revenue" name="monthly_revenue"><option value="" selected disabled>Selecciona tu facturación</option><option value="under-10k">Menos de $10,000/mes</option><option value="10k-30k">$10,000 - $30,000/mes</option><option value="30k-75k">$30,000 - $75,000/mes</option><option value="75k-150k">$75,000 - $150,000/mes</option><option value="150k-plus">$150,000+/mes</option></select></div><div class="field-group"><label for="monthly_spend">Gasto mensual en ads</label><select id="monthly_spend" name="monthly_spend"><option value="" selected disabled>Selecciona tu gasto actual</option><option value="under-5k">Menos de $5,000/mes</option><option value="5k-15k">$5,000 - $15,000/mes</option><option value="15k-30k">$15,000 - $30,000/mes</option><option value="30k-50k">$30,000 - $50,000/mes</option><option value="50k-plus">$50,000+/mes</option></select></div><div class="field-group full"><span class="group-label">Canales actuales</span><div class="checks"><label class="check"><input type="checkbox" name="current_channels" value="meta"> Meta</label><label class="check"><input type="checkbox" name="current_channels" value="tiktok"> TikTok</label><label class="check"><input type="checkbox" name="current_channels" value="google"> Google</label><label class="check"><input type="checkbox" name="current_channels" value="organic"> Orgánico</label><label class="check"><input type="checkbox" name="current_channels" value="email-sms"> Email/SMS</label><label class="check"><input type="checkbox" name="current_channels" value="other"> Otro</label></div></div><div class="field-group full"><label for="creative_setup">Setup actual</label><select id="creative_setup" name="creative_setup"><option value="" selected disabled>¿Quién opera adquisición hoy?</option><option value="in-house">Equipo interno</option><option value="agency">Agencia</option><option value="freelancers">Freelancers / Contractors</option><option value="founder">Lo hago yo mismo</option><option value="hybrid">Combinación de lo anterior</option></select></div><div class="field-group full"><label for="bottleneck">Mayor cuello de botella creativo</label><textarea id="bottleneck" name="bottleneck" placeholder="Ej. producimos mucho, pero no sabemos qué ideas vale la pena testear..."></textarea></div></div><button class="submit" type="submit" data-i18n="submit">Solicitar auditoría →</button><p class="status" role="status" aria-live="polite"></p></form></div></section>
   </main>
   <footer><div class="wrap"><div><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"><p>Creative testing systems for Meta advertisers.<br>© 2026 Adflow.</p></div><div class="footer-links"><a href="#method">Método</a><a href="#outputs">Qué producimos</a><a href="#audit">Auditoría</a></div></div></footer>
   <script>
-    const translations={es:{},en:{nav_method:'Method',nav_output:'What we make',nav_fit:'Who it’s for',nav_audit:'Audit',cta:'Book a creative audit',see_method:'See how it works',hero_title:'Creative intelligence<br>in motion.',hero_copy:'We turn research, strategy and production into a Meta creative testing system that learns with every cycle.',output_eyebrow:'Creative output / testing surface',output_title:'Ideas in motion.<br>Signal that returns.',output_copy:'UGC, hooks, statics, demos and founder-led: distinct expressions of hypotheses worth testing.',problem_eyebrow:'The real problem',problem_title:'Brands don’t run out of ads.',problem_statement:'They run out of <em>new ideas</em> worth testing.',p1t:'Creative fatigue',p1c:'Concepts lose force and the team arrives late to the next angle.',p2t:'Surface-level variations',p2c:'Changing a color or first frame does not create a new reason to buy.',p3t:'Production without hypotheses',p3c:'More assets, without a clear question the market can answer.',p4t:'Learning gets lost',p4c:'Every month starts over when signal does not feed the next brief.',method_title:'Creative intelligence in motion.',method_copy:'A living cycle connecting what we think, what we make and what the market proves.',m1:'Market, competitors, tensions, desires and objections.',m2:'Hypotheses, concepts, angles and hooks with clear intent.',m3:'Each idea becomes distinct, native executions.',m4:'Structure that exposes ideas to real, comparable signal.',m5:'Evidence changes briefs, ads and the next cycle.',testing_eyebrow:'What we test',testing_title:'Ideas and messages.<br>Not just edits.',receive_eyebrow:'What clients receive',receive_title:'An operated creative learning system.',receive_copy:'Not a content catalog: a connected sequence of decisions, production, signal and new cycles.',compare_title:'Output matters.<br>Learning compounds.',fit_eyebrow:'Who it’s for',fit_title:'For ecommerce brands ready to learn faster.',fit_yes:'It’s for you if',fit_no:'It’s not for you if',audit_title:'Book a creative audit.',audit_copy:'We review how your brand turns ideas into ads, signal and new learning. We show you where the cycle breaks.',submit:'Request creative audit →'}};
-    document.querySelector('[data-i18n="hero_copy"]').textContent='Convertimos research, estrategia creativa, producción y estrategia de campañas en un sistema de adquisición para Meta que aprende con cada ciclo.';
-    translations.en.hero_copy='We turn research, creative strategy, production and campaign strategy into a Meta acquisition system that learns with every cycle.';
-    translations.es.m4='Estructura de testing y campañas para exponer ideas a señal real y comparable.';
+    const translations={es:{},en:{nav_method:'Method',nav_output:'What we make',nav_fit:'Who it’s for',nav_audit:'Audit',cta:'Request an audit',see_method:'See how it works',hero_title:'Creative intelligence<br>in motion.',hero_copy:'We turn creative strategy, production and media buying into an acquisition system that finds what sells, what scales and what keeps growth profitable.',output_eyebrow:'Creative output / testing surface',output_title:'Ideas in motion.<br>Signal that returns.',output_copy:'UGC, hooks, statics, demos and founder-led: distinct expressions of hypotheses worth testing.',problem_eyebrow:'The real problem',problem_title:'Brands don’t run out of ads.',problem_statement:'They run out of <em>new ideas</em> worth testing.',p1t:'Creative fatigue',p1c:'Concepts lose force and the team arrives late to the next angle.',p2t:'Surface-level variations',p2c:'Changing a color or first frame does not create a new reason to buy.',p3t:'Production without hypotheses',p3c:'More assets, without a clear question the market can answer.',p4t:'Learning gets lost',p4c:'Every month starts over when signal does not feed the next brief.',method_title:'Creative intelligence in motion.',method_copy:'A living cycle connecting what we think, what we make and what the market proves.',m1:'Market, competitors, tensions, desires and objections.',m2:'Hypotheses, concepts, angles and hooks with clear intent.',m3:'Each idea becomes distinct, native executions.',m4:'Structure that exposes ideas to real, comparable signal.',m5:'Evidence changes briefs, ads and the next cycle.',testing_eyebrow:'What we test',testing_title:'Ideas and messages.<br>Not just edits.',receive_eyebrow:'What clients receive',receive_title:'An operated creative learning system.',receive_copy:'Not a content catalog: a connected sequence of decisions, production, signal and new cycles.',compare_title:'Output matters.<br>Learning compounds.',fit_eyebrow:'Who it’s for',fit_title:'For ecommerce brands ready to learn faster.',fit_yes:'It’s for you if',fit_no:'It’s not for you if',audit_title:'Book a creative audit.',audit_copy:'We review how your brand turns ideas into ads, signal and new learning. We show you where the cycle breaks.',submit:'Request audit →'}};
+            translations.es.m4='Estructura de testing y campañas para exponer ideas a señal real y comparable.';
     translations.es.m5='La evidencia cambia los briefs, las campañas y el siguiente ciclo.';
     translations.en.m4='A Meta testing and campaign structure that exposes ideas to real, comparable signal.';
     translations.en.m5='Evidence changes briefs, campaigns and the next cycle.';
@@ -117,9 +247,7 @@
       {id:'OFFER_06',format:'OFFER / 4:5',status:'Testing',tone:'red',visual:'visual-offer',cardTone:'light',title:'Turn attention into action.',hypothesis:'Framing reduces friction',next:'Read conversion'},
       {id:'UGC_13',format:'UGC / 9:16',status:'Learning',tone:'blue',visual:'visual-testimonial',cardTone:'red',title:'Make the outcome feel real.',hypothesis:'Lived detail adds trust',next:'Feed next brief'}
     ];
-    document.querySelector('.hero-visual').classList.add('signal-field');
-    document.querySelector('.hero-visual').innerHTML=SignalField();
-    document.querySelectorAll('.creative-group').forEach((group,index)=>group.innerHTML=(index?bottomCards:topCards).map(CreativeTestCard).join(''));
+            document.querySelectorAll('.creative-group').forEach((group,index)=>group.innerHTML=(index?bottomCards:topCards).map(CreativeTestCard).join(''));
     document.querySelectorAll('.creative-track').forEach(track=>{const group=track.querySelector('.creative-group');const clone=group.cloneNode(true);clone.setAttribute('aria-hidden','true');track.appendChild(clone)});
     const statement=document.querySelector('[data-i18n="problem_statement"]');statement.innerHTML='Se quedan sin <span class="marked-idea">nuevas ideas'+AnnotationUnderline('red',false)+'</span> que valga la pena testear.<span class="bottleneck-label">THE REAL BOTTLENECK</span>';
     translations.es.problem_statement=statement.innerHTML;
@@ -143,6 +271,98 @@
     const nav=document.querySelector('nav'),navWrap=nav.querySelector('.wrap'),navlinks=nav.querySelector('.navlinks'),menuButton=nav.querySelector('.menu');menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-controls','site-nav');navlinks.id='site-nav';navWrap.insertBefore(menuButton,navlinks);menuButton.addEventListener('click',()=>{const open=navlinks.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(open));menuButton.textContent=open?'CLOSE':'MENU'});navlinks.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{navlinks.classList.remove('open');menuButton.setAttribute('aria-expanded','false');menuButton.textContent='MENU'}));addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>12),{passive:true});
     const observer=new IntersectionObserver(entries=>entries.forEach(entry=>entry.isIntersecting&&entry.target.classList.add('visible')),{threshold:.08});document.querySelectorAll('[data-reveal]').forEach(el=>observer.observe(el));
     document.getElementById('audit-form').addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,status=form.querySelector('.status'),button=form.querySelector('button[type=submit]');const data=new FormData(form);const payload=Object.fromEntries(data.entries());payload.current_channels=data.getAll('current_channels');button.disabled=true;status.textContent='Enviando…';try{const response=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!response.ok)throw new Error();status.textContent='Recibido. Revisaremos tu solicitud y responderemos en 24 horas.';form.reset()}catch(error){status.textContent='No se pudo enviar. Inténtalo de nuevo o contacta al equipo.'}finally{button.disabled=false}});
+
+    // ===== Hero v3: Creative Testing Surface =====
+    // Contenido metodológico e ilustrativo — variables que Adflow interpreta,
+    // sin valores numéricos, clientes, anuncios ni resultados reales.
+    (function(){
+      const SCENARIOS = {
+        creative: {
+          id: 'SURFACE / CREATIVE', pos: '8%', status: { text: 'Ready to test', tone: 'red' },
+          rows: [['Hypothesis', 'Proof before promise'], ['Format', 'UGC 9:16']],
+          next: 'Build controlled test',
+          spec: '<div class="spec spec-creative" aria-hidden="true"></div>'
+        },
+        campaign: {
+          id: 'SURFACE / CAMPAIGN', pos: '46%', status: { text: 'Testing', tone: 'neutral' },
+          rows: [['Structure', 'Broad prospecting'], ['Method', 'Controlled creative test'], ['Variable', 'Creative concept']],
+          next: 'Expose hypothesis to signal',
+          spec: '<div class="spec spec-campaign" aria-hidden="true"><i></i><u><b></b><b></b><b></b></u></div>'
+        },
+        signal: {
+          id: 'SURFACE / SIGNAL', pos: '68%', status: { text: 'Reading signal', tone: 'blue' },
+          rows: [['Read', 'Attributed revenue'], ['Guardrail', 'CAC vs. target'], ['Guardrail', 'Contribution margin']],
+          next: 'Scale, hold or iterate',
+          nextLabel: 'Decision',
+          spec: '<div class="spec spec-signal" aria-hidden="true"><i></i><u></u></div>'
+        },
+        scale: {
+          id: 'SURFACE / SCALE', pos: '92%', status: { text: 'Profitable scale', tone: 'blue' },
+          rows: [['Condition', 'Acquisition economics validated'], ['Next', 'Increase spend or iterate']],
+          next: 'Feed learning into the next creative cycle',
+          nextLabel: 'Return',
+          spec: '<div class="spec spec-scale" aria-hidden="true"></div>',
+          tagline: 'Scale only what improves the economics.'
+        }
+      };
+
+      const panelBox = document.querySelector('.surface-panel');
+      if (!panelBox) return;
+      const marker = panelBox.querySelector('.surface-marker');
+      const scenarioPanel = document.getElementById('scenario-panel');
+      const surfaceTabs = [...panelBox.querySelectorAll('.surface-tab')];
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const smallScreen = matchMedia('(max-width: 640px)').matches;
+
+      function renderScenario(state) {
+        const s = SCENARIOS[state];
+        panelBox.dataset.state = state;
+        marker.style.left = s.pos;
+        scenarioPanel.innerHTML =
+          '<div class="scenario-head"><span class="scenario-id">' + s.id + '</span>' +
+          '<span class="scenario-status tone-' + s.status.tone + '">' + s.status.text + '</span></div>' +
+          '<div class="scenario-body"><div class="scenario-rows">' +
+          s.rows.map(([k, v]) => '<div class="scenario-row"><span>' + k + '</span><b>' + v + '</b></div>').join('') +
+          '<div class="scenario-row next"><span>' + (s.nextLabel || 'Next') + '</span><b>' + s.next + '</b></div></div>' +
+          (s.spec || '') + '</div>' +
+          (s.tagline ? '<p class="scenario-tagline">' + s.tagline + '</p>' : '');
+        if (!reducedMotion) { scenarioPanel.classList.remove('swap'); void scenarioPanel.offsetWidth; scenarioPanel.classList.add('swap'); }
+        surfaceTabs.forEach(t => {
+          const on = t.dataset.state === state;
+          t.setAttribute('aria-selected', String(on));
+          t.tabIndex = on ? 0 : -1;
+        });
+      }
+
+      // Auto-avance: hover/focus/pestaña oculta PAUSAN; interacción manual CANCELA.
+      const stateOrder = ['creative', 'campaign', 'signal', 'scale'];
+      let autoTimer = null, autoCancelled = reducedMotion || smallScreen, autoPaused = false, stateIndex = 0;
+      function startAuto() {
+        if (autoCancelled || autoTimer) return;
+        autoTimer = setInterval(() => {
+          if (autoPaused || document.hidden) return;
+          stateIndex = (stateIndex + 1) % stateOrder.length; renderScenario(stateOrder[stateIndex]);
+        }, 6500);
+      }
+      function cancelAuto() { autoCancelled = true; if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
+      surfaceTabs.forEach(tab => {
+        tab.addEventListener('click', () => { cancelAuto(); stateIndex = stateOrder.indexOf(tab.dataset.state); renderScenario(tab.dataset.state); });
+        tab.addEventListener('keydown', e => {
+          if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+          e.preventDefault(); cancelAuto();
+          const idx = surfaceTabs.indexOf(tab);
+          const next = surfaceTabs[(idx + (e.key === 'ArrowRight' ? 1 : surfaceTabs.length - 1)) % surfaceTabs.length];
+          next.focus(); stateIndex = stateOrder.indexOf(next.dataset.state); renderScenario(next.dataset.state);
+        });
+      });
+      panelBox.addEventListener('pointerenter', () => { autoPaused = true; });
+      panelBox.addEventListener('pointerleave', () => { autoPaused = false; });
+      panelBox.addEventListener('focusin', () => { autoPaused = true; });
+      panelBox.addEventListener('focusout', () => { autoPaused = false; });
+
+      renderScenario('creative');
+      startAuto();
+    })();
   </script>
 </body>
 </html>
