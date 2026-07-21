@@ -152,6 +152,23 @@
       .panel-mark{width:36px}
       .stage-row{gap:8px}.stage-row div{padding:10px 6px 0}.stage-row span{font-size:7px;letter-spacing:.06em}.stage-row b{font-size:10px}
     }
+
+    /* ============================================================
+       Responsive fixes — las reglas sin media query del bloque
+       "v1.1 refinement" (.deliverables, .audit-grid) pisaban los
+       breakpoints originales y forzaban 2 columnas en pantallas
+       chicas. Este bloque va al final para ganar la cascada.
+       ============================================================ */
+    @media(max-width:1024px){
+      .deliverables{grid-template-columns:1fr;gap:44px}
+      .audit-grid{grid-template-columns:1fr;gap:46px}
+    }
+    @media(max-width:640px){
+      .deliverables{gap:36px}
+      .audit-grid{gap:40px}
+      .creative-testing-loop{height:auto}
+      .creative-testing-loop>img{width:100%;transform:none}
+    }
   </style>
 </head>
 <body>
