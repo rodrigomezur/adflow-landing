@@ -178,6 +178,30 @@
     </div>
   </section>
 
+  <!-- Cursor lab: zona de pruebas del Signal Trail (solo en el prototipo) -->
+  <section style="padding:70px 0;border-top:1px solid var(--soft-line)">
+    <div class="wrap">
+      <p class="eyebrow">Cursor lab / Signal Trail</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;align-items:start">
+        <article data-cursor-label="View test" style="min-height:180px;border:1px solid var(--soft-line);border-radius:20px;padding:20px;background:var(--surface)">
+          <span style="font:600 9px var(--mono);letter-spacing:.1em;color:var(--red)">HYPOTHESIS_04</span>
+          <h3 style="margin:44px 0 4px;font-size:22px">Creative card</h3>
+          <p style="margin:0;color:var(--mist);font-size:14px">Hover: label "VIEW TEST" junto al núcleo.</p>
+        </article>
+        <article data-cursor-label="Play" style="min-height:180px;border:1px solid var(--soft-line);border-radius:20px;padding:20px;background:var(--surface)">
+          <span style="font:600 9px var(--mono);letter-spacing:.1em;color:var(--blue)">UGC_13 / VIDEO</span>
+          <h3 style="margin:44px 0 4px;font-size:22px">Video card</h3>
+          <p style="margin:0;color:var(--mist);font-size:14px">Hover: label "PLAY".</p>
+        </article>
+        <div style="display:grid;gap:14px">
+          <a class="btn primary" href="#" onclick="return false">CTA magnético</a>
+          <input placeholder="Cursor nativo aquí" style="border:1px solid var(--soft-line);border-radius:14px;background:var(--surface);padding:14px;font:16px var(--sans);color:var(--ivory)">
+          <textarea placeholder="Selección de texto normal" style="border:1px solid var(--soft-line);border-radius:14px;background:var(--surface);padding:14px;font:16px var(--sans);color:var(--ivory);min-height:70px"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <script>
     // Contenido metodológico e ilustrativo — variables que Adflow interpreta,
     // sin valores numéricos, clientes, anuncios ni resultados reales.
@@ -280,6 +304,44 @@
 
     render('creative');
     startAuto();
+  </script>
+  <script src="assets/signal-cursor.js" defer></script>
+  <script>
+    // Driver de demo para capturas del cursor (solo con ?demo=trail|cta|click|card)
+    (function () {
+      var m = location.search.match(/demo=(\w+)/);
+      if (!m) return;
+      var mode = m[1];
+      function move(x, y) { document.dispatchEvent(new PointerEvent('pointermove', { clientX: x, clientY: y })); }
+      function over(el) { el && el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true })); }
+      function down(x, y) { document.dispatchEvent(new PointerEvent('pointerdown', { clientX: x, clientY: y })); }
+      addEventListener('load', function () {
+        var t0 = performance.now(), lastPulse = 0;
+        var cta = document.querySelector('.actions .btn.primary');
+        var card = document.querySelector('[data-cursor-label="View test"]');
+        if (mode === 'card' && card) { card.style.cssText += ';position:fixed;top:230px;left:460px;width:300px;z-index:60'; }
+        if (mode === 'cta' && cta) over(cta);
+        if (mode === 'card' && card) over(card);
+        var f = 0;
+        (function loop(now) {
+          requestAnimationFrame(loop);
+          f++; // pasos por frame: denso y suave, como un mouse real
+          if (mode === 'trail') {
+            move(360 + ((f * 2.2) % 760), 330 + Math.sin(f * 0.028) * 80);
+          } else if (mode === 'cta' && cta) {
+            var r = cta.getBoundingClientRect();
+            move(r.left + r.width / 2 + Math.cos(f * 0.05) * 12, r.top + r.height / 2 + Math.sin(f * 0.05) * 6);
+          } else if (mode === 'click') {
+            var x = 620 + Math.cos(f * 0.04) * 30, y = 420 + Math.sin(f * 0.04) * 18;
+            move(x, y);
+            if (now - lastPulse > 380) { down(x, y); lastPulse = now; }
+          } else if (mode === 'card' && card) {
+            var rc = card.getBoundingClientRect();
+            move(rc.left + rc.width / 2 + Math.cos(f * 0.045) * 26, rc.top + rc.height / 2 + Math.sin(f * 0.045) * 14);
+          }
+        })(t0);
+      });
+    })();
   </script>
 </body>
 </html>
