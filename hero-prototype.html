@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hero prototype — Creative Testing Surface</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <style>
+    /* Tokens y base — idénticos a index.html */
+    :root{--ink:#0a0e13;--ivory:#f4f1eb;--red:#ff4b2e;--blue:#09b7ff;--mint:#b7f0e2;--surface:#111820;--mist:#98a1a8;--soft-line:rgba(244,241,235,.16);--max:1280px;--sans:'Instrument Sans',Arial,sans-serif;--mono:'IBM Plex Mono',monospace}
+    *{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--ivory);font-family:var(--sans);font-size:17px;line-height:1.5;overflow-x:hidden}img{display:block;max-width:100%}
+    .wrap{width:min(var(--max),calc(100% - 64px));margin:auto}
+    .eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 22px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}.eyebrow:before{content:"";width:28px;height:2px;background:currentColor}
+    h1{margin:0 0 30px;font-size:clamp(70px,7vw,108px);line-height:.9;letter-spacing:-.065em;max-width:670px}
+    .lead{font-size:clamp(18px,1.5vw,22px);line-height:1.55;max-width:625px;color:var(--mist);margin:0}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border:1px solid var(--ink);border-radius:999px;font-size:15px;font-weight:650;text-decoration:none;transition:.25s;background:transparent}.btn.primary{background:var(--red);border-color:var(--red);color:var(--ink)}.btn.light{border-color:rgba(244,241,235,.35);color:var(--ivory)}.btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.18)}
+    .btn:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+
+    /* Hero — mismo fondo y capas que index.html (assets oficiales, sin modificar) */
+    .hero{position:relative;min-height:760px;padding:82px 0 64px;overflow:hidden}
+    .hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--ink) 0 43%,rgba(10,14,19,.74) 51%,transparent 69%),url('assets/signal-field-transition-dual.svg') 78% 42%/78% 112% no-repeat;opacity:.94}
+    .hero:after{content:"";position:absolute;left:55%;top:19%;width:47%;height:64%;background:repeating-linear-gradient(174deg,transparent 0 17px,rgba(244,241,235,.06) 18px,transparent 19px 34px);clip-path:polygon(0 49%,100% 0,100% 100%);opacity:.7;animation:currentShift 12s ease-in-out infinite alternate}
+    @keyframes currentShift{to{transform:translate3d(2%,-1.5%,0) scale(1.025);opacity:.9}}
+    .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:.92fr 1.08fr;gap:38px;align-items:center}
+    .hero-copy{position:relative;z-index:2}
+
+    /* Signal Field — todos los elementos originales conservados */
+    .signal-field{position:relative;min-height:640px}
+    .hero-mark{position:absolute;right:7%;top:8%;width:64px;animation:learningWake 7s ease-in-out infinite}
+    .signal-track{position:absolute;left:5%;right:2%;top:47%;height:1px;background:linear-gradient(90deg,rgba(255,75,46,0),var(--red) 18%,var(--ivory) 50%,var(--blue) 78%,rgba(9,183,255,0))}
+    .signal-origin,.signal-learning{position:absolute;top:calc(47% - 4px);width:9px;height:9px;border-radius:50%}
+    .signal-origin{left:16%;background:var(--red);box-shadow:0 0 22px var(--red);animation:hypothesisWake 7s ease-in-out infinite}
+    .signal-learning{right:15%;background:var(--blue);box-shadow:0 0 24px var(--blue);animation:learningWake 7s ease-in-out infinite}
+    .signal-core{position:absolute;left:49%;top:calc(47% - 11px);width:24px;height:24px;border-radius:50%;background:var(--ivory);box-shadow:0 0 16px 5px var(--ivory),-20px 0 50px 22px var(--red),20px 0 55px 24px var(--blue);animation:coreProcess 7s ease-in-out infinite}
+    .signal-packet{position:absolute;left:17%;top:calc(47% - 3px);width:7px;height:7px;border-radius:50%;background:var(--ivory);box-shadow:0 0 15px var(--ivory);animation:signalTravel 7s cubic-bezier(.4,0,.2,1) infinite}
+    .signal-copy{position:absolute;left:4%;right:1%;bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .signal-copy div{position:relative;padding:14px 12px 0;border-top:1px solid var(--soft-line)}
+    .signal-copy div:first-child{border-color:rgba(255,75,46,.62)}.signal-copy div:last-child{border-color:rgba(9,183,255,.62)}
+    .signal-copy span{display:block;color:var(--mist);font:500 9px var(--mono);letter-spacing:.11em;text-transform:uppercase}
+    .signal-copy b{display:block;margin-top:8px;font-size:14px;font-weight:500}
+    .signal-return{position:absolute;right:5%;bottom:86px;width:146px;height:72px;transform:rotate(7deg);background:url('assets/annotation-arrow-return-blue.svg') center/contain no-repeat;opacity:.55;transition:opacity .4s}
+    .signal-field[data-state="campaign"] .signal-return{opacity:1}
+    @keyframes hypothesisWake{0%,100%{opacity:.48;transform:scale(.72)}16%,40%{opacity:1;transform:scale(1.25)}}
+    @keyframes signalTravel{0%,14%{transform:translateX(0);opacity:0}22%{opacity:1}55%{transform:translateX(30vw);opacity:1}70%,100%{transform:translateX(47vw);opacity:0}}
+    @keyframes coreProcess{0%,34%,100%{transform:scale(.8);filter:brightness(.85)}48%,58%{transform:scale(1.22);filter:brightness(1.25)}}
+    @keyframes learningWake{0%,55%,100%{opacity:.45;transform:scale(.8)}68%,88%{opacity:1;transform:scale(1.14)}}
+
+    /* ===== Creative Testing Surface — integrado en el campo, no encima ===== */
+    .surface-label{position:absolute;left:5%;top:9%;color:var(--mist);font:600 10px var(--mono);letter-spacing:.16em;text-transform:uppercase}
+    .surface-tabs{position:absolute;left:5%;top:calc(9% + 28px);display:flex;gap:8px}
+    .surface-tab{border:1px solid var(--soft-line);border-radius:999px;background:transparent;color:var(--mist);font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:9px 14px;cursor:pointer;transition:.25s}
+    .surface-tab:hover{color:var(--ivory)}
+    .surface-tab[aria-selected="true"]{background:var(--ivory);border-color:var(--ivory);color:var(--ink)}
+
+    /* Marcador activo que se desplaza sobre la línea */
+    .surface-marker{position:absolute;top:calc(47% - 7px);left:16%;width:15px;height:15px;border-radius:50%;border:2px solid var(--marker,var(--red));background:rgba(10,14,19,.6);box-shadow:0 0 18px var(--marker,var(--red));transform:translateX(-50%);transition:left .7s cubic-bezier(.4,0,.2,1),border-color .4s,box-shadow .4s}
+    .signal-field[data-state="hook"]{--marker:var(--red)}
+    .signal-field[data-state="angle"]{--marker:#ff9a86}
+    .signal-field[data-state="format"]{--marker:var(--ivory)}
+    .signal-field[data-state="campaign"]{--marker:var(--blue)}
+
+    /* Tarjeta escenario — editorial, compacta, intersecta la línea sin ocultar el campo */
+    .scenario{position:absolute;left:5%;top:53%;width:min(350px,72%);padding:20px 22px 18px;border:1px solid var(--soft-line);border-top:2px solid var(--marker,var(--red));border-radius:18px;background:rgba(10,14,19,.58);backdrop-filter:blur(8px);transition:border-color .4s}
+    .scenario-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .scenario-id{font:600 9px var(--mono);letter-spacing:.1em;color:var(--mist);text-transform:uppercase}
+    .scenario-status{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid currentColor;border-radius:999px;font:600 8px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+    .scenario-status:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+    .tone-red{color:var(--red)}.tone-blue{color:var(--blue)}.tone-neutral{color:var(--mist)}
+    .scenario-rows{display:grid;gap:11px}
+    .scenario-row span{display:block;font:600 8px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin-bottom:3px}
+    .scenario-row b{display:block;font-size:16px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+    .scenario-row.next b{color:var(--blue);font-size:14px;font-weight:500}
+    .scenario.swap{animation:scenarioSwap .3s ease}
+    @keyframes scenarioSwap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    /* Mobile / tablet */
+    @media(max-width:1024px){
+      .hero-grid{grid-template-columns:1fr}
+      .hero:before{background:linear-gradient(180deg,var(--ink) 0 46%,rgba(10,14,19,.7) 60%,transparent 78%),url('assets/signal-field-transition-dual.svg') center bottom/145% 62% no-repeat}
+      .signal-field{min-height:560px}
+    }
+    @media(max-width:640px){
+      body{font-size:16px}.wrap{width:calc(100% - 32px)}
+      .hero{min-height:0;padding:50px 0 38px}
+      h1{font-size:clamp(53px,16.5vw,66px);line-height:.88}.lead{font-size:17px}
+      .actions{flex-direction:column}.actions .btn{width:100%}
+      .signal-field{min-height:520px}
+      .surface-label{top:2%}
+      .surface-tabs{top:calc(2% + 24px);left:0;right:0;padding:0 4px 6px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+      .surface-tab{flex:none;scroll-snap-align:start}
+      .signal-track,.surface-marker{top:32%}
+      .signal-origin,.signal-learning{top:calc(32% - 4px)}
+      .signal-core{top:calc(32% - 11px)}
+      .signal-packet{top:calc(32% - 3px)}
+      .scenario{top:38%;left:0;width:100%}
+      .signal-return{bottom:78px;width:88px;height:44px}
+      .hero-mark{width:44px;top:0}
+      .signal-copy{bottom:6px}.signal-copy span{font-size:7px;letter-spacing:.05em}.signal-copy b{font-size:10px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*:before,*:after{animation:none!important;transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Meta creative testing system</p>
+        <h1>Creative intelligence<br>in motion.</h1>
+        <p class="lead">Convertimos research, estrategia creativa, producción y estrategia de campañas en un sistema de adquisición para Meta que aprende con cada ciclo.</p>
+        <div class="actions"><a class="btn primary" href="#audit">Agenda una auditoría creativa</a><a class="btn light" href="#method">Ver cómo funciona</a></div>
+      </div>
+
+      <div class="signal-field" data-state="hook" aria-label="Creative Testing Surface: la hipótesis se convierte en test y aprendizaje">
+        <img class="hero-mark" src="assets/adflow-symbol-signal.svg" alt="">
+
+        <span class="surface-label" id="surface-label">Creative Testing Surface</span>
+        <div class="surface-tabs" role="tablist" aria-labelledby="surface-label">
+          <button class="surface-tab" role="tab" id="tab-hook" aria-selected="true" aria-controls="scenario-panel" data-state="hook">Hook</button>
+          <button class="surface-tab" role="tab" id="tab-angle" aria-selected="false" aria-controls="scenario-panel" data-state="angle" tabindex="-1">Angle</button>
+          <button class="surface-tab" role="tab" id="tab-format" aria-selected="false" aria-controls="scenario-panel" data-state="format" tabindex="-1">Format</button>
+          <button class="surface-tab" role="tab" id="tab-campaign" aria-selected="false" aria-controls="scenario-panel" data-state="campaign" tabindex="-1">Campaign</button>
+        </div>
+
+        <div class="signal-track"></div>
+        <div class="signal-origin"></div>
+        <div class="signal-packet"></div>
+        <div class="signal-core"></div>
+        <div class="signal-learning"></div>
+        <div class="surface-marker"></div>
+
+        <div class="scenario" id="scenario-panel" role="tabpanel" aria-live="polite"></div>
+
+        <div class="signal-return" aria-hidden="true"></div>
+        <div class="signal-copy">
+          <div><span>01 / Input</span><b>Hypothesis</b></div>
+          <div><span>02 / Process</span><b>Meta testing</b></div>
+          <div><span>03 / Return</span><b>Learning compounds</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Contenido metodológico e ilustrativo — sin métricas ni resultados reales.
+    const SCENARIOS = {
+      hook: {
+        id: 'SURFACE / HOOK', pos: '16%', status: { text: 'Testing', tone: 'red' },
+        rows: [
+          ['Hypothesis', 'Proof before promise'],
+          ['Format', 'UGC / 9:16'],
+        ],
+        next: 'Compare opening'
+      },
+      angle: {
+        id: 'SURFACE / ANGLE', pos: '38%', status: { text: 'Signal emerging', tone: 'blue' },
+        rows: [
+          ['Hypothesis', 'Mechanism vs. aspiration'],
+        ],
+        next: 'Produce proof iteration'
+      },
+      format: {
+        id: 'SURFACE / FORMAT', pos: '60%', status: { text: 'Ready to test', tone: 'neutral' },
+        rows: [
+          ['Variable', 'UGC 9:16 vs. Product demo 4:5'],
+        ],
+        next: 'Read format signal'
+      },
+      campaign: {
+        id: 'SURFACE / CAMPAIGN', pos: '84%', status: { text: 'Compounding', tone: 'blue' },
+        rows: [
+          ['Structure', 'Broad prospecting'],
+          ['Method', 'Controlled creative test'],
+        ],
+        next: 'Move validated learning into the next cycle'
+      }
+    };
+
+    const field = document.querySelector('.signal-field');
+    const marker = document.querySelector('.surface-marker');
+    const panel = document.getElementById('scenario-panel');
+    const tabs = [...document.querySelectorAll('.surface-tab')];
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mobile = matchMedia('(max-width: 640px)').matches;
+
+    function render(state) {
+      const s = SCENARIOS[state];
+      field.dataset.state = state;
+      marker.style.left = s.pos;
+      panel.innerHTML =
+        '<div class="scenario-head"><span class="scenario-id">' + s.id + '</span>' +
+        '<span class="scenario-status tone-' + s.status.tone + '">' + s.status.text + '</span></div>' +
+        '<div class="scenario-rows">' +
+        s.rows.map(([k, v]) => '<div class="scenario-row"><span>' + k + '</span><b>' + v + '</b></div>').join('') +
+        '<div class="scenario-row next"><span>Next</span><b>' + s.next + '</b></div></div>';
+      if (!reduced) { panel.classList.remove('swap'); void panel.offsetWidth; panel.classList.add('swap'); }
+      tabs.forEach(t => {
+        const on = t.dataset.state === state;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+    }
+
+    let auto = null;
+    function stopAuto() { if (auto) { clearInterval(auto); auto = null; } }
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => { stopAuto(); render(tab.dataset.state); });
+      tab.addEventListener('keydown', e => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault(); stopAuto();
+        const i = tabs.indexOf(tab);
+        const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        next.focus(); render(next.dataset.state);
+      });
+    });
+
+    render('hook');
+    if (!reduced && !mobile) {
+      const order = ['hook', 'angle', 'format', 'campaign'];
+      let i = 0;
+      auto = setInterval(() => { i = (i + 1) % order.length; render(order[i]); }, 6000);
+      field.addEventListener('pointerenter', stopAuto, { once: true });
+      document.addEventListener('visibilitychange', () => { if (document.hidden) stopAuto(); });
+    }
+  </script>
+</body>
+</html>
