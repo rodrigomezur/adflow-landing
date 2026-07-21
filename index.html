@@ -222,7 +222,10 @@
        El reel de creative cards y el formulario permanecen oscuros
        a propósito (escenario oscuro sobre página clara).
        ============================================================ */
-    .theme-toggle{border:1px solid rgba(244,241,235,.25);border-radius:4px;background:transparent;color:var(--mist);font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:8px 10px;cursor:pointer;transition:.25s}
+    /* Mismo lenguaje de forma que el botón MENU (pill) */
+    .theme-toggle{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(244,241,235,.25);border-radius:999px;background:transparent;color:var(--mist);font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;min-height:42px;padding:0 16px;cursor:pointer;transition:.25s}
+    /* Breathing room del CTA del nav */
+    .nav-cta{padding:0 30px}
     .theme-toggle:hover{color:var(--ivory)}
     [data-theme="light"] .theme-toggle{border-color:rgba(10,14,19,.25);color:#5f666a}
     [data-theme="light"] .theme-toggle:hover{color:var(--ink)}
