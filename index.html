@@ -238,7 +238,10 @@
     .langs{border-radius:999px;padding:3px 4px;align-items:center;min-height:38px}
     .lang{border-radius:999px}
     @media(max-width:1024px){
-      .navlinks .theme-toggle{align-self:stretch;justify-content:center;min-height:48px}
+      /* Toggle de tema dentro del dropdown: discreto, mismo formato que EN/ES */
+      .navlinks .theme-toggle{align-self:flex-start;min-height:38px;padding:0 16px;font-size:11px}
+      /* El .langs{align-self:flex-start} del dropdown viejo lo desalineaba en el header */
+      nav .wrap>.langs{align-self:center}
     }
     @media(max-width:640px){
       nav .wrap{gap:12px}
