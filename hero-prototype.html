@@ -30,7 +30,7 @@
     .hero-copy{position:relative;z-index:2}
 
     /* Signal Field — todos los elementos originales conservados */
-    .signal-field{position:relative;min-height:640px}
+    .signal-field{position:relative;min-height:670px}
     .hero-mark{position:absolute;right:7%;top:8%;width:64px;animation:learningWake 7s ease-in-out infinite}
     .signal-track{position:absolute;left:5%;right:2%;top:47%;height:1px;background:linear-gradient(90deg,rgba(255,75,46,0),var(--red) 18%,var(--ivory) 50%,var(--blue) 78%,rgba(9,183,255,0))}
     .signal-origin,.signal-learning{position:absolute;top:calc(47% - 4px);width:9px;height:9px;border-radius:50%}
@@ -44,7 +44,7 @@
     .signal-copy span{display:block;color:var(--mist);font:500 9px var(--mono);letter-spacing:.11em;text-transform:uppercase}
     .signal-copy b{display:block;margin-top:8px;font-size:14px;font-weight:500}
     .signal-return{position:absolute;right:5%;bottom:86px;width:146px;height:72px;transform:rotate(7deg);background:url('assets/annotation-arrow-return-blue.svg') center/contain no-repeat;opacity:.55;transition:opacity .4s}
-    .signal-field[data-state="campaign"] .signal-return{opacity:1}
+    .signal-field[data-state="scale"] .signal-return{opacity:1}
     @keyframes hypothesisWake{0%,100%{opacity:.48;transform:scale(.72)}16%,40%{opacity:1;transform:scale(1.25)}}
     @keyframes signalTravel{0%,14%{transform:translateX(0);opacity:0}22%{opacity:1}55%{transform:translateX(30vw);opacity:1}70%,100%{transform:translateX(47vw);opacity:0}}
     @keyframes coreProcess{0%,34%,100%{transform:scale(.8);filter:brightness(.85)}48%,58%{transform:scale(1.22);filter:brightness(1.25)}}
@@ -59,24 +59,42 @@
 
     /* Marcador activo que se desplaza sobre la línea */
     .surface-marker{position:absolute;top:calc(47% - 7px);left:16%;width:15px;height:15px;border-radius:50%;border:2px solid var(--marker,var(--red));background:rgba(10,14,19,.6);box-shadow:0 0 18px var(--marker,var(--red));transform:translateX(-50%);transition:left .7s cubic-bezier(.4,0,.2,1),border-color .4s,box-shadow .4s}
-    .signal-field[data-state="hook"]{--marker:var(--red)}
-    .signal-field[data-state="angle"]{--marker:#ff9a86}
-    .signal-field[data-state="format"]{--marker:var(--ivory)}
-    .signal-field[data-state="campaign"]{--marker:var(--blue)}
+    /* Progresión de color: hipótesis roja → procesamiento ivory → señal → escala azul */
+    .signal-field[data-state="creative"]{--marker:var(--red)}
+    .signal-field[data-state="campaign"]{--marker:var(--ivory)}
+    .signal-field[data-state="signal"]{--marker:#86d7f8}
+    .signal-field[data-state="scale"]{--marker:var(--blue)}
 
     /* Tarjeta escenario — editorial, compacta, intersecta la línea sin ocultar el campo */
-    .scenario{position:absolute;left:5%;top:53%;width:min(350px,72%);padding:20px 22px 18px;border:1px solid var(--soft-line);border-top:2px solid var(--marker,var(--red));border-radius:18px;background:rgba(10,14,19,.58);backdrop-filter:blur(8px);transition:border-color .4s}
+    .scenario{position:absolute;left:5%;top:51%;width:min(350px,72%);padding:17px 20px 15px;border:1px solid var(--soft-line);border-top:2px solid var(--marker,var(--red));border-radius:18px;background:rgba(10,14,19,.58);backdrop-filter:blur(8px);transition:border-color .4s}
     .scenario-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
     .scenario-id{font:600 9px var(--mono);letter-spacing:.1em;color:var(--mist);text-transform:uppercase}
     .scenario-status{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid currentColor;border-radius:999px;font:600 8px var(--mono);letter-spacing:.1em;text-transform:uppercase}
     .scenario-status:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
     .tone-red{color:var(--red)}.tone-blue{color:var(--blue)}.tone-neutral{color:var(--mist)}
-    .scenario-rows{display:grid;gap:11px}
+    .scenario-body{display:flex;gap:16px;align-items:flex-start}
+    .scenario-rows{display:grid;gap:8px;flex:1;min-width:0}
     .scenario-row span{display:block;font:600 8px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin-bottom:3px}
-    .scenario-row b{display:block;font-size:16px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
-    .scenario-row.next b{color:var(--blue);font-size:14px;font-weight:500}
+    .scenario-row b{display:block;font-size:15px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+    .scenario-row.next b{color:var(--blue);font-size:13px;font-weight:500}
+    .scenario-tagline{margin:11px 0 0;padding-top:9px;border-top:1px solid var(--soft-line);font:600 9px var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--blue)}
     .scenario.swap{animation:scenarioSwap .3s ease}
     @keyframes scenarioSwap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    /* Especímenes conceptuales — sin clientes ni anuncios reales */
+    .spec{flex:none;position:relative}
+    .spec-creative{width:56px;aspect-ratio:9/16;border-radius:10px;border:1px solid rgba(244,241,235,.3);background:linear-gradient(165deg,rgba(255,75,46,.8),rgba(244,241,235,.14) 58%,rgba(9,183,255,.22))}
+    .spec-creative:after{content:"";position:absolute;left:8px;right:8px;top:42%;height:2px;background:linear-gradient(90deg,var(--red),var(--ivory));transform:rotate(-8deg)}
+    .spec-campaign{width:82px;height:98px;display:flex;align-items:center;gap:10px}
+    .spec-campaign i{display:block;width:30px;aspect-ratio:9/16;border-radius:6px;border:1px solid rgba(244,241,235,.45);background:linear-gradient(165deg,rgba(244,241,235,.5),rgba(244,241,235,.08))}
+    .spec-campaign u{display:grid;gap:8px;text-decoration:none;position:relative;padding-left:10px}
+    .spec-campaign u:before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--soft-line)}
+    .spec-campaign u b{display:block;width:16px;height:16px;border-radius:5px;border:1px solid rgba(244,241,235,.4)}
+    .spec-signal{width:82px;height:98px}
+    .spec-signal:before{content:"";position:absolute;left:0;right:0;top:46px;height:3px;border-radius:999px;background:linear-gradient(90deg,var(--ivory),var(--blue))}
+    .spec-signal i,.spec-signal u{position:absolute;top:38px;width:10px;height:19px;border:1px solid rgba(9,183,255,.7);border-top:0;border-bottom:0}
+    .spec-signal i{left:22%}.spec-signal u{left:58%}
+    .spec-scale{width:82px;height:80px;background:url('assets/annotation-arrow-curve-blue.svg') center/contain no-repeat;transform:scaleX(-1) rotate(14deg)}
 
     /* Mobile / tablet */
     @media(max-width:1024px){
@@ -113,19 +131,19 @@
       <div class="hero-copy">
         <p class="eyebrow">Meta creative testing system</p>
         <h1>Creative intelligence<br>in motion.</h1>
-        <p class="lead">Convertimos research, estrategia creativa, producción y estrategia de campañas en un sistema de adquisición para Meta que aprende con cada ciclo.</p>
+        <p class="lead">Convertimos creative strategy, producción y media buying en un sistema de adquisición que encuentra qué vende, qué escala y qué mantiene rentable el crecimiento.</p>
         <div class="actions"><a class="btn primary" href="#audit">Agenda una auditoría creativa</a><a class="btn light" href="#method">Ver cómo funciona</a></div>
       </div>
 
-      <div class="signal-field" data-state="hook" aria-label="Creative Testing Surface: la hipótesis se convierte en test y aprendizaje">
+      <div class="signal-field" data-state="creative" aria-label="Creative Testing Surface: la hipótesis creativa se convierte en campaña, señal económica y escala rentable">
         <img class="hero-mark" src="assets/adflow-symbol-signal.svg" alt="">
 
         <span class="surface-label" id="surface-label">Creative Testing Surface</span>
         <div class="surface-tabs" role="tablist" aria-labelledby="surface-label">
-          <button class="surface-tab" role="tab" id="tab-hook" aria-selected="true" aria-controls="scenario-panel" data-state="hook">Hook</button>
-          <button class="surface-tab" role="tab" id="tab-angle" aria-selected="false" aria-controls="scenario-panel" data-state="angle" tabindex="-1">Angle</button>
-          <button class="surface-tab" role="tab" id="tab-format" aria-selected="false" aria-controls="scenario-panel" data-state="format" tabindex="-1">Format</button>
+          <button class="surface-tab" role="tab" id="tab-creative" aria-selected="true" aria-controls="scenario-panel" data-state="creative">Creative</button>
           <button class="surface-tab" role="tab" id="tab-campaign" aria-selected="false" aria-controls="scenario-panel" data-state="campaign" tabindex="-1">Campaign</button>
+          <button class="surface-tab" role="tab" id="tab-signal" aria-selected="false" aria-controls="scenario-panel" data-state="signal" tabindex="-1">Signal</button>
+          <button class="surface-tab" role="tab" id="tab-scale" aria-selected="false" aria-controls="scenario-panel" data-state="scale" tabindex="-1">Scale</button>
         </div>
 
         <div class="signal-track"></div>
@@ -148,37 +166,49 @@
   </section>
 
   <script>
-    // Contenido metodológico e ilustrativo — sin métricas ni resultados reales.
+    // Contenido metodológico e ilustrativo — variables que Adflow interpreta,
+    // sin valores numéricos, clientes, anuncios ni resultados reales.
     const SCENARIOS = {
-      hook: {
-        id: 'SURFACE / HOOK', pos: '16%', status: { text: 'Testing', tone: 'red' },
+      creative: {
+        id: 'SURFACE / CREATIVE', pos: '16%', status: { text: 'Ready to test', tone: 'red' },
         rows: [
           ['Hypothesis', 'Proof before promise'],
-          ['Format', 'UGC / 9:16'],
+          ['Format', 'UGC 9:16'],
         ],
-        next: 'Compare opening'
-      },
-      angle: {
-        id: 'SURFACE / ANGLE', pos: '38%', status: { text: 'Signal emerging', tone: 'blue' },
-        rows: [
-          ['Hypothesis', 'Mechanism vs. aspiration'],
-        ],
-        next: 'Produce proof iteration'
-      },
-      format: {
-        id: 'SURFACE / FORMAT', pos: '60%', status: { text: 'Ready to test', tone: 'neutral' },
-        rows: [
-          ['Variable', 'UGC 9:16 vs. Product demo 4:5'],
-        ],
-        next: 'Read format signal'
+        next: 'Build controlled test',
+        spec: '<div class="spec spec-creative" aria-hidden="true"></div>'
       },
       campaign: {
-        id: 'SURFACE / CAMPAIGN', pos: '84%', status: { text: 'Compounding', tone: 'blue' },
+        id: 'SURFACE / CAMPAIGN', pos: '46%', status: { text: 'Testing', tone: 'neutral' },
         rows: [
           ['Structure', 'Broad prospecting'],
           ['Method', 'Controlled creative test'],
+          ['Variable', 'Creative concept'],
         ],
-        next: 'Move validated learning into the next cycle'
+        next: 'Expose hypothesis to signal',
+        spec: '<div class="spec spec-campaign" aria-hidden="true"><i></i><u><b></b><b></b><b></b></u></div>'
+      },
+      signal: {
+        id: 'SURFACE / SIGNAL', pos: '66%', status: { text: 'Reading signal', tone: 'blue' },
+        rows: [
+          ['Read', 'Attributed revenue'],
+          ['Guardrail', 'CAC vs. target'],
+          ['Guardrail', 'Contribution margin'],
+        ],
+        next: 'Scale, hold or iterate',
+        nextLabel: 'Decision',
+        spec: '<div class="spec spec-signal" aria-hidden="true"><i></i><u></u></div>'
+      },
+      scale: {
+        id: 'SURFACE / SCALE', pos: '84%', status: { text: 'Profitable scale', tone: 'blue' },
+        rows: [
+          ['Condition', 'Acquisition economics validated'],
+          ['Next', 'Increase spend or iterate'],
+        ],
+        next: 'Feed learning into the next creative cycle',
+        nextLabel: 'Return',
+        spec: '<div class="spec spec-scale" aria-hidden="true"></div>',
+        tagline: 'Scale only what improves the economics.'
       }
     };
 
@@ -196,9 +226,11 @@
       panel.innerHTML =
         '<div class="scenario-head"><span class="scenario-id">' + s.id + '</span>' +
         '<span class="scenario-status tone-' + s.status.tone + '">' + s.status.text + '</span></div>' +
-        '<div class="scenario-rows">' +
+        '<div class="scenario-body"><div class="scenario-rows">' +
         s.rows.map(([k, v]) => '<div class="scenario-row"><span>' + k + '</span><b>' + v + '</b></div>').join('') +
-        '<div class="scenario-row next"><span>Next</span><b>' + s.next + '</b></div></div>';
+        '<div class="scenario-row next"><span>' + (s.nextLabel || 'Next') + '</span><b>' + s.next + '</b></div></div>' +
+        (s.spec || '') + '</div>' +
+        (s.tagline ? '<p class="scenario-tagline">' + s.tagline + '</p>' : '');
       if (!reduced) { panel.classList.remove('swap'); void panel.offsetWidth; panel.classList.add('swap'); }
       tabs.forEach(t => {
         const on = t.dataset.state === state;
@@ -207,27 +239,34 @@
       });
     }
 
-    let auto = null;
-    function stopAuto() { if (auto) { clearInterval(auto); auto = null; } }
+    // Auto-avance: hover/focus/pestaña oculta PAUSAN; interacción manual CANCELA.
+    const order = ['creative', 'campaign', 'signal', 'scale'];
+    let auto = null, cancelled = reduced || mobile, paused = false, i = 0;
+    function startAuto() {
+      if (cancelled || auto) return;
+      auto = setInterval(() => {
+        if (paused || document.hidden) return;
+        i = (i + 1) % order.length; render(order[i]);
+      }, 6500);
+    }
+    function cancelAuto() { cancelled = true; if (auto) { clearInterval(auto); auto = null; } }
     tabs.forEach(tab => {
-      tab.addEventListener('click', () => { stopAuto(); render(tab.dataset.state); });
+      tab.addEventListener('click', () => { cancelAuto(); i = order.indexOf(tab.dataset.state); render(tab.dataset.state); });
       tab.addEventListener('keydown', e => {
         if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-        e.preventDefault(); stopAuto();
-        const i = tabs.indexOf(tab);
-        const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
-        next.focus(); render(next.dataset.state);
+        e.preventDefault(); cancelAuto();
+        const idx = tabs.indexOf(tab);
+        const next = tabs[(idx + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        next.focus(); i = order.indexOf(next.dataset.state); render(next.dataset.state);
       });
     });
+    field.addEventListener('pointerenter', () => { paused = true; });
+    field.addEventListener('pointerleave', () => { paused = false; });
+    field.addEventListener('focusin', () => { paused = true; });
+    field.addEventListener('focusout', () => { paused = false; });
 
-    render('hook');
-    if (!reduced && !mobile) {
-      const order = ['hook', 'angle', 'format', 'campaign'];
-      let i = 0;
-      auto = setInterval(() => { i = (i + 1) % order.length; render(order[i]); }, 6000);
-      field.addEventListener('pointerenter', stopAuto, { once: true });
-      document.addEventListener('visibilitychange', () => { if (document.hidden) stopAuto(); });
-    }
+    render('creative');
+    startAuto();
   </script>
 </body>
 </html>
