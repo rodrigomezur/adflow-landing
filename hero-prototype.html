@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hero prototype — Creative Testing Surface</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <style>
+    /* Tokens y base — idénticos a index.html */
+    :root{--ink:#0a0e13;--ivory:#f4f1eb;--red:#ff4b2e;--blue:#09b7ff;--mint:#b7f0e2;--surface:#111820;--mist:#98a1a8;--soft-line:rgba(244,241,235,.16);--max:1280px;--sans:'Instrument Sans',Arial,sans-serif;--mono:'IBM Plex Mono',monospace}
+    *{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--ivory);font-family:var(--sans);font-size:17px;line-height:1.5;overflow-x:hidden}img{display:block;max-width:100%}
+    .wrap{width:min(var(--max),calc(100% - 64px));margin:auto}
+    .eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 22px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}.eyebrow:before{content:"";width:28px;height:2px;background:currentColor}
+    h1{margin:0 0 30px;font-size:clamp(64px,6.4vw,100px);line-height:.9;letter-spacing:-.065em;max-width:670px}
+    .lead{font-size:clamp(18px,1.4vw,21px);line-height:1.55;max-width:600px;color:var(--mist);margin:0}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border:1px solid var(--ink);border-radius:999px;font-size:15px;font-weight:650;text-decoration:none;transition:.25s;background:transparent}.btn.primary{background:var(--red);border-color:var(--red);color:var(--ink)}.btn.light{border-color:rgba(244,241,235,.35);color:var(--ivory)}.btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.18)}
+    .btn:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+
+    /* Nav mínima — para consistencia del CTA */
+    nav{position:sticky;top:0;z-index:20;height:72px;background:rgba(10,14,19,.94);backdrop-filter:blur(14px);border-bottom:1px solid rgba(244,241,235,.12)}
+    nav .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:28px}
+    .brand img{width:150px}
+    .nav-cta{min-height:44px;font-size:13px}
+
+    /* Hero — fondo oficial signal-field-dark-16x9.svg (sin alterar) */
+    .hero{position:relative;min-height:calc(100vh - 72px);padding:64px 0;display:flex;align-items:center;overflow:hidden}
+    .hero-bg{position:absolute;inset:-6%;background:url('assets/signal-field-dark-16x9.svg') center/cover no-repeat;animation:bgDrift 26s ease-in-out infinite alternate;will-change:transform}
+    @keyframes bgDrift{to{transform:scale(1.05) translateY(-1.2%)}}
+    /* Overlay: legibilidad del headline a la izquierda, aire en el resto */
+    .hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,14,19,.96) 0 30%,rgba(10,14,19,.72) 46%,rgba(10,14,19,.22) 62%,rgba(10,14,19,.28) 100%)}
+    .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1.04fr;gap:44px;align-items:center}
+    .hero-grid>*{min-width:0}
+    .hero-copy{position:relative;z-index:2}
+
+    /* ===== Panel único: Creative Testing Surface ===== */
+    .signal-field{display:flex;align-items:center;justify-content:center}
+    .surface-panel{position:relative;width:min(600px,100%);padding:32px 34px 28px;border:1px solid rgba(244,241,235,.14);border-radius:26px;background:rgba(10,14,19,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 46px 110px rgba(0,0,0,.42)}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .surface-label{color:var(--mist);font:600 10px var(--mono);letter-spacing:.16em;text-transform:uppercase}
+    .panel-mark{width:44px;animation:learningWake 7s ease-in-out infinite}
+    .surface-tabs{display:flex;gap:8px;margin-bottom:26px}
+    .surface-tab{border:1px solid var(--soft-line);border-radius:999px;background:transparent;color:var(--mist);font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:9px 14px;cursor:pointer;transition:.25s}
+    .surface-tab:hover{color:var(--ivory)}
+    .surface-tab[aria-selected="true"]{background:var(--ivory);border-color:var(--ivory);color:var(--ink)}
+
+    /* Zona de la signal line — nodos originales dentro del panel */
+    .track-zone{position:relative;height:72px;margin-bottom:20px}
+    .signal-track{position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,rgba(255,75,46,0),var(--red) 14%,var(--ivory) 50%,var(--blue) 82%,rgba(9,183,255,0))}
+    .signal-origin,.signal-learning{position:absolute;top:calc(50% - 4px);width:9px;height:9px;border-radius:50%}
+    .signal-origin{left:8%;background:var(--red);box-shadow:0 0 22px var(--red);animation:hypothesisWake 7s ease-in-out infinite}
+    .signal-learning{right:6%;background:var(--blue);box-shadow:0 0 24px var(--blue);animation:learningWake 7s ease-in-out infinite}
+    .signal-core{position:absolute;left:49%;top:calc(50% - 11px);width:22px;height:22px;border-radius:50%;background:var(--ivory);box-shadow:0 0 15px 4px var(--ivory),-18px 0 44px 18px rgba(255,75,46,.55),18px 0 48px 20px rgba(9,183,255,.6);animation:coreProcess 7s ease-in-out infinite}
+    .signal-packet{position:absolute;left:9%;top:calc(50% - 3px);width:7px;height:7px;border-radius:50%;background:var(--ivory);box-shadow:0 0 15px var(--ivory);animation:signalTravel 7s cubic-bezier(.4,0,.2,1) infinite}
+    .surface-marker{position:absolute;top:calc(50% - 7px);left:8%;width:15px;height:15px;border-radius:50%;border:2px solid var(--marker,var(--red));background:rgba(10,14,19,.7);box-shadow:0 0 18px var(--marker,var(--red));transform:translateX(-50%);transition:left .7s cubic-bezier(.4,0,.2,1),border-color .4s,box-shadow .4s}
+    .signal-return{position:absolute;right:2%;top:-6px;width:96px;height:50px;transform:rotate(7deg);background:url('assets/annotation-arrow-return-blue.svg') center/contain no-repeat;opacity:.5;transition:opacity .4s}
+    .surface-panel[data-state="scale"] .signal-return{opacity:1}
+    @keyframes hypothesisWake{0%,100%{opacity:.48;transform:scale(.72)}16%,40%{opacity:1;transform:scale(1.25)}}
+    @keyframes signalTravel{0%,14%{left:9%;opacity:0}24%{opacity:1}55%{left:49%;opacity:1}72%,100%{left:91%;opacity:0}}
+    @keyframes coreProcess{0%,34%,100%{transform:scale(.8);filter:brightness(.85)}48%,58%{transform:scale(1.22);filter:brightness(1.25)}}
+    @keyframes learningWake{0%,55%,100%{opacity:.45;transform:scale(.8)}68%,88%{opacity:1;transform:scale(1.14)}}
+    /* Progresión de color: hipótesis roja → procesamiento ivory → señal → escala azul */
+    .surface-panel[data-state="creative"]{--marker:var(--red)}
+    .surface-panel[data-state="campaign"]{--marker:var(--ivory)}
+    .surface-panel[data-state="signal"]{--marker:#86d7f8}
+    .surface-panel[data-state="scale"]{--marker:var(--blue)}
+
+    /* Tarjeta escenario — segundo nivel visual dentro del panel */
+    .scenario{min-height:196px;padding:17px 20px 15px;border:1px solid rgba(244,241,235,.1);border-top:2px solid var(--marker,var(--red));border-radius:18px;background:rgba(17,24,32,.55);transition:border-color .4s;margin-bottom:22px}
+    .scenario-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .scenario-id{font:600 9px var(--mono);letter-spacing:.1em;color:var(--mist);text-transform:uppercase}
+    .scenario-status{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid currentColor;border-radius:999px;font:600 8px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+    .scenario-status:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+    .tone-red{color:var(--red)}.tone-blue{color:var(--blue)}.tone-neutral{color:var(--mist)}
+    .scenario-body{display:flex;gap:16px;align-items:flex-start}
+    .scenario-rows{display:grid;gap:8px;flex:1;min-width:0}
+    .scenario-row span{display:block;font:600 8px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin-bottom:3px}
+    .scenario-row b{display:block;font-size:15px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+    .scenario-row.next b{color:var(--blue);font-size:13px;font-weight:500}
+    .scenario-tagline{margin:11px 0 0;padding-top:9px;border-top:1px solid var(--soft-line);font:600 9px var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--blue)}
+    .scenario.swap{animation:scenarioSwap .3s ease}
+    @keyframes scenarioSwap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    /* Especímenes conceptuales — sin clientes ni anuncios reales */
+    .spec{flex:none;position:relative}
+    .spec-creative{width:56px;aspect-ratio:9/16;border-radius:10px;border:1px solid rgba(244,241,235,.3);background:linear-gradient(165deg,rgba(255,75,46,.8),rgba(244,241,235,.14) 58%,rgba(9,183,255,.22))}
+    .spec-creative:after{content:"";position:absolute;left:8px;right:8px;top:42%;height:2px;background:linear-gradient(90deg,var(--red),var(--ivory));transform:rotate(-8deg)}
+    .spec-campaign{width:82px;height:98px;display:flex;align-items:center;gap:10px}
+    .spec-campaign i{display:block;width:30px;aspect-ratio:9/16;border-radius:6px;border:1px solid rgba(244,241,235,.45);background:linear-gradient(165deg,rgba(244,241,235,.5),rgba(244,241,235,.08))}
+    .spec-campaign u{display:grid;gap:8px;text-decoration:none;position:relative;padding-left:10px}
+    .spec-campaign u:before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--soft-line)}
+    .spec-campaign u b{display:block;width:16px;height:16px;border-radius:5px;border:1px solid rgba(244,241,235,.4)}
+    .spec-signal{width:82px;height:98px}
+    .spec-signal:before{content:"";position:absolute;left:0;right:0;top:46px;height:3px;border-radius:999px;background:linear-gradient(90deg,var(--ivory),var(--blue))}
+    .spec-signal i,.spec-signal u{position:absolute;top:38px;width:10px;height:19px;border:1px solid rgba(9,183,255,.7);border-top:0;border-bottom:0}
+    .spec-signal i{left:22%}.spec-signal u{left:58%}
+    .spec-scale{width:82px;height:80px;background:url('assets/annotation-arrow-curve-blue.svg') center/contain no-repeat;transform:scaleX(-1) rotate(14deg)}
+
+    /* Etapas inferiores dentro del panel */
+    .signal-copy{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .signal-copy div{padding:12px 12px 0;border-top:1px solid var(--soft-line)}
+    .signal-copy div:first-child{border-color:rgba(255,75,46,.62)}.signal-copy div:last-child{border-color:rgba(9,183,255,.62)}
+    .signal-copy span{display:block;color:var(--mist);font:500 9px var(--mono);letter-spacing:.11em;text-transform:uppercase}
+    .signal-copy b{display:block;margin-top:7px;font-size:13px;font-weight:500}
+
+    /* Mobile / tablet */
+    @media(max-width:1024px){
+      .hero{min-height:0;padding:56px 0}
+      .hero-grid{grid-template-columns:1fr;gap:40px}
+      .hero-shade{background:linear-gradient(180deg,rgba(10,14,19,.95) 0 34%,rgba(10,14,19,.6) 52%,rgba(10,14,19,.28) 100%)}
+    }
+    @media(max-width:640px){
+      body{font-size:16px}.wrap{width:calc(100% - 32px)}
+      nav{height:64px}.brand img{width:138px}.nav-cta{display:none}
+      h1{font-size:clamp(50px,15.5vw,62px);line-height:.88}.lead{font-size:17px}
+      .actions{flex-direction:column}.actions .btn{width:100%}
+      .surface-panel{padding:22px 18px 20px;border-radius:22px;backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(10,14,19,.9)}
+      .surface-tabs{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px;margin-bottom:18px}
+      .surface-tab{flex:none;scroll-snap-align:start}
+      .track-zone{height:58px;margin-bottom:14px}
+      .scenario{min-height:0;margin-bottom:18px}
+      .signal-return{width:74px;height:38px;top:-10px}
+      .panel-mark{width:36px}
+      .signal-copy{gap:8px}.signal-copy div{padding:10px 6px 0}.signal-copy span{font-size:7px;letter-spacing:.06em}.signal-copy b{font-size:10px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*:before,*:after{animation:none!important;transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <nav aria-label="Principal"><div class="wrap"><a class="brand" href="#"><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"></a><a class="btn primary nav-cta" href="#audit">Solicitar auditoría</a></div></nav>
+
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Meta creative testing system</p>
+        <h1>Creative intelligence<br>in motion.</h1>
+        <p class="lead">Convertimos creative strategy, producción y media buying en un sistema de adquisición que encuentra qué vende, qué escala y qué mantiene rentable el crecimiento.</p>
+        <div class="actions"><a class="btn primary" href="#audit">Solicitar auditoría</a><a class="btn light" href="#method">Ver cómo funciona</a></div>
+      </div>
+
+      <div class="signal-field">
+        <div class="surface-panel" data-state="creative" aria-label="Creative Testing Surface: la hipótesis creativa se convierte en campaña, señal económica y escala rentable">
+          <div class="panel-head">
+            <span class="surface-label" id="surface-label">Creative Testing Surface</span>
+            <img class="panel-mark" src="assets/adflow-symbol-signal.svg" alt="">
+          </div>
+          <div class="surface-tabs" role="tablist" aria-labelledby="surface-label">
+            <button class="surface-tab" role="tab" id="tab-creative" aria-selected="true" aria-controls="scenario-panel" data-state="creative">Creative</button>
+            <button class="surface-tab" role="tab" id="tab-campaign" aria-selected="false" aria-controls="scenario-panel" data-state="campaign" tabindex="-1">Campaign</button>
+            <button class="surface-tab" role="tab" id="tab-signal" aria-selected="false" aria-controls="scenario-panel" data-state="signal" tabindex="-1">Signal</button>
+            <button class="surface-tab" role="tab" id="tab-scale" aria-selected="false" aria-controls="scenario-panel" data-state="scale" tabindex="-1">Scale</button>
+          </div>
+          <div class="track-zone" aria-hidden="true">
+            <div class="signal-track"></div>
+            <div class="signal-origin"></div>
+            <div class="signal-packet"></div>
+            <div class="signal-core"></div>
+            <div class="signal-learning"></div>
+            <div class="surface-marker"></div>
+            <div class="signal-return"></div>
+          </div>
+          <div class="scenario" id="scenario-panel" role="tabpanel" aria-live="polite"></div>
+          <div class="signal-copy">
+            <div><span>01 / Input</span><b>Hypothesis</b></div>
+            <div><span>02 / Process</span><b>Meta testing</b></div>
+            <div><span>03 / Return</span><b>Learning compounds</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cursor lab: zona de pruebas del Signal Trail (solo en el prototipo) -->
+  <section style="padding:70px 0;border-top:1px solid var(--soft-line)">
+    <div class="wrap">
+      <p class="eyebrow">Cursor lab / Signal Trail</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;align-items:start">
+        <article data-cursor-label="View test" style="min-height:180px;border:1px solid var(--soft-line);border-radius:20px;padding:20px;background:var(--surface)">
+          <span style="font:600 9px var(--mono);letter-spacing:.1em;color:var(--red)">HYPOTHESIS_04</span>
+          <h3 style="margin:44px 0 4px;font-size:22px">Creative card</h3>
+          <p style="margin:0;color:var(--mist);font-size:14px">Hover: label "VIEW TEST" junto al núcleo.</p>
+        </article>
+        <article data-cursor-label="Play" style="min-height:180px;border:1px solid var(--soft-line);border-radius:20px;padding:20px;background:var(--surface)">
+          <span style="font:600 9px var(--mono);letter-spacing:.1em;color:var(--blue)">UGC_13 / VIDEO</span>
+          <h3 style="margin:44px 0 4px;font-size:22px">Video card</h3>
+          <p style="margin:0;color:var(--mist);font-size:14px">Hover: label "PLAY".</p>
+        </article>
+        <div style="display:grid;gap:14px">
+          <a class="btn primary" href="#" onclick="return false">CTA magnético</a>
+          <input placeholder="Cursor nativo aquí" style="border:1px solid var(--soft-line);border-radius:14px;background:var(--surface);padding:14px;font:16px var(--sans);color:var(--ivory)">
+          <textarea placeholder="Selección de texto normal" style="border:1px solid var(--soft-line);border-radius:14px;background:var(--surface);padding:14px;font:16px var(--sans);color:var(--ivory);min-height:70px"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Contenido metodológico e ilustrativo — variables que Adflow interpreta,
+    // sin valores numéricos, clientes, anuncios ni resultados reales.
+    const SCENARIOS = {
+      creative: {
+        id: 'SURFACE / CREATIVE', pos: '8%', status: { text: 'Ready to test', tone: 'red' },
+        rows: [
+          ['Hypothesis', 'Proof before promise'],
+          ['Format', 'UGC 9:16'],
+        ],
+        next: 'Build controlled test',
+        spec: '<div class="spec spec-creative" aria-hidden="true"></div>'
+      },
+      campaign: {
+        id: 'SURFACE / CAMPAIGN', pos: '46%', status: { text: 'Testing', tone: 'neutral' },
+        rows: [
+          ['Structure', 'Broad prospecting'],
+          ['Method', 'Controlled creative test'],
+          ['Variable', 'Creative concept'],
+        ],
+        next: 'Expose hypothesis to signal',
+        spec: '<div class="spec spec-campaign" aria-hidden="true"><i></i><u><b></b><b></b><b></b></u></div>'
+      },
+      signal: {
+        id: 'SURFACE / SIGNAL', pos: '68%', status: { text: 'Reading signal', tone: 'blue' },
+        rows: [
+          ['Read', 'Attributed revenue'],
+          ['Guardrail', 'CAC vs. target'],
+          ['Guardrail', 'Contribution margin'],
+        ],
+        next: 'Scale, hold or iterate',
+        nextLabel: 'Decision',
+        spec: '<div class="spec spec-signal" aria-hidden="true"><i></i><u></u></div>'
+      },
+      scale: {
+        id: 'SURFACE / SCALE', pos: '92%', status: { text: 'Profitable scale', tone: 'blue' },
+        rows: [
+          ['Condition', 'Acquisition economics validated'],
+          ['Next', 'Increase spend or iterate'],
+        ],
+        next: 'Feed learning into the next creative cycle',
+        nextLabel: 'Return',
+        spec: '<div class="spec spec-scale" aria-hidden="true"></div>',
+        tagline: 'Scale only what improves the economics.'
+      }
+    };
+
+    const panelBox = document.querySelector('.surface-panel');
+    const marker = document.querySelector('.surface-marker');
+    const panel = document.getElementById('scenario-panel');
+    const tabs = [...document.querySelectorAll('.surface-tab')];
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mobile = matchMedia('(max-width: 640px)').matches;
+
+    function render(state) {
+      const s = SCENARIOS[state];
+      panelBox.dataset.state = state;
+      marker.style.left = s.pos;
+      panel.innerHTML =
+        '<div class="scenario-head"><span class="scenario-id">' + s.id + '</span>' +
+        '<span class="scenario-status tone-' + s.status.tone + '">' + s.status.text + '</span></div>' +
+        '<div class="scenario-body"><div class="scenario-rows">' +
+        s.rows.map(([k, v]) => '<div class="scenario-row"><span>' + k + '</span><b>' + v + '</b></div>').join('') +
+        '<div class="scenario-row next"><span>' + (s.nextLabel || 'Next') + '</span><b>' + s.next + '</b></div></div>' +
+        (s.spec || '') + '</div>' +
+        (s.tagline ? '<p class="scenario-tagline">' + s.tagline + '</p>' : '');
+      if (!reduced) { panel.classList.remove('swap'); void panel.offsetWidth; panel.classList.add('swap'); }
+      tabs.forEach(t => {
+        const on = t.dataset.state === state;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+    }
+
+    // Auto-avance: hover/focus/pestaña oculta PAUSAN; interacción manual CANCELA.
+    const order = ['creative', 'campaign', 'signal', 'scale'];
+    let auto = null, cancelled = reduced || mobile, paused = false, i = 0;
+    function startAuto() {
+      if (cancelled || auto) return;
+      auto = setInterval(() => {
+        if (paused || document.hidden) return;
+        i = (i + 1) % order.length; render(order[i]);
+      }, 6500);
+    }
+    function cancelAuto() { cancelled = true; if (auto) { clearInterval(auto); auto = null; } }
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => { cancelAuto(); i = order.indexOf(tab.dataset.state); render(tab.dataset.state); });
+      tab.addEventListener('keydown', e => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault(); cancelAuto();
+        const idx = tabs.indexOf(tab);
+        const next = tabs[(idx + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        next.focus(); i = order.indexOf(next.dataset.state); render(next.dataset.state);
+      });
+    });
+    panelBox.addEventListener('pointerenter', () => { paused = true; });
+    panelBox.addEventListener('pointerleave', () => { paused = false; });
+    panelBox.addEventListener('focusin', () => { paused = true; });
+    panelBox.addEventListener('focusout', () => { paused = false; });
+
+    render('creative');
+    startAuto();
+  </script>
+  <script src="assets/signal-cursor.js" defer></script>
+  <script>
+    // Driver de demo para capturas del cursor (solo con ?demo=trail|cta|click|card)
+    (function () {
+      var m = location.search.match(/demo=(\w+)/);
+      if (!m) return;
+      var mode = m[1];
+      function move(x, y) { document.dispatchEvent(new PointerEvent('pointermove', { clientX: x, clientY: y })); }
+      function over(el) { el && el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true })); }
+      function down(x, y) { document.dispatchEvent(new PointerEvent('pointerdown', { clientX: x, clientY: y })); }
+      addEventListener('load', function () {
+        var t0 = performance.now(), lastPulse = 0;
+        var cta = document.querySelector('.actions .btn.primary');
+        var card = document.querySelector('[data-cursor-label="View test"]');
+        if (mode === 'card' && card) { card.style.cssText += ';position:fixed;top:230px;left:460px;width:300px;z-index:60'; }
+        if (mode === 'cta' && cta) over(cta);
+        if (mode === 'card' && card) over(card);
+        var f = 0;
+        (function loop(now) {
+          requestAnimationFrame(loop);
+          f++; // pasos por frame: denso y suave, como un mouse real
+          if (mode === 'trail') {
+            move(360 + ((f * 2.2) % 760), 330 + Math.sin(f * 0.028) * 80);
+          } else if (mode === 'cta' && cta) {
+            var r = cta.getBoundingClientRect();
+            move(r.left + r.width / 2 + Math.cos(f * 0.05) * 12, r.top + r.height / 2 + Math.sin(f * 0.05) * 6);
+          } else if (mode === 'click') {
+            var x = 620 + Math.cos(f * 0.04) * 30, y = 420 + Math.sin(f * 0.04) * 18;
+            move(x, y);
+            if (now - lastPulse > 380) { down(x, y); lastPulse = now; }
+          } else if (mode === 'card' && card) {
+            var rc = card.getBoundingClientRect();
+            move(rc.left + rc.width / 2 + Math.cos(f * 0.045) * 26, rc.top + rc.height / 2 + Math.sin(f * 0.045) * 14);
+          }
+        })(t0);
+      });
+    })();
+  </script>
+</body>
+</html>

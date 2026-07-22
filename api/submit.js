@@ -151,8 +151,9 @@ export default async function handler(req, res) {
             'Authorization': `Bearer ${resendKey}`
           },
           body: JSON.stringify({
-            from: 'AdFlow Leads <hello@tryadflow.co>',
-            to: 'rgomez@leadifier.io',
+            from: 'Adflow Leads <hello@tryadflow.co>',
+            to: 'rodrigo@tryadflow.co',
+            cc: ['pablo@tryadflow.co'],
             subject: `🚀 New AdFlow Application: ${name}`,
             html: `
               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">

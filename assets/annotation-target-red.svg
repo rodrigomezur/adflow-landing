@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 180" role="img" aria-label="Adflow target annotation">
+  <g fill="none" stroke="#FF4B2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M150 24 C197 24 231 52 229 84 C227 121 191 142 146 137 C102 133 74 105 79 73 C84 40 111 24 150 24 Z"/><path stroke-dasharray="8 11" opacity=".65" d="M150 9 C213 9 255 45 253 87 C251 135 204 158 145 152 C87 147 49 111 55 67 C61 25 98 8 150 9 Z"/><path d="M150 3 L150 21 M150 140 L150 158 M48 82 L70 82 M232 82 L256 82"/>
+  </g>
+</svg>
