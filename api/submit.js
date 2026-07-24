@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   const emailErrors = [];
 
   try {
-    const { name, email, website, monthly_spend, creative_setup, bottleneck } = req.body;
+    const { name, email, website, phone, brand_name, monthly_spend, creative_setup, bottleneck } = req.body;
 
     // Validate required fields
     if (!name || !email) {
@@ -163,6 +163,14 @@ export default async function handler(req, res) {
                   <tr>
                     <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold; width: 140px;">Name</td>
                     <td style="padding: 12px; border-bottom: 1px solid #eee;">${name}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Brand</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">${brand_name || 'Not provided'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Phone</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">${phone || 'Not provided'}</td>
                   </tr>
                   <tr>
                     <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">Email</td>
