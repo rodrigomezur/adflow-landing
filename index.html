@@ -340,6 +340,100 @@
     /* Nav: CTA pill visible dentro del menú desplegable en mobile */
     @media(max-width:640px){.navlinks .nav-cta{display:inline-flex!important;justify-content:center}}
 
+    /* ============================================================
+       Adflow Business Signals — panel derecho del hero.
+       Namespaced bs- para no chocar con clases existentes.
+       Tokens oficiales: --red/--ivory/--blue; azul suave #86d7f8
+       (tono derivado ya usado por el sistema). El panel permanece
+       oscuro en ambos temas, como el form y las creative cards.
+       ============================================================ */
+    .bs-panel{position:relative;width:min(620px,100%);padding:24px 24px 18px;border:1px solid rgba(244,241,235,.18);border-radius:26px;background:linear-gradient(145deg,rgba(255,255,255,.03),transparent 32%),rgba(7,14,20,.9);box-shadow:0 36px 110px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.045);backdrop-filter:blur(19px) saturate(118%);-webkit-backdrop-filter:blur(19px) saturate(118%);overflow:hidden;isolation:isolate;color:var(--ivory)}
+    .bs-panel:after{content:"";position:absolute;width:380px;height:380px;right:-180px;top:18%;border-radius:50%;background:rgba(9,183,255,.08);filter:blur(50px);pointer-events:none;z-index:-1}
+    .bs-accent{position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,var(--red),var(--ivory) 49%,var(--blue));opacity:.86}
+    .bs-topbar{display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .bs-identity{display:flex;align-items:center;gap:14px;min-width:0}
+    .bs-lockup{width:96px;height:auto;flex:0 0 auto}
+    .bs-identity-copy{padding-left:14px;border-left:1px solid rgba(244,241,235,.12)}
+    .bs-eyebrow,.bs-period,.bs-sample,.bs-label,.bs-context,.bs-tab,.bs-sublabel,.bs-lens-label,.bs-lens-status,.bs-compare,.bs-delta,.bs-footer{font-family:var(--mono);letter-spacing:.11em;text-transform:uppercase}
+    .bs-eyebrow{margin:0 0 4px;color:var(--mist);font-size:8px;font-weight:700}
+    .bs-name{margin:0;font-family:var(--sans);font-size:14px;font-weight:620;letter-spacing:-.01em}
+    .bs-period{padding:7px 9px;border-radius:999px;font-size:7px;font-weight:700;white-space:nowrap;border:1px solid rgba(244,241,235,.15);color:var(--mist);background:rgba(255,255,255,.018)}
+    .bs-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px}
+    .bs-tab{min-width:0;padding:9px 6px;border:1px solid rgba(244,241,235,.12);border-radius:9px;color:var(--mist);background:rgba(255,255,255,.018);font-size:7.5px;font-weight:700;cursor:pointer;transition:border-color .2s,background .2s,color .2s,transform .2s}
+    .bs-tab:hover{color:var(--ivory);border-color:rgba(244,241,235,.3)}
+    .bs-tab:focus{outline:none}
+    .bs-tab:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+    .bs-tab[aria-selected="true"]{color:var(--ink);border-color:#86d7f8;background:linear-gradient(90deg,var(--ivory),#86d7f8);box-shadow:0 0 24px rgba(9,183,255,.14);transform:translateY(-1px)}
+    .bs-metrics{display:grid;grid-template-columns:1.22fr .78fr;gap:10px;margin-top:10px}
+    .bs-card{position:relative;min-height:196px;padding:16px 17px 12px;border:1px solid rgba(244,241,235,.1);border-radius:15px;background:linear-gradient(145deg,rgba(255,255,255,.018),transparent 42%),rgba(13,23,31,.92);overflow:hidden}
+    .bs-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;position:relative;z-index:1}
+    .bs-label{margin-bottom:5px;color:#c0c8cd;font-size:8px;font-weight:700}
+    .bs-context{color:var(--mist);font-size:7px;font-weight:700}
+    .bs-number{text-align:right}
+    .bs-value{display:block;color:var(--ivory);font-family:var(--sans);font-size:27px;line-height:.95;font-weight:650;letter-spacing:-.045em;white-space:nowrap;text-transform:none}
+    .bs-secondary .bs-value{font-size:25px}
+    .bs-compare{display:block;margin-top:6px;color:var(--mist);font-size:8px;font-weight:700;white-space:nowrap}
+    .bs-delta{display:inline-block;margin-top:6px;color:#86d7f8;font-size:8px;font-weight:700;white-space:nowrap}
+    .bs-chart{position:absolute;left:16px;right:16px;bottom:12px;width:calc(100% - 32px);height:100px}
+    .bs-lower{display:grid;grid-template-columns:1.15fr .85fr;gap:10px;margin-top:10px}
+    .bs-diagnosis,.bs-decision{min-height:150px;padding:16px 17px;border:1px solid rgba(244,241,235,.1);border-radius:15px;background:rgba(10,20,27,.84)}
+    .bs-sublabel{margin:0 0 8px;color:var(--mist);font-size:7px;font-weight:700}
+    .bs-constraint{margin:0 0 12px;color:#ff8a78;font-family:var(--sans);font-size:17px;line-height:1.08;font-weight:620;letter-spacing:-.026em}
+    .bs-lenses{display:grid;gap:6px}
+    .bs-lens{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding-top:6px;border-top:1px solid rgba(244,241,235,.075)}
+    .bs-lens-label{color:var(--mist);font-size:7px;font-weight:700}
+    .bs-lens-status{font-size:8px;font-weight:700;color:#aab5bb}
+    .bs-lens-status.alert{color:#ff8a78}
+    .bs-lens-status.good{color:#86d7f8}
+    .bs-decision{border-color:rgba(9,183,255,.18);background:linear-gradient(145deg,rgba(9,183,255,.07),rgba(10,20,27,.86) 68%)}
+    .bs-decision-title{margin:0 0 10px;color:#86d7f8;font-family:var(--sans);font-size:20px;line-height:1;font-weight:650;letter-spacing:-.035em}
+    .bs-actions{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+    .bs-actions li{position:relative;padding-left:13px;color:#9cabb3;font-family:var(--sans);font-size:11px;line-height:1.3}
+    .bs-actions li:before{content:"";position:absolute;left:0;top:5px;width:5px;height:5px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px rgba(9,183,255,.65)}
+    /* .bs-panel .bs-footer: gana al footer global (padding 48px + bg) y a su override light */
+    .bs-panel .bs-footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 20px;margin-top:12px;padding:0;border:0;background:transparent;color:#52636d;font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.1em}
+    .bs-sample{color:#86d7f8;white-space:nowrap;margin-left:auto}
+    .bs-fade{animation:bsFade .32s ease both}
+    @keyframes bsFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+    @media(max-width:1024px){
+      .bs-panel{width:100%}
+    }
+    @media(max-width:640px){
+      .bs-panel{padding:18px 14px 14px;border-radius:22px}
+      .bs-identity-copy{padding-left:12px}
+      .bs-lockup{width:84px}
+      .bs-tabs{grid-template-columns:repeat(2,1fr)}
+      .bs-tab{font-size:7px;padding:8px 6px}
+      .bs-metrics,.bs-lower{grid-template-columns:1fr}
+      .bs-card{min-height:190px}
+      .bs-value{font-size:25px}
+    }
+
+    /* ---- Business Signals: variante light (switcher global) ---- */
+    [data-theme="light"] .bs-panel{border-color:rgba(10,14,19,.16);background:linear-gradient(145deg,rgba(255,255,255,.5),transparent 32%),rgba(244,241,235,.88);box-shadow:0 36px 110px rgba(10,14,19,.18),inset 0 1px 0 rgba(255,255,255,.5);color:var(--ink)}
+    [data-theme="light"] .bs-panel:after{background:rgba(9,183,255,.1)}
+    [data-theme="light"] .bs-accent{background:linear-gradient(90deg,var(--red),var(--ink) 49%,var(--blue))}
+    [data-theme="light"] .bs-identity-copy{border-left-color:rgba(10,14,19,.15)}
+    [data-theme="light"] .bs-eyebrow,[data-theme="light"] .bs-context,[data-theme="light"] .bs-sublabel,[data-theme="light"] .bs-lens-label,[data-theme="light"] .bs-compare{color:#5f666a}
+    [data-theme="light"] .bs-period{border-color:rgba(10,14,19,.2);color:#5f666a;background:rgba(10,14,19,.03)}
+    [data-theme="light"] .bs-tab{border-color:rgba(10,14,19,.18);color:#5f666a;background:rgba(10,14,19,.03)}
+    [data-theme="light"] .bs-tab:hover{color:var(--ink);border-color:rgba(10,14,19,.4)}
+    [data-theme="light"] .bs-tab[aria-selected="true"]{color:var(--ivory);border-color:var(--ink);background:var(--ink);box-shadow:0 0 24px rgba(9,183,255,.12)}
+    [data-theme="light"] .bs-card{border-color:rgba(10,14,19,.12);background:linear-gradient(145deg,rgba(255,255,255,.6),transparent 42%),rgba(255,255,255,.35)}
+    [data-theme="light"] .bs-label{color:#4a565e}
+    [data-theme="light"] .bs-value{color:var(--ink)}
+    [data-theme="light"] .bs-diagnosis,[data-theme="light"] .bs-decision{border-color:rgba(10,14,19,.12);background:rgba(255,255,255,.35)}
+    [data-theme="light"] .bs-constraint{color:var(--red)}
+    [data-theme="light"] .bs-lens{border-top-color:rgba(10,14,19,.1)}
+    [data-theme="light"] .bs-lens-status{color:#4a565e}
+    [data-theme="light"] .bs-lens-status.alert{color:var(--red)}
+    [data-theme="light"] .bs-lens-status.good,[data-theme="light"] .bs-delta{color:#0a86c2}
+    [data-theme="light"] .bs-decision{border-color:rgba(9,183,255,.3);background:linear-gradient(145deg,rgba(9,183,255,.08),rgba(255,255,255,.35) 68%)}
+    [data-theme="light"] .bs-decision-title{color:#0a86c2}
+    [data-theme="light"] .bs-actions li{color:#41505a}
+    [data-theme="light"] .bs-panel .bs-footer{color:#6b7982;background:transparent}
+    [data-theme="light"] .bs-sample{color:#0a86c2}
+
     /* La sección de auditoría es clara en ambos temas: se restaura el
        campo de señal del diseño original, ahora con el asset light. */
     .audit:before{display:block;inset:0 0 0 40%;background:linear-gradient(90deg,var(--ivory),rgba(244,241,235,.35) 45%,rgba(244,241,235,.15)),url('assets/signal-field-light-4x5.svg') right center/cover no-repeat;opacity:.85}
@@ -360,33 +454,73 @@
           <div class="actions"><a class="btn primary" data-i18n="cta" href="#audit">Solicitar auditoría</a><a class="btn light" data-i18n="see_method" href="#method">Ver cómo funciona</a></div>
         </div>
         <div class="panel-col">
-          <div class="surface-panel" data-state="creative" aria-label="Creative Testing Surface: la hipótesis creativa se convierte en campaña, señal económica y escala rentable">
-            <div class="panel-head">
-              <span class="surface-label" id="surface-label">Creative Testing Surface</span>
-              <img class="panel-mark" src="assets/adflow-symbol-signal.svg" alt="">
+          <section class="bs-panel" aria-label="Adflow Business Signals — panel de demostración con datos de ejemplo">
+            <div class="bs-accent" aria-hidden="true"></div>
+            <header class="bs-topbar">
+              <div class="bs-identity">
+                <img class="bs-lockup" src="assets/adflow-lockup-ivory.svg" alt="Adflow">
+                <div class="bs-identity-copy">
+                  <p id="bs-surface-label" class="bs-eyebrow">Panel interno de decisión</p>
+                  <p id="bs-product-name" class="bs-name">Señales de negocio</p>
+                </div>
+              </div>
+              <span id="bs-period" class="bs-period">Últimos 30 días</span>
+            </header>
+            <div class="bs-tabs" role="tablist" aria-label="Métricas económicas">
+              <button class="bs-tab" role="tab" type="button" aria-selected="true" data-view="contribution">Contribución</button>
+              <button class="bs-tab" role="tab" type="button" aria-selected="false" tabindex="-1" data-view="ltgp">LTGP : CAC</button>
+              <button class="bs-tab" role="tab" type="button" aria-selected="false" tabindex="-1" data-view="mer">MER adquisición</button>
+              <button class="bs-tab" role="tab" type="button" aria-selected="false" tabindex="-1" data-view="newRevenue">Ingresos nuevos</button>
             </div>
-            <div class="surface-tabs" role="tablist" aria-labelledby="surface-label">
-              <button class="surface-tab" role="tab" id="tab-creative" aria-selected="true" aria-controls="scenario-panel" data-state="creative">Creative</button>
-              <button class="surface-tab" role="tab" id="tab-campaign" aria-selected="false" aria-controls="scenario-panel" data-state="campaign" tabindex="-1">Campaign</button>
-              <button class="surface-tab" role="tab" id="tab-signal" aria-selected="false" aria-controls="scenario-panel" data-state="signal" tabindex="-1">Signal</button>
-              <button class="surface-tab" role="tab" id="tab-scale" aria-selected="false" aria-controls="scenario-panel" data-state="scale" tabindex="-1">Scale</button>
+            <div id="bs-content" class="bs-fade" role="tabpanel" aria-live="polite">
+              <div class="bs-metrics">
+                <article class="bs-card bs-primary">
+                  <div class="bs-card-head">
+                    <div>
+                      <div id="bs-primary-label" class="bs-label"></div>
+                      <div id="bs-primary-context" class="bs-context"></div>
+                    </div>
+                    <div class="bs-number">
+                      <span id="bs-primary-value" class="bs-value"></span>
+                      <span id="bs-primary-compare" class="bs-compare"></span>
+                      <span id="bs-primary-delta" class="bs-delta"></span>
+                    </div>
+                  </div>
+                  <canvas id="bs-primary-chart" class="bs-chart" aria-hidden="true"></canvas>
+                </article>
+                <article class="bs-card bs-secondary">
+                  <div class="bs-card-head">
+                    <div>
+                      <div id="bs-secondary-label" class="bs-label"></div>
+                      <div id="bs-secondary-context" class="bs-context"></div>
+                    </div>
+                    <div class="bs-number">
+                      <span id="bs-secondary-value" class="bs-value"></span>
+                      <span id="bs-secondary-compare" class="bs-compare"></span>
+                      <span id="bs-secondary-delta" class="bs-delta"></span>
+                    </div>
+                  </div>
+                  <canvas id="bs-secondary-chart" class="bs-chart" aria-hidden="true"></canvas>
+                </article>
+              </div>
+              <div class="bs-lower">
+                <section class="bs-diagnosis" aria-label="Diagnóstico del cuello de botella">
+                  <p id="bs-constraint-label" class="bs-sublabel">Cuello de botella principal</p>
+                  <h3 id="bs-constraint" class="bs-constraint"></h3>
+                  <div id="bs-lenses" class="bs-lenses"></div>
+                </section>
+                <section class="bs-decision" aria-label="Siguiente decisión">
+                  <p id="bs-decision-label" class="bs-sublabel">Siguiente decisión</p>
+                  <h3 id="bs-decision-title" class="bs-decision-title"></h3>
+                  <ul id="bs-actions" class="bs-actions"></ul>
+                </section>
+              </div>
             </div>
-            <div class="track-zone" aria-hidden="true">
-              <div class="sp-track"></div>
-              <div class="sp-origin"></div>
-              <div class="sp-packet"></div>
-              <div class="sp-core"></div>
-              <div class="sp-learning"></div>
-              <div class="surface-marker"></div>
-              <div class="sp-return"></div>
-            </div>
-            <div class="scenario" id="scenario-panel" role="tabpanel" aria-live="polite"></div>
-            <div class="stage-row">
-              <div><span>01 / Input</span><b>Hypothesis</b></div>
-              <div><span>02 / Process</span><b>Meta testing</b></div>
-              <div><span>03 / Return</span><b>Learning compounds</b></div>
-            </div>
-          </div>
+            <footer class="bs-footer">
+              <span id="bs-thesis">Diagnosticar primero / secuenciar después / invertir al final</span>
+              <span id="bs-sample" class="bs-sample">Datos de ejemplo</span>
+            </footer>
+          </section>
         </div>
       </div>
     </section>
@@ -541,7 +675,7 @@
       const LOCKUPS = { dark: 'assets/adflow-lockup-ivory.svg', light: 'assets/adflow-lockup-ink.svg' };
       function applyTheme(t){
         root.dataset.theme = t;
-        document.querySelectorAll('.brand img, footer img').forEach(img => { img.src = LOCKUPS[t]; });
+        document.querySelectorAll('.brand img, footer img, .bs-lockup').forEach(img => { img.src = LOCKUPS[t]; });
         if (toggle) {
           toggle.textContent = t === 'light' ? 'Dark' : 'Light';
           toggle.setAttribute('aria-pressed', String(t === 'light'));
@@ -552,6 +686,10 @@
       if (theme !== 'light' && theme !== 'dark') {
         theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       }
+      try {
+        const qTheme = new URLSearchParams(location.search).get('theme');
+        if (qTheme === 'light' || qTheme === 'dark') theme = qTheme;
+      } catch (e) {}
       applyTheme(theme);
       toggle && toggle.addEventListener('click', () => {
         theme = root.dataset.theme === 'light' ? 'dark' : 'light';
@@ -608,97 +746,233 @@
       rm5r: 'An acquisition system that improves month over month, with you out of the operation.'
     });
 
-    // ===== Hero v3: Creative Testing Surface =====
-    // Contenido metodológico e ilustrativo — variables que Adflow interpreta,
-    // sin valores numéricos, clientes, anuncios ni resultados reales.
-    (function(){
-      const SCENARIOS = {
-        creative: {
-          id: 'SURFACE / CREATIVE', pos: '8%', status: { text: 'Ready to test', tone: 'red' },
-          rows: [['Hypothesis', 'Proof before promise'], ['Format', 'UGC 9:16']],
-          next: 'Build controlled test',
-          spec: '<div class="spec spec-creative" aria-hidden="true"></div>'
+
+    // ===== Adflow Business Signals (panel derecho del hero) =====
+    // Números ILUSTRATIVOS — no son resultados reales de Adflow.
+    // El idioma lo controla el selector global ES/EN de la página.
+    (function () {
+      var panel = document.querySelector('.bs-panel');
+      if (!panel) return;
+
+      var UI = {
+        en: { surface: 'Internal decision surface', product: 'Business Signals', period: 'Last 30 days',
+              tabs: { contribution: 'Profit contribution', ltgp: 'LTGP : CAC', mer: 'Acq MER', newRevenue: 'NC revenue' },
+              constraint: 'Primary constraint', decision: 'Next decision',
+              footer: 'Diagnose first / sequence second / spend third', sample: 'Sample data' },
+        es: { surface: 'Panel interno de decisión', product: 'Señales de negocio', period: 'Últimos 30 días',
+              tabs: { contribution: 'Contribución', ltgp: 'LTGP : CAC', mer: 'MER adquisición', newRevenue: 'Ingresos nuevos' },
+              constraint: 'Cuello de botella principal', decision: 'Siguiente decisión',
+              footer: 'Diagnosticar primero / secuenciar después / invertir al final', sample: 'Datos de ejemplo' }
+      };
+
+      var VIEWS = {
+        en: {
+          contribution: {
+            primary: { label: 'Profit contribution', context: 'Last 30 days', value: '$128K', compare: 'vs. $97K', delta: '▲ 31.9%', data: [34,38,41,45,49,55,59,67,73,79,86,96] },
+            secondary: { label: '30-day LTGP : CAC', context: 'Acquisition', value: '2.74', compare: 'vs. 2.31', delta: '▲ 0.43', data: [45,44,49,53,51,56,60,63,66,72,76,82] },
+            constraint: 'Creative concept diversity',
+            lenses: [['Account structure','Readable','good'],['Creative velocity','Constraint detected','alert'],['Data integrity','Reconciled','good']],
+            decision: 'Scale spend +15%',
+            actions: ['Produce 3 new concept families', 'Hold CAC below $42', 'Review contribution after 7 days']
+          },
+          ltgp: {
+            primary: { label: '30-day LTGP : CAC', context: 'Acquisition health', value: '2.74', compare: 'vs. 2.31', delta: '▲ 0.43', data: [42,46,44,49,52,57,60,59,66,71,78,84] },
+            secondary: { label: 'Profit contribution', context: 'Supporting metric', value: '$128K', compare: 'vs. $97K', delta: '▲ 31.9%', data: [31,34,39,43,48,51,58,63,70,76,82,93] },
+            constraint: 'Acquisition is under-scaled',
+            lenses: [['Account structure','Concentrated','good'],['Creative velocity','Sufficient','good'],['Unit economics','Strong','good']],
+            decision: 'Open the spend ladder',
+            actions: ['Increase budget in 10% steps', 'Keep LTGP:CAC above 2.5', 'Re-read after conversion lag']
+          },
+          mer: {
+            primary: { label: 'Acquisition MER', context: 'New customer revenue', value: '3.18', compare: 'vs. 2.86', delta: '▲ 11.2%', data: [40,43,47,46,51,55,61,64,68,73,77,82] },
+            secondary: { label: 'Incremental revenue', context: 'Supporting metric', value: '$214K', compare: 'vs. $166K', delta: '▲ 28.9%', data: [33,37,42,47,45,54,59,66,71,75,84,94] },
+            constraint: 'Platform credit gap',
+            lenses: [['Account structure','Readable','good'],['Creative velocity','Healthy','good'],['Data integrity','Validate lift','alert']],
+            decision: 'Prove causality',
+            actions: ['Run incrementality holdout', 'Separate brand demand', 'Scale only reconciled revenue']
+          },
+          newRevenue: {
+            primary: { label: 'New customer revenue', context: 'Last 30 days', value: '$214K', compare: 'vs. $166K', delta: '▲ 28.9%', data: [29,34,38,43,48,55,60,68,72,80,88,97] },
+            secondary: { label: 'New customer share', context: 'Revenue mix', value: '63%', compare: 'vs. 54%', delta: '▲ 9 pp', data: [44,47,49,51,55,58,61,66,70,74,79,85] },
+            constraint: 'Persona coverage',
+            lenses: [['Account structure','Prospecting clear','good'],['Creative velocity','New personas needed','alert'],['Data integrity','Reconciled','good']],
+            decision: 'Expand demand',
+            actions: ['Build 3 persona-led concepts', 'Scale broad prospecting', 'Hold new customer CAC']
+          }
         },
-        campaign: {
-          id: 'SURFACE / CAMPAIGN', pos: '46%', status: { text: 'Testing', tone: 'neutral' },
-          rows: [['Structure', 'Broad prospecting'], ['Method', 'Controlled creative test'], ['Variable', 'Creative concept']],
-          next: 'Expose hypothesis to signal',
-          spec: '<div class="spec spec-campaign" aria-hidden="true"><i></i><u><b></b><b></b><b></b></u></div>'
-        },
-        signal: {
-          id: 'SURFACE / SIGNAL', pos: '68%', status: { text: 'Reading signal', tone: 'blue' },
-          rows: [['Read', 'Attributed revenue'], ['Guardrail', 'CAC vs. target'], ['Guardrail', 'Contribution margin']],
-          next: 'Scale, hold or iterate',
-          nextLabel: 'Decision',
-          spec: '<div class="spec spec-signal" aria-hidden="true"><i></i><u></u></div>'
-        },
-        scale: {
-          id: 'SURFACE / SCALE', pos: '92%', status: { text: 'Profitable scale', tone: 'blue' },
-          rows: [['Condition', 'Acquisition economics validated'], ['Next', 'Increase spend or iterate']],
-          next: 'Feed learning into the next creative cycle',
-          nextLabel: 'Return',
-          spec: '<div class="spec spec-scale" aria-hidden="true"></div>',
-          tagline: 'Scale only what improves the economics.'
+        es: {
+          contribution: {
+            primary: { label: 'Contribución al beneficio', context: 'Últimos 30 días', value: '$128K', compare: 'vs. $97K', delta: '▲ 31.9%', data: [34,38,41,45,49,55,59,67,73,79,86,96] },
+            secondary: { label: 'LTGP : CAC a 30 días', context: 'Adquisición', value: '2.74', compare: 'vs. 2.31', delta: '▲ 0.43', data: [45,44,49,53,51,56,60,63,66,72,76,82] },
+            constraint: 'Diversidad de conceptos creativos',
+            lenses: [['Estructura de cuenta','Legible','good'],['Velocidad creativa','Restricción detectada','alert'],['Integridad de datos','Conciliada','good']],
+            decision: 'Aumentar inversión +15%',
+            actions: ['Producir 3 nuevas familias de conceptos', 'Mantener CAC por debajo de $42', 'Revisar contribución en 7 días']
+          },
+          ltgp: {
+            primary: { label: 'LTGP : CAC a 30 días', context: 'Salud de adquisición', value: '2.74', compare: 'vs. 2.31', delta: '▲ 0.43', data: [42,46,44,49,52,57,60,59,66,71,78,84] },
+            secondary: { label: 'Contribución al beneficio', context: 'Métrica de apoyo', value: '$128K', compare: 'vs. $97K', delta: '▲ 31.9%', data: [31,34,39,43,48,51,58,63,70,76,82,93] },
+            constraint: 'La adquisición está subescalada',
+            lenses: [['Estructura de cuenta','Concentrada','good'],['Velocidad creativa','Suficiente','good'],['Economía unitaria','Sólida','good']],
+            decision: 'Abrir la escalera de inversión',
+            actions: ['Aumentar presupuesto en pasos de 10%', 'Mantener LTGP:CAC por encima de 2.5', 'Releer después del retraso de conversión']
+          },
+          mer: {
+            primary: { label: 'MER de adquisición', context: 'Ingresos de clientes nuevos', value: '3.18', compare: 'vs. 2.86', delta: '▲ 11.2%', data: [40,43,47,46,51,55,61,64,68,73,77,82] },
+            secondary: { label: 'Ingresos incrementales', context: 'Métrica de apoyo', value: '$214K', compare: 'vs. $166K', delta: '▲ 28.9%', data: [33,37,42,47,45,54,59,66,71,75,84,94] },
+            constraint: 'Brecha de atribución de plataforma',
+            lenses: [['Estructura de cuenta','Legible','good'],['Velocidad creativa','Saludable','good'],['Integridad de datos','Validar incrementalidad','alert']],
+            decision: 'Demostrar causalidad',
+            actions: ['Ejecutar test de incrementalidad', 'Separar demanda de marca', 'Escalar solo ingresos conciliados']
+          },
+          newRevenue: {
+            primary: { label: 'Ingresos de clientes nuevos', context: 'Últimos 30 días', value: '$214K', compare: 'vs. $166K', delta: '▲ 28.9%', data: [29,34,38,43,48,55,60,68,72,80,88,97] },
+            secondary: { label: 'Peso de clientes nuevos', context: 'Mezcla de ingresos', value: '63%', compare: 'vs. 54%', delta: '▲ 9 pp', data: [44,47,49,51,55,58,61,66,70,74,79,85] },
+            constraint: 'Cobertura de personas',
+            lenses: [['Estructura de cuenta','Prospección clara','good'],['Velocidad creativa','Nuevas personas necesarias','alert'],['Integridad de datos','Conciliada','good']],
+            decision: 'Expandir demanda',
+            actions: ['Crear 3 conceptos por persona', 'Escalar prospección amplia', 'Mantener CAC de clientes nuevos']
+          }
         }
       };
 
-      const panelBox = document.querySelector('.surface-panel');
-      if (!panelBox) return;
-      const marker = panelBox.querySelector('.surface-marker');
-      const scenarioPanel = document.getElementById('scenario-panel');
-      const surfaceTabs = [...panelBox.querySelectorAll('.surface-tab')];
-      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const smallScreen = matchMedia('(max-width: 640px)').matches;
+      var bsTabs = [].slice.call(panel.querySelectorAll('.bs-tab'));
+      var content = document.getElementById('bs-content');
+      var bsLang = (document.documentElement.lang === 'en') ? 'en' : 'es';
+      var bsView = 'contribution';
+      var reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function renderScenario(state) {
-        const s = SCENARIOS[state];
-        panelBox.dataset.state = state;
-        marker.style.left = s.pos;
-        scenarioPanel.innerHTML =
-          '<div class="scenario-head"><span class="scenario-id">' + s.id + '</span>' +
-          '<span class="scenario-status tone-' + s.status.tone + '">' + s.status.text + '</span></div>' +
-          '<div class="scenario-body"><div class="scenario-rows">' +
-          s.rows.map(([k, v]) => '<div class="scenario-row"><span>' + k + '</span><b>' + v + '</b></div>').join('') +
-          '<div class="scenario-row next"><span>' + (s.nextLabel || 'Next') + '</span><b>' + s.next + '</b></div></div>' +
-          (s.spec || '') + '</div>' +
-          (s.tagline ? '<p class="scenario-tagline">' + s.tagline + '</p>' : '');
-        if (!reducedMotion) { scenarioPanel.classList.remove('swap'); void scenarioPanel.offsetWidth; scenarioPanel.classList.add('swap'); }
-        surfaceTabs.forEach(t => {
-          const on = t.dataset.state === state;
-          t.setAttribute('aria-selected', String(on));
-          t.tabIndex = on ? 0 : -1;
+      function setText(id, value) { var el = document.getElementById(id); if (el) el.textContent = value; }
+
+      function drawChart(canvas, series, compact) {
+        var rect = canvas.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.max(1, Math.round(rect.width * dpr));
+        canvas.height = Math.max(1, Math.round(rect.height * dpr));
+        var ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+        var w = rect.width, h = rect.height;
+        var pad = compact ? 6 : 8;
+        var min = Math.min.apply(null, series) - 7;
+        var max = Math.max.apply(null, series) + 7;
+        var pts = series.map(function (v, i) {
+          return { x: pad + i * ((w - pad * 2) / (series.length - 1)),
+                   y: h - pad - ((v - min) / (max - min)) * (h - pad * 2) };
+        });
+        var light = document.documentElement.dataset.theme === 'light';
+        ctx.clearRect(0, 0, w, h);
+        ctx.strokeStyle = light ? 'rgba(10,14,19,.22)' : 'rgba(244,241,235,.18)';
+        ctx.setLineDash([4, 5]); ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(pad, h * .66); ctx.lineTo(w - pad, h * .66); ctx.stroke();
+        ctx.setLineDash([]);
+        var fill = ctx.createLinearGradient(0, 0, 0, h);
+        fill.addColorStop(0, 'rgba(9,183,255,.22)');
+        fill.addColorStop(1, 'rgba(9,183,255,0)');
+        ctx.beginPath(); ctx.moveTo(pts[0].x, h - pad);
+        pts.forEach(function (pt, i) {
+          if (i === 0) ctx.lineTo(pt.x, pt.y);
+          else { var pv = pts[i - 1], mx = (pv.x + pt.x) / 2; ctx.bezierCurveTo(mx, pv.y, mx, pt.y, pt.x, pt.y); }
+        });
+        ctx.lineTo(pts[pts.length - 1].x, h - pad); ctx.closePath();
+        ctx.fillStyle = fill; ctx.fill();
+        var signal = ctx.createLinearGradient(pad, 0, w - pad, 0);
+        signal.addColorStop(0, '#ff4b2e'); signal.addColorStop(.5, light ? '#0a0e13' : '#f4f1eb'); signal.addColorStop(1, '#09b7ff');
+        ctx.beginPath();
+        pts.forEach(function (pt, i) {
+          if (i === 0) ctx.moveTo(pt.x, pt.y);
+          else { var pv = pts[i - 1], mx = (pv.x + pt.x) / 2; ctx.bezierCurveTo(mx, pv.y, mx, pt.y, pt.x, pt.y); }
+        });
+        ctx.strokeStyle = signal; ctx.lineWidth = 2;
+        ctx.shadowColor = 'rgba(9,183,255,.35)'; ctx.shadowBlur = 9;
+        ctx.stroke();
+        var last = pts[pts.length - 1];
+        ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.arc(last.x, last.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#09b7ff'; ctx.fill();
+      }
+
+      function renderSignals(viewKey) {
+        var lang = UI[bsLang];
+        var view = VIEWS[bsLang][viewKey];
+        bsView = viewKey;
+        setText('bs-surface-label', lang.surface);
+        setText('bs-product-name', lang.product);
+        setText('bs-period', lang.period);
+        setText('bs-constraint-label', lang.constraint);
+        setText('bs-decision-label', lang.decision);
+        setText('bs-thesis', lang.footer);
+        setText('bs-sample', lang.sample);
+        bsTabs.forEach(function (tab) { tab.textContent = lang.tabs[tab.dataset.view]; });
+        if (!reducedMotion) { content.classList.remove('bs-fade'); void content.offsetWidth; content.classList.add('bs-fade'); }
+        ['primary', 'secondary'].forEach(function (prefix) {
+          var m = view[prefix];
+          setText('bs-' + prefix + '-label', m.label);
+          setText('bs-' + prefix + '-context', m.context);
+          setText('bs-' + prefix + '-value', m.value);
+          setText('bs-' + prefix + '-compare', m.compare);
+          setText('bs-' + prefix + '-delta', m.delta);
+        });
+        setText('bs-constraint', view.constraint);
+        setText('bs-decision-title', view.decision);
+        document.getElementById('bs-lenses').innerHTML = view.lenses.map(function (l) {
+          return '<div class="bs-lens"><span class="bs-lens-label">' + l[0] + '</span><span class="bs-lens-status ' + l[2] + '">' + l[1] + '</span></div>';
+        }).join('');
+        document.getElementById('bs-actions').innerHTML = view.actions.map(function (a) { return '<li>' + a + '</li>'; }).join('');
+        requestAnimationFrame(function () {
+          drawChart(document.getElementById('bs-primary-chart'), view.primary.data);
+          drawChart(document.getElementById('bs-secondary-chart'), view.secondary.data, true);
         });
       }
 
-      // Auto-avance: hover/focus/pestaña oculta PAUSAN; interacción manual CANCELA.
-      const stateOrder = ['creative', 'campaign', 'signal', 'scale'];
-      let autoTimer = null, autoCancelled = reducedMotion || smallScreen, autoPaused = false, stateIndex = 0;
-      function startAuto() {
-        if (autoCancelled || autoTimer) return;
-        autoTimer = setInterval(() => {
-          if (autoPaused || document.hidden) return;
-          stateIndex = (stateIndex + 1) % stateOrder.length; renderScenario(stateOrder[stateIndex]);
-        }, 6500);
-      }
-      function cancelAuto() { autoCancelled = true; if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
-      surfaceTabs.forEach(tab => {
-        tab.addEventListener('click', () => { cancelAuto(); stateIndex = stateOrder.indexOf(tab.dataset.state); renderScenario(tab.dataset.state); });
-        tab.addEventListener('keydown', e => {
+      bsTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          bsTabs.forEach(function (t) { t.setAttribute('aria-selected', String(t === tab)); t.tabIndex = t === tab ? 0 : -1; });
+          renderSignals(tab.dataset.view);
+        });
+        tab.addEventListener('keydown', function (e) {
           if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-          e.preventDefault(); cancelAuto();
-          const idx = surfaceTabs.indexOf(tab);
-          const next = surfaceTabs[(idx + (e.key === 'ArrowRight' ? 1 : surfaceTabs.length - 1)) % surfaceTabs.length];
-          next.focus(); stateIndex = stateOrder.indexOf(next.dataset.state); renderScenario(next.dataset.state);
+          e.preventDefault();
+          var i = bsTabs.indexOf(tab);
+          var next = bsTabs[(i + (e.key === 'ArrowRight' ? 1 : bsTabs.length - 1)) % bsTabs.length];
+          next.focus(); next.click();
         });
       });
-      panelBox.addEventListener('pointerenter', () => { autoPaused = true; });
-      panelBox.addEventListener('pointerleave', () => { autoPaused = false; });
-      panelBox.addEventListener('focusin', () => { autoPaused = true; });
-      panelBox.addEventListener('focusout', () => { autoPaused = false; });
 
-      renderScenario('creative');
-      startAuto();
+      // El selector global ES/EN también controla este componente
+      // (el tab activo se conserva al cambiar de idioma).
+      document.querySelectorAll('.lang').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          bsLang = btn.dataset.lang === 'en' ? 'en' : 'es';
+          renderSignals(bsView);
+        });
+      });
+
+      var bsThemeBtn = document.getElementById('theme-toggle');
+      if (bsThemeBtn) bsThemeBtn.addEventListener('click', function () { renderSignals(bsView); });
+
+      var bsResize = null;
+      window.addEventListener('resize', function () {
+        clearTimeout(bsResize);
+        bsResize = setTimeout(function () { renderSignals(bsView); }, 120);
+      });
+
+      // Parámetros URL: ?lang=en arranca en inglés; ?bsview=<tab> abre un tab
+      try {
+        var q = new URLSearchParams(location.search);
+        var qv = q.get('bsview');
+        if (qv && VIEWS.es[qv]) {
+          var qt = panel.querySelector('[data-view="' + qv + '"]');
+          if (qt) { bsTabs.forEach(function (t) { t.setAttribute('aria-selected', String(t === qt)); t.tabIndex = t === qt ? 0 : -1; }); bsView = qv; }
+        }
+        if (q.get('lang') === 'en') {
+          var enBtn = document.querySelector('.lang[data-lang="en"]');
+          if (enBtn) { enBtn.click(); }
+        }
+      } catch (e) {}
+      renderSignals(bsView);
     })();
+
   </script>
   <script src="assets/signal-cursor.js" defer></script>
 </body>
