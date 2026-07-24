@@ -313,8 +313,6 @@
     [data-theme="light"] .phase-body h3{color:var(--ink)}
 
     [data-theme="light"] footer{border-top:1px solid rgba(10,14,19,.12)}
-    footer .wrap{flex-wrap:wrap}
-    .footer-line{width:100%;margin:0 0 30px;font-size:clamp(24px,2.8vw,36px);font-weight:650;letter-spacing:-.03em;line-height:1.15}
 
     /* ============================================================
        Dark total — las secciones que quedaban claras pasan a ink.
@@ -640,13 +638,13 @@
     <section class="section dark cta-final" id="audit">
       <div class="wrap cta-final-inner">
         <p class="eyebrow" data-i18n="ctaf_eyebrow">Empieza aquí</p>
-        <h2 data-i18n="ctaf_title">Descubre dónde tu siguiente dólar <em class="cta-accent">realmente produce crecimiento.</em></h2>
+        <h2 data-i18n="ctaf_title">Construyamos un <span class="signal-grad">sistema de adquisición</span> preparado para escalar.</h2>
         <p class="lead" data-i18n="ctaf_copy">La auditoría estratégica es rápida y gratuita. La mayoría de las marcas usa el resultado para alinear a fundadores, finanzas y marketing antes de tomar decisiones grandes.</p>
         <div class="cta-final-actions"><a class="btn primary" data-i18n="cta" href="#audit">Solicitar auditoría</a></div>
       </div>
     </section>
   </main>
-  <footer><div class="wrap"><p class="footer-line" data-i18n="ft_line">Construyamos un <span class="signal-grad">sistema de adquisición</span> preparado para escalar.</p><div><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"><p>Creative testing systems for Meta advertisers.<br>© 2026 Adflow.</p></div><div class="footer-links"><a href="#method">Método</a><a href="#outputs">Qué producimos</a><a href="#audit">Auditoría</a></div></div></footer>
+  <footer><div class="wrap"><div><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"><p>Creative testing systems for Meta advertisers.<br>© 2026 Adflow.</p></div><div class="footer-links"><a href="#method">Método</a><a href="#outputs">Qué producimos</a><a href="#audit">Auditoría</a></div></div></footer>
 
   <div class="audit-modal" id="audit-modal" role="dialog" aria-modal="true" aria-labelledby="audit-modal-title" hidden>
     <div class="audit-modal-backdrop" data-modal-close></div>
@@ -779,13 +777,12 @@
 
     Object.assign(translations.en, {
       ctaf_eyebrow: 'Start here',
-      ctaf_title: 'Find out where your next dollar <em class="cta-accent">actually produces growth.</em>',
+      ctaf_title: 'Let\u2019s build an <span class="signal-grad">acquisition system</span> designed to scale.',
       ctaf_copy: 'The strategy session and audit is fast and free. Most brands use the output internally to align founders, finance and marketing before making major decisions.',
       am_eyebrow: 'Free strategy session and audit',
       am_title: 'Book a call with <span class="signal-grad">our team.</span>',
       am_copy: 'We audit your account against the diagnostic we run on every client engagement, then walk you through what we find. No cost, no obligation — useful whether we work together or not.',
-      am_foot: 'No cost · No obligation · We reply within 24 hours',
-      ft_line: 'Let\u2019s build an <span class="signal-grad">acquisition system</span> designed to scale.'
+      am_foot: 'No cost · No obligation · We reply within 24 hours'
     });
 
     // Traducciones EN de la sección "Tus primeros 90 días"
