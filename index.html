@@ -409,6 +409,31 @@
       .bs-value{font-size:25px}
     }
 
+    /* ---- Business Signals: variante light (switcher global) ---- */
+    [data-theme="light"] .bs-panel{border-color:rgba(10,14,19,.16);background:linear-gradient(145deg,rgba(255,255,255,.5),transparent 32%),rgba(244,241,235,.88);box-shadow:0 36px 110px rgba(10,14,19,.18),inset 0 1px 0 rgba(255,255,255,.5);color:var(--ink)}
+    [data-theme="light"] .bs-panel:after{background:rgba(9,183,255,.1)}
+    [data-theme="light"] .bs-accent{background:linear-gradient(90deg,var(--red),var(--ink) 49%,var(--blue))}
+    [data-theme="light"] .bs-identity-copy{border-left-color:rgba(10,14,19,.15)}
+    [data-theme="light"] .bs-eyebrow,[data-theme="light"] .bs-context,[data-theme="light"] .bs-sublabel,[data-theme="light"] .bs-lens-label,[data-theme="light"] .bs-compare{color:#5f666a}
+    [data-theme="light"] .bs-period{border-color:rgba(10,14,19,.2);color:#5f666a;background:rgba(10,14,19,.03)}
+    [data-theme="light"] .bs-tab{border-color:rgba(10,14,19,.18);color:#5f666a;background:rgba(10,14,19,.03)}
+    [data-theme="light"] .bs-tab:hover{color:var(--ink);border-color:rgba(10,14,19,.4)}
+    [data-theme="light"] .bs-tab[aria-selected="true"]{color:var(--ivory);border-color:var(--ink);background:var(--ink);box-shadow:0 0 24px rgba(9,183,255,.12)}
+    [data-theme="light"] .bs-card{border-color:rgba(10,14,19,.12);background:linear-gradient(145deg,rgba(255,255,255,.6),transparent 42%),rgba(255,255,255,.35)}
+    [data-theme="light"] .bs-label{color:#4a565e}
+    [data-theme="light"] .bs-value{color:var(--ink)}
+    [data-theme="light"] .bs-diagnosis,[data-theme="light"] .bs-decision{border-color:rgba(10,14,19,.12);background:rgba(255,255,255,.35)}
+    [data-theme="light"] .bs-constraint{color:var(--red)}
+    [data-theme="light"] .bs-lens{border-top-color:rgba(10,14,19,.1)}
+    [data-theme="light"] .bs-lens-status{color:#4a565e}
+    [data-theme="light"] .bs-lens-status.alert{color:var(--red)}
+    [data-theme="light"] .bs-lens-status.good,[data-theme="light"] .bs-delta{color:#0a86c2}
+    [data-theme="light"] .bs-decision{border-color:rgba(9,183,255,.3);background:linear-gradient(145deg,rgba(9,183,255,.08),rgba(255,255,255,.35) 68%)}
+    [data-theme="light"] .bs-decision-title{color:#0a86c2}
+    [data-theme="light"] .bs-actions li{color:#41505a}
+    [data-theme="light"] .bs-panel .bs-footer{color:#6b7982;background:transparent}
+    [data-theme="light"] .bs-sample{color:#0a86c2}
+
     /* La sección de auditoría es clara en ambos temas: se restaura el
        campo de señal del diseño original, ahora con el asset light. */
     .audit:before{display:block;inset:0 0 0 40%;background:linear-gradient(90deg,var(--ivory),rgba(244,241,235,.35) 45%,rgba(244,241,235,.15)),url('assets/signal-field-light-4x5.svg') right center/cover no-repeat;opacity:.85}
@@ -650,7 +675,7 @@
       const LOCKUPS = { dark: 'assets/adflow-lockup-ivory.svg', light: 'assets/adflow-lockup-ink.svg' };
       function applyTheme(t){
         root.dataset.theme = t;
-        document.querySelectorAll('.brand img, footer img').forEach(img => { img.src = LOCKUPS[t]; });
+        document.querySelectorAll('.brand img, footer img, .bs-lockup').forEach(img => { img.src = LOCKUPS[t]; });
         if (toggle) {
           toggle.textContent = t === 'light' ? 'Dark' : 'Light';
           toggle.setAttribute('aria-pressed', String(t === 'light'));
@@ -661,6 +686,10 @@
       if (theme !== 'light' && theme !== 'dark') {
         theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       }
+      try {
+        const qTheme = new URLSearchParams(location.search).get('theme');
+        if (qTheme === 'light' || qTheme === 'dark') theme = qTheme;
+      } catch (e) {}
       applyTheme(theme);
       toggle && toggle.addEventListener('click', () => {
         theme = root.dataset.theme === 'light' ? 'dark' : 'light';
@@ -831,8 +860,9 @@
           return { x: pad + i * ((w - pad * 2) / (series.length - 1)),
                    y: h - pad - ((v - min) / (max - min)) * (h - pad * 2) };
         });
+        var light = document.documentElement.dataset.theme === 'light';
         ctx.clearRect(0, 0, w, h);
-        ctx.strokeStyle = 'rgba(244,241,235,.18)';
+        ctx.strokeStyle = light ? 'rgba(10,14,19,.22)' : 'rgba(244,241,235,.18)';
         ctx.setLineDash([4, 5]); ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(pad, h * .66); ctx.lineTo(w - pad, h * .66); ctx.stroke();
         ctx.setLineDash([]);
@@ -847,7 +877,7 @@
         ctx.lineTo(pts[pts.length - 1].x, h - pad); ctx.closePath();
         ctx.fillStyle = fill; ctx.fill();
         var signal = ctx.createLinearGradient(pad, 0, w - pad, 0);
-        signal.addColorStop(0, '#ff4b2e'); signal.addColorStop(.5, '#f4f1eb'); signal.addColorStop(1, '#09b7ff');
+        signal.addColorStop(0, '#ff4b2e'); signal.addColorStop(.5, light ? '#0a0e13' : '#f4f1eb'); signal.addColorStop(1, '#09b7ff');
         ctx.beginPath();
         pts.forEach(function (pt, i) {
           if (i === 0) ctx.moveTo(pt.x, pt.y);
@@ -917,6 +947,9 @@
           renderSignals(bsView);
         });
       });
+
+      var bsThemeBtn = document.getElementById('theme-toggle');
+      if (bsThemeBtn) bsThemeBtn.addEventListener('click', function () { renderSignals(bsView); });
 
       var bsResize = null;
       window.addEventListener('resize', function () {
