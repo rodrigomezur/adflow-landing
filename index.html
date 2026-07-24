@@ -434,6 +434,40 @@
     [data-theme="light"] .bs-panel .bs-footer{color:#6b7982;background:transparent}
     [data-theme="light"] .bs-sample{color:#0a86c2}
 
+
+    /* ============================================================
+       Sección CTA final (centrada) + modal de auditoría.
+       Los botones naranjas a.btn[href="#audit"] abren el modal.
+       ============================================================ */
+    .cta-final{position:relative;overflow:hidden}
+    .cta-final:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 62%,rgba(9,183,255,.1),transparent 42%),radial-gradient(circle at 18% 18%,rgba(255,75,46,.05),transparent 30%);pointer-events:none}
+    .cta-final-inner{position:relative;max-width:820px;text-align:center}
+    .cta-final .eyebrow{justify-content:center}
+    .cta-final h2{font-size:clamp(40px,5vw,74px);margin-bottom:26px}
+    .cta-accent{color:var(--blue);font-style:italic}
+    .cta-final .lead{max-width:640px;margin:0 auto;color:var(--mist)}
+    .cta-final-actions{margin-top:36px}
+    [data-theme="light"] .cta-final .lead{color:#5f666a}
+    [data-theme="light"] .cta-accent{color:#0a86c2}
+
+    .audit-modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:20px}
+    .audit-modal[hidden]{display:none}
+    .audit-modal-backdrop{position:absolute;inset:0;background:rgba(4,7,10,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+    .audit-modal-panel{position:relative;width:min(560px,100%);max-height:calc(100vh - 40px);overflow-y:auto;padding:34px 34px 26px;border:1px solid rgba(244,241,235,.14);border-radius:28px;background:var(--ink);color:var(--ivory);box-shadow:0 40px 120px rgba(0,0,0,.5);animation:amIn .28s ease both}
+    @keyframes amIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    .audit-modal-close{position:absolute;top:18px;right:18px;width:38px;height:38px;border:1px solid rgba(244,241,235,.2);border-radius:50%;background:transparent;color:var(--ivory);font-size:17px;line-height:1;cursor:pointer;transition:.2s}
+    .audit-modal-close:hover{border-color:rgba(244,241,235,.5)}
+    .audit-modal-close:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+    .audit-modal .eyebrow{color:var(--mist)}
+    .audit-modal-title{font-size:clamp(26px,3vw,34px);letter-spacing:-.03em;margin:0 0 12px;color:var(--ivory)}
+    .audit-modal-copy{margin:0 0 22px;color:var(--mist);font-size:15px;line-height:1.55}
+    .audit-modal .form{background:transparent;padding:0;border-radius:0;box-shadow:none}
+    .audit-modal-foot{margin:18px 0 0;text-align:center;color:#52636d;font:600 9px var(--mono);letter-spacing:.12em;text-transform:uppercase}
+    @media(max-width:640px){
+      .audit-modal{padding:10px}
+      .audit-modal-panel{padding:24px 18px 20px;border-radius:22px;max-height:calc(100vh - 20px)}
+    }
+
     /* La sección de auditoría es clara en ambos temas: se restaura el
        campo de señal del diseño original, ahora con el asset light. */
     .audit:before{display:block;inset:0 0 0 40%;background:linear-gradient(90deg,var(--ivory),rgba(244,241,235,.35) 45%,rgba(244,241,235,.15)),url('assets/signal-field-light-4x5.svg') right center/cover no-repeat;opacity:.85}
@@ -601,9 +635,29 @@
         <div class="roadmap-close"><span>Every cycle feeds the next one</span><i aria-hidden="true"></i></div>
       </div>
     </section>
-    <section class="section audit" id="audit"><div class="wrap audit-grid"><div><p class="eyebrow">Creative testing audit</p><h2 data-i18n="audit_title">Agenda una auditoría creativa.</h2><p class="lead" data-i18n="audit_copy">Revisamos cómo tu marca convierte ideas en anuncios, señal y nuevos aprendizajes. Te mostramos dónde se rompe el ciclo.</p><ul class="audit-points"><li>Tu research y estrategia</li><li>Tus conceptos y creativos</li><li>Tu estructura de testing en Meta</li><li>Tu proceso de producción</li><li>Tu sistema de aprendizaje</li></ul></div><form class="form" id="audit-form"><div class="fields"><div class="field-group"><label for="name">Nombre *</label><input id="name" name="name" autocomplete="name" required></div><div class="field-group"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field-group full"><label for="website">Website / Tienda</label><input id="website" name="website" type="url" placeholder="https://tumarca.com"></div><div class="field-group"><label for="monthly_revenue">Facturación mensual</label><select id="monthly_revenue" name="monthly_revenue"><option value="" selected disabled>Selecciona tu facturación</option><option value="under-10k">Menos de $10,000/mes</option><option value="10k-30k">$10,000 - $30,000/mes</option><option value="30k-75k">$30,000 - $75,000/mes</option><option value="75k-150k">$75,000 - $150,000/mes</option><option value="150k-plus">$150,000+/mes</option></select></div><div class="field-group"><label for="monthly_spend">Gasto mensual en ads</label><select id="monthly_spend" name="monthly_spend"><option value="" selected disabled>Selecciona tu gasto actual</option><option value="under-5k">Menos de $5,000/mes</option><option value="5k-15k">$5,000 - $15,000/mes</option><option value="15k-30k">$15,000 - $30,000/mes</option><option value="30k-50k">$30,000 - $50,000/mes</option><option value="50k-plus">$50,000+/mes</option></select></div><div class="field-group full"><span class="group-label">Canales actuales</span><div class="checks"><label class="check"><input type="checkbox" name="current_channels" value="meta"> Meta</label><label class="check"><input type="checkbox" name="current_channels" value="tiktok"> TikTok</label><label class="check"><input type="checkbox" name="current_channels" value="google"> Google</label><label class="check"><input type="checkbox" name="current_channels" value="organic"> Orgánico</label><label class="check"><input type="checkbox" name="current_channels" value="email-sms"> Email/SMS</label><label class="check"><input type="checkbox" name="current_channels" value="other"> Otro</label></div></div><div class="field-group full"><label for="creative_setup">Setup actual</label><select id="creative_setup" name="creative_setup"><option value="" selected disabled>¿Quién opera adquisición hoy?</option><option value="in-house">Equipo interno</option><option value="agency">Agencia</option><option value="freelancers">Freelancers / Contractors</option><option value="founder">Lo hago yo mismo</option><option value="hybrid">Combinación de lo anterior</option></select></div><div class="field-group full"><label for="bottleneck">Mayor cuello de botella creativo</label><textarea id="bottleneck" name="bottleneck" placeholder="Ej. producimos mucho, pero no sabemos qué ideas vale la pena testear..."></textarea></div></div><button class="submit" type="submit" data-i18n="submit">Solicitar auditoría →</button><p class="status" role="status" aria-live="polite"></p></form></div></section>
+    <section class="section dark cta-final" id="audit">
+      <div class="wrap cta-final-inner">
+        <p class="eyebrow" data-i18n="ctaf_eyebrow">Empieza aquí</p>
+        <h2 data-i18n="ctaf_title">Descubre dónde tu siguiente dólar <em class="cta-accent">realmente produce crecimiento.</em></h2>
+        <p class="lead" data-i18n="ctaf_copy">La auditoría estratégica es rápida y gratuita. La mayoría de las marcas usa el resultado para alinear a fundadores, finanzas y marketing antes de tomar decisiones grandes.</p>
+        <div class="cta-final-actions"><a class="btn primary" data-i18n="cta" href="#audit">Solicitar auditoría</a></div>
+      </div>
+    </section>
   </main>
   <footer><div class="wrap"><div><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"><p>Creative testing systems for Meta advertisers.<br>© 2026 Adflow.</p></div><div class="footer-links"><a href="#method">Método</a><a href="#outputs">Qué producimos</a><a href="#audit">Auditoría</a></div></div></footer>
+
+  <div class="audit-modal" id="audit-modal" role="dialog" aria-modal="true" aria-labelledby="audit-modal-title" hidden>
+    <div class="audit-modal-backdrop" data-modal-close></div>
+    <div class="audit-modal-panel">
+      <button class="audit-modal-close" type="button" aria-label="Cerrar" data-modal-close>×</button>
+      <p class="eyebrow" data-i18n="am_eyebrow">Auditoría estratégica gratuita</p>
+      <h3 id="audit-modal-title" class="audit-modal-title" data-i18n="am_title">Agenda una llamada con <em class="cta-accent">nuestro equipo.</em></h3>
+      <p class="audit-modal-copy" data-i18n="am_copy">Auditamos tu cuenta con el diagnóstico que corremos en cada cliente y te mostramos lo que encontramos. Sin costo y sin compromiso — te sirve para decidir mejor, trabajemos juntos o no.</p>
+      <form class="form" id="audit-form"><div class="fields"><div class="field-group"><label for="name">Nombre *</label><input id="name" name="name" autocomplete="name" required></div><div class="field-group"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field-group full"><label for="website">Website / Tienda</label><input id="website" name="website" type="url" placeholder="https://tumarca.com"></div><div class="field-group"><label for="monthly_revenue">Facturación mensual</label><select id="monthly_revenue" name="monthly_revenue"><option value="" selected disabled>Selecciona tu facturación</option><option value="under-10k">Menos de $10,000/mes</option><option value="10k-30k">$10,000 - $30,000/mes</option><option value="30k-75k">$30,000 - $75,000/mes</option><option value="75k-150k">$75,000 - $150,000/mes</option><option value="150k-plus">$150,000+/mes</option></select></div><div class="field-group"><label for="monthly_spend">Gasto mensual en ads</label><select id="monthly_spend" name="monthly_spend"><option value="" selected disabled>Selecciona tu gasto actual</option><option value="under-5k">Menos de $5,000/mes</option><option value="5k-15k">$5,000 - $15,000/mes</option><option value="15k-30k">$15,000 - $30,000/mes</option><option value="30k-50k">$30,000 - $50,000/mes</option><option value="50k-plus">$50,000+/mes</option></select></div><div class="field-group full"><span class="group-label">Canales actuales</span><div class="checks"><label class="check"><input type="checkbox" name="current_channels" value="meta"> Meta</label><label class="check"><input type="checkbox" name="current_channels" value="tiktok"> TikTok</label><label class="check"><input type="checkbox" name="current_channels" value="google"> Google</label><label class="check"><input type="checkbox" name="current_channels" value="organic"> Orgánico</label><label class="check"><input type="checkbox" name="current_channels" value="email-sms"> Email/SMS</label><label class="check"><input type="checkbox" name="current_channels" value="other"> Otro</label></div></div><div class="field-group full"><label for="creative_setup">Setup actual</label><select id="creative_setup" name="creative_setup"><option value="" selected disabled>¿Quién opera adquisición hoy?</option><option value="in-house">Equipo interno</option><option value="agency">Agencia</option><option value="freelancers">Freelancers / Contractors</option><option value="founder">Lo hago yo mismo</option><option value="hybrid">Combinación de lo anterior</option></select></div><div class="field-group full"><label for="bottleneck">Mayor cuello de botella creativo</label><textarea id="bottleneck" name="bottleneck" placeholder="Ej. producimos mucho, pero no sabemos qué ideas vale la pena testear..."></textarea></div></div><button class="submit" type="submit" data-i18n="submit">Solicitar auditoría →</button><p class="status" role="status" aria-live="polite"></p></form>
+      <p class="audit-modal-foot" data-i18n="am_foot">Sin costo · Sin compromiso · Respondemos en menos de 24 horas</p>
+    </div>
+  </div>
+
   <script>
     const translations={es:{},en:{nav_method:'Method',nav_output:'What we make',nav_fit:'Who it’s for',nav_audit:'Audit',cta:'Request an audit',see_method:'See how it works',hero_title:'Creative intelligence<br><span class="signal-grad">in motion.</span>',hero_copy:'We turn creative strategy, production and media buying into an acquisition system that finds what sells, what scales and what keeps growth profitable.',output_eyebrow:'Creative output / testing surface',output_title:'Ideas in motion.<br>Signal that returns.',output_copy:'UGC, hooks, statics, demos and founder-led: distinct expressions of hypotheses worth testing.',problem_eyebrow:'The real problem',problem_title:'Brands don’t run out of ads.',problem_statement:'They run out of <em>new ideas</em> worth testing.',p1t:'Creative fatigue',p1c:'Concepts lose force and the team arrives late to the next angle.',p2t:'Surface-level variations',p2c:'Changing a color or first frame does not create a new reason to buy.',p3t:'Production without hypotheses',p3c:'More assets, without a clear question the market can answer.',p4t:'Learning gets lost',p4c:'Every month starts over when signal does not feed the next brief.',method_title:'Creative intelligence in motion.',method_copy:'A living cycle connecting what we think, what we make and what the market proves.',m1:'Market, competitors, tensions, desires and objections.',m2:'Hypotheses, concepts, angles and hooks with clear intent.',m3:'Each idea becomes distinct, native executions.',m4:'Structure that exposes ideas to real, comparable signal.',m5:'Evidence changes briefs, ads and the next cycle.',testing_eyebrow:'What we test',testing_title:'Ideas and messages.<br>Not just edits.',receive_eyebrow:'What clients receive',receive_title:'An operated creative learning system.',receive_copy:'Not a content catalog: a connected sequence of decisions, production, signal and new cycles.',compare_title:'Output matters.<br>Learning compounds.',fit_eyebrow:'Who it’s for',fit_title:'For ecommerce brands ready to learn faster.',fit_yes:'It’s for you if',fit_no:'It’s not for you if',audit_title:'Book a creative audit.',audit_copy:'We review how your brand turns ideas into ads, signal and new learning. We show you where the cycle breaks.',submit:'Request audit →'}};
             translations.es.m4='Estructura de testing y campañas para exponer ideas a señal real y comparable.';
@@ -662,8 +716,7 @@
     document.querySelector('.testing-grid').innerHTML=testingMarkup;
     const deliveryList=document.querySelector('.delivery-list');deliveryList.className='delivery-stages';deliveryList.innerHTML='<article class="delivery-stage"><span>01 / THINK</span><h3>Think</h3><ul><li>Research</li><li>Creative strategy</li><li>Hypotheses + angles</li></ul></article><article class="delivery-stage"><span>02 / MAKE</span><h3>Make</h3><ul><li>Concepts + scripts</li><li>UGC, static + video</li><li>Intentional iterations</li></ul></article><article class="delivery-stage"><span>03 / TEST</span><h3>Test</h3><ul><li>Meta campaign strategy</li><li>Testing structure</li><li>Media buying + acquisition</li></ul></article><article class="delivery-stage"><span>04 / LEARN</span><h3>Learn</h3><ul><li>Creative performance review</li><li>Decision rhythm</li><li>Learning library + next cycle</li></ul></article>';
     const compare=document.querySelector('.compare');compare.innerHTML='<div class="factory"><span class="mono">Content factory</span>'+Annotation('strike-red')+'<ul><li>Más anuncios</li><li>Poca diferenciación</li><li>Variaciones sin pregunta'+Annotation('strike-red')+'</li><li>Aprendizajes dispersos</li></ul></div><div class="adflow"><span class="mono">Adflow</span>'+AnnotationArrow('curve','blue')+'<ul><li>Más hipótesis</li><li>Conceptos realmente distintos</li><li>Señales claras</li><li>Aprendizaje acumulativo</li></ul></div>';
-    const auditCopy=document.querySelector('.audit-grid>div');auditCopy.classList.add('audit-copy');auditCopy.querySelector('.audit-points').insertAdjacentHTML('beforebegin','<div class="breakpoint-map" aria-label="Adflow detecta dónde se rompe el ciclo"><span class="breakpoint-gap">×</span>'+AnnotationTarget('red')+'<span class="breakpoint-label">BREAKPOINT DETECTED / NEXT ACTION</span></div>');
-    const nav=document.querySelector('nav'),navWrap=nav.querySelector('.wrap'),navlinks=nav.querySelector('.navlinks'),menuButton=nav.querySelector('.menu');menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-controls','site-nav');navlinks.id='site-nav';navWrap.insertBefore(menuButton,navlinks);menuButton.addEventListener('click',()=>{const open=navlinks.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(open));menuButton.classList.toggle('open',open)});navlinks.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{navlinks.classList.remove('open');menuButton.setAttribute('aria-expanded','false');menuButton.classList.remove('open')}));addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>12),{passive:true});
+        const nav=document.querySelector('nav'),navWrap=nav.querySelector('.wrap'),navlinks=nav.querySelector('.navlinks'),menuButton=nav.querySelector('.menu');menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-controls','site-nav');navlinks.id='site-nav';navWrap.insertBefore(menuButton,navlinks);menuButton.addEventListener('click',()=>{const open=navlinks.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(open));menuButton.classList.toggle('open',open)});navlinks.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{navlinks.classList.remove('open');menuButton.setAttribute('aria-expanded','false');menuButton.classList.remove('open')}));addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>12),{passive:true});
     const observer=new IntersectionObserver(entries=>entries.forEach(entry=>entry.isIntersecting&&entry.target.classList.add('visible')),{threshold:.08});document.querySelectorAll('[data-reveal]').forEach(el=>observer.observe(el));
     document.getElementById('audit-form').addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,status=form.querySelector('.status'),button=form.querySelector('button[type=submit]');const data=new FormData(form);const payload=Object.fromEntries(data.entries());payload.current_channels=data.getAll('current_channels');button.disabled=true;status.textContent='Enviando…';try{const response=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!response.ok)throw new Error();status.textContent='Recibido. Revisaremos tu solicitud y responderemos en 24 horas.';form.reset()}catch(error){status.textContent='No se pudo enviar. Inténtalo de nuevo o contacta al equipo.'}finally{button.disabled=false}});
 
@@ -722,6 +775,16 @@
       mq.addEventListener('change', placeNavControls);
     })();
 
+    Object.assign(translations.en, {
+      ctaf_eyebrow: 'Start here',
+      ctaf_title: 'Find out where your next dollar <em class="cta-accent">actually produces growth.</em>',
+      ctaf_copy: 'The strategy session and audit is fast and free. Most brands use the output internally to align founders, finance and marketing before making major decisions.',
+      am_eyebrow: 'Free strategy session and audit',
+      am_title: 'Book a call with <em class="cta-accent">our team.</em>',
+      am_copy: 'We audit your account against the diagnostic we run on every client engagement, then walk you through what we find. No cost, no obligation — useful whether we work together or not.',
+      am_foot: 'No cost · No obligation · We reply within 24 hours'
+    });
+
     // Traducciones EN de la sección "Tus primeros 90 días"
     Object.assign(translations.en, {
       rm_title: 'Your first <em>90 days.</em>',
@@ -746,6 +809,39 @@
       rm5r: 'An acquisition system that improves month over month, with you out of the operation.'
     });
 
+
+
+    // ===== Modal de auditoría: lo abren los botones a.btn[href="#audit"] =====
+    (function () {
+      var modal = document.getElementById('audit-modal');
+      if (!modal) return;
+      var lastFocus = null;
+      function openModal() {
+        lastFocus = document.activeElement;
+        modal.hidden = false;
+        document.body.style.overflow = 'hidden';
+        var first = modal.querySelector('input,select,textarea');
+        if (first) first.focus();
+      }
+      function closeModal() {
+        modal.hidden = true;
+        document.body.style.overflow = '';
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+      document.addEventListener('click', function (e) {
+        var t = e.target instanceof Element ? e.target : null;
+        if (!t) return;
+        var opener = t.closest('a.btn[href="#audit"]');
+        if (opener) { e.preventDefault(); openModal(); return; }
+        if (t.closest('[data-modal-close]') && !modal.hidden) closeModal();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.hidden) closeModal();
+      });
+      try {
+        if (new URLSearchParams(location.search).get('modal') === 'audit') openModal();
+      } catch (e) {}
+    })();
 
     // ===== Adflow Business Signals (panel derecho del hero) =====
     // Números ILUSTRATIVOS — no son resultados reales de Adflow.
