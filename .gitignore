@@ -1,1 +1,5 @@
 .vercel
+
+# originales sin comprimir de los creativos (no se despliegan)
+creatives-src/
+.DS_Store
