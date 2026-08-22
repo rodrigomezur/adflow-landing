@@ -1,0 +1,5 @@
+# Originales pesados de los creativos: se procesan en local con
+# tools/build-creatives.sh y solo se despliega assets/creatives/.
+creatives-src/
+tools/
+.DS_Store
