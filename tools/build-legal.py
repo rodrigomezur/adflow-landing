@@ -62,7 +62,7 @@ if(t)document.documentElement.setAttribute('data-theme',t);}}catch(e){{}}}})();
   <span class="spacer"></span>
   <a href="privacy.html">Privacy</a>
   <a href="terms.html">Terms</a>
-  <a href="refunds.html">Refunds</a>
+  <a href="refunds.html">Billing</a>
   <a href="mailto:support@tryadflow.co">support@tryadflow.co</a>
 </div></footer>
 
