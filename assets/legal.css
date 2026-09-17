@@ -1,0 +1,76 @@
+/* Paginas legales de Adflow (privacy, terms, refunds).
+   Reusa los tokens de index.html. Tema oscuro por defecto; respeta
+   la preferencia guardada en localStorage bajo 'adflow-theme'. */
+:root{
+  --ink:#0a0e13; --ivory:#f4f1eb; --red:#ff4b2e; --blue:#09b7ff;
+  --surface:#111820; --mist:#98a1a8; --max:820px;
+  --sans:'Instrument Sans',Arial,sans-serif; --mono:'IBM Plex Mono',monospace;
+  --bg:var(--ink); --fg:var(--ivory); --muted:var(--mist);
+  --hair:rgba(244,241,235,.14); --card:rgba(244,241,235,.04);
+}
+[data-theme="light"]{
+  --bg:var(--ivory); --fg:var(--ink); 
+  --muted:#5b666e; --hair:rgba(10,14,19,.14); --card:rgba(10,14,19,.03);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:400 17px/1.65 var(--sans);letter-spacing:-.005em}
+
+.wrap{width:calc(100% - 40px);max-width:var(--max);margin:0 auto}
+
+/* --- barra superior --- */
+.legal-nav{position:sticky;top:0;z-index:10;background:var(--bg);
+  border-bottom:1px solid var(--hair)}
+.legal-nav .wrap{display:flex;align-items:center;gap:16px;height:68px}
+.legal-nav img{height:26px;width:auto;display:block}
+.legal-nav .spacer{margin-left:auto}
+.legal-nav a.back{color:var(--muted);text-decoration:none;font:500 14px var(--sans)}
+.legal-nav a.back:hover{color:var(--fg)}
+.langsw{display:inline-flex;border:1px solid var(--hair);border-radius:999px;overflow:hidden}
+.langsw button{appearance:none;border:0;cursor:pointer;background:transparent;
+  color:var(--muted);font:600 11px var(--mono);letter-spacing:.08em;padding:7px 12px}
+.langsw button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+
+/* --- cuerpo del documento --- */
+main{padding:56px 0 96px}
+.eyebrow{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--red);margin:0 0 14px}
+h1{font:700 clamp(34px,5vw,52px)/1.08 var(--sans);letter-spacing:-.035em;margin:0 0 14px}
+.updated{color:var(--muted);font:500 14px var(--mono);margin:0 0 40px}
+h2{font:600 clamp(21px,2.6vw,26px)/1.25 var(--sans);letter-spacing:-.02em;
+  margin:44px 0 12px;padding-top:26px;border-top:1px solid var(--hair)}
+h2:first-of-type{border-top:0;padding-top:0}
+h3{font:600 17px/1.35 var(--sans);margin:26px 0 8px}
+p,li{color:var(--fg);opacity:.9}
+p{margin:0 0 14px}
+ul,ol{margin:0 0 16px;padding-left:22px}
+li{margin-bottom:8px}
+a{color:var(--blue)}
+strong{font-weight:600;opacity:1}
+
+/* bloque de identificacion legal */
+.entity{background:var(--card);border:1px solid var(--hair);border-radius:16px;
+  padding:22px 24px;margin:0 0 36px}
+.entity p{margin:0 0 4px;font:500 15px/1.6 var(--mono);opacity:.95}
+.entity p:first-child{color:var(--red);font:600 11px var(--mono);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+
+/* --- pie --- */
+.legal-foot{border-top:1px solid var(--hair);padding:30px 0 60px;
+  color:var(--muted);font:400 14px var(--sans)}
+.legal-foot .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.legal-foot a{color:var(--muted);text-decoration:none}
+.legal-foot a:hover{color:var(--fg)}
+.legal-foot .spacer{margin-left:auto}
+
+[data-lang-block]{display:none}
+[data-lang-block].on{display:block}
+
+@media(max-width:640px){
+  body{font-size:16px}
+  main{padding:40px 0 70px}
+  .legal-nav .wrap{height:60px}
+  .legal-foot .wrap{flex-direction:column;align-items:flex-start}
+  .legal-foot .spacer{margin-left:0}
+}
