@@ -498,11 +498,31 @@
     @media(max-width:900px){.ad-tile{height:330px}}
     @media(max-width:640px){.ad-tile{height:268px;border-radius:15px}}
     @media(prefers-reduced-motion:reduce){.ad-tile .tile-media{transition:none}}
+    /* ===== Modal del VSL ===== */
+    .video-modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:20px}
+    .video-modal[hidden]{display:none}
+    .video-modal-backdrop{position:absolute;inset:0;background:rgba(4,7,10,.78);
+      -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+    .video-modal-panel{position:relative;width:min(1000px,100%);border:1px solid rgba(244,241,235,.14);
+      border-radius:24px;background:var(--ink);box-shadow:0 40px 120px rgba(0,0,0,.55);
+      overflow:hidden;animation:vmIn .28s ease both}
+    .video-modal-frame{position:relative;width:100%;aspect-ratio:16/9;background:#05080b}
+    .video-modal-frame wistia-player{display:block;width:100%;height:100%}
+    .video-modal-close{position:absolute;top:14px;right:14px;z-index:3;width:40px;height:40px;
+      border:1px solid rgba(244,241,235,.28);border-radius:50%;background:rgba(10,14,19,.66);
+      -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--ivory);
+      font:400 15px/1 var(--sans);cursor:pointer;transition:.2s}
+    .video-modal-close:hover{border-color:rgba(244,241,235,.6);background:rgba(10,14,19,.88)}
+    .video-modal-close:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+    @keyframes vmIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+    @media(max-width:640px){.video-modal{padding:12px}.video-modal-panel{border-radius:16px}
+      .video-modal-close{top:8px;right:8px;width:34px;height:34px}}
+    @media(prefers-reduced-motion:reduce){.video-modal-panel{animation:none}}
   </style>
   <script src="assets/creatives/manifest.js"></script>
 </head>
 <body>
-  <nav aria-label="Principal"><div class="wrap"><a class="brand" href="#top"><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"></a><div class="navlinks"><a data-i18n="nav_method" href="#method">Método</a><a data-i18n="nav_output" href="#outputs">Qué producimos</a><a data-i18n="nav_results" href="#resultados">Resultados</a><a data-i18n="nav_fit" href="#fit">Para quién</a><a data-i18n="nav_audit" href="#audit">Auditoría</a><div class="langs" aria-label="Idioma"><button class="lang" data-lang="en">EN</button><button class="lang active" data-lang="es">ES</button></div><a class="btn primary nav-cta" data-i18n="cta" href="#audit">Solicitar auditoría</a><button class="menu" aria-label="Abrir menú"><i></i><i></i><i></i></button></div><button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema claro/oscuro">Light</button></div></nav>
+  <nav aria-label="Principal"><div class="wrap"><a class="brand" href="#top"><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"></a><div class="navlinks"><a data-i18n="nav_method" href="#method">Método</a><a data-i18n="nav_output" href="#outputs">Qué producimos</a><a data-i18n="nav_results" href="#resultados">Resultados</a><a data-i18n="nav_fit" href="#fit">Para quién</a><a data-i18n="nav_audit" href="#audit">Auditoría</a><div class="langs" aria-label="Idioma"><button class="lang" data-lang="en">EN</button><button class="lang active" data-lang="es">ES</button></div><a class="btn primary nav-cta" data-i18n="cta" href="#audit">Agenda tu llamada de estrategia</a><button class="menu" aria-label="Abrir menú"><i></i><i></i><i></i></button></div><button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema claro/oscuro">Light</button></div></nav>
   <main id="top">
     <section class="hero3 dark">
       <div class="hero3-bg" aria-hidden="true"></div>
@@ -512,7 +532,7 @@
           <p class="eyebrow">Meta creative testing system</p>
           <h1 data-i18n="hero_title">Creative intelligence<br><span class="signal-grad">in motion.</span></h1>
           <p class="lead" data-i18n="hero_copy">Convertimos creative strategy, producción y media buying en un sistema de adquisición que encuentra qué vende, qué escala y qué mantiene rentable el crecimiento.</p>
-          <div class="actions"><a class="btn primary" data-i18n="cta" href="#audit">Solicitar auditoría</a><a class="btn light" data-i18n="see_method" href="#method">Ver cómo funciona</a></div>
+          <div class="actions"><a class="btn primary" data-i18n="cta" href="#audit">Agenda tu llamada de estrategia</a><a class="btn light" data-i18n="see_method" href="#method" data-open-vsl>Ver cómo funciona</a></div>
         </div>
         <div class="panel-col">
           <section class="bs-panel" aria-label="Adflow Business Signals — panel de demostración con datos de ejemplo">
@@ -670,7 +690,7 @@
       </div>
 
       <div class="cases-foot">
-        <a class="btn primary" href="#audit" data-i18n="cta">Solicitar auditoría</a>
+        <a class="btn primary" href="#audit" data-i18n="cta">Agenda tu llamada de estrategia</a>
         <p class="muted" data-i18n="cases_note">Nombres de marca omitidos por acuerdo con cada cliente. Las capturas salen del dashboard de analítica de cada cuenta, recortadas únicamente para omitir el nombre de la marca. Ninguna cifra fue modificada.</p>
       </div>
     </div></section>
@@ -744,11 +764,11 @@
         <div class="roadmap-close"><span>Every cycle feeds the next one</span><i aria-hidden="true"></i></div>
       </div>
     </section>
-    <section class="section audit" id="audit"><div class="wrap audit-grid"><div><p class="eyebrow">Creative testing audit</p><h2 data-i18n="audit_title">Agenda una auditoría creativa.</h2><p class="lead" data-i18n="audit_copy">Revisamos cómo tu marca convierte ideas en anuncios, señal y nuevos aprendizajes. Te mostramos dónde se rompe el ciclo.</p><ul class="audit-points"><li>Tu research y estrategia</li><li>Tus conceptos y creativos</li><li>Tu estructura de testing en Meta</li><li>Tu proceso de producción</li><li>Tu sistema de aprendizaje</li></ul></div><form class="form" id="audit-form"><div class="fields"><div class="field-group"><label for="name">Nombre *</label><input id="name" name="name" autocomplete="name" required></div><div class="field-group"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field-group full"><label for="website">Website / Tienda</label><input id="website" name="website" type="url" placeholder="https://tumarca.com"></div><div class="field-group"><label for="monthly_revenue">Facturación mensual</label><select id="monthly_revenue" name="monthly_revenue"><option value="" selected disabled>Selecciona tu facturación</option><option value="under-10k">Menos de $10,000/mes</option><option value="10k-30k">$10,000 - $30,000/mes</option><option value="30k-75k">$30,000 - $75,000/mes</option><option value="75k-150k">$75,000 - $150,000/mes</option><option value="150k-plus">$150,000+/mes</option></select></div><div class="field-group"><label for="monthly_spend">Gasto mensual en ads</label><select id="monthly_spend" name="monthly_spend"><option value="" selected disabled>Selecciona tu gasto actual</option><option value="under-5k">Menos de $5,000/mes</option><option value="5k-15k">$5,000 - $15,000/mes</option><option value="15k-30k">$15,000 - $30,000/mes</option><option value="30k-50k">$30,000 - $50,000/mes</option><option value="50k-plus">$50,000+/mes</option></select></div><div class="field-group full"><span class="group-label">Canales actuales</span><div class="checks"><label class="check"><input type="checkbox" name="current_channels" value="meta"> Meta</label><label class="check"><input type="checkbox" name="current_channels" value="tiktok"> TikTok</label><label class="check"><input type="checkbox" name="current_channels" value="google"> Google</label><label class="check"><input type="checkbox" name="current_channels" value="organic"> Orgánico</label><label class="check"><input type="checkbox" name="current_channels" value="email-sms"> Email/SMS</label><label class="check"><input type="checkbox" name="current_channels" value="other"> Otro</label></div></div><div class="field-group full"><label for="creative_setup">Setup actual</label><select id="creative_setup" name="creative_setup"><option value="" selected disabled>¿Quién opera adquisición hoy?</option><option value="in-house">Equipo interno</option><option value="agency">Agencia</option><option value="freelancers">Freelancers / Contractors</option><option value="founder">Lo hago yo mismo</option><option value="hybrid">Combinación de lo anterior</option></select></div><div class="field-group full"><label for="bottleneck">Mayor cuello de botella creativo</label><textarea id="bottleneck" name="bottleneck" placeholder="Ej. producimos mucho, pero no sabemos qué ideas vale la pena testear..."></textarea></div></div><button class="submit" type="submit" data-i18n="submit">Solicitar auditoría →</button><p class="status" role="status" aria-live="polite"></p></form></div></section>
+    <section class="section audit" id="audit"><div class="wrap audit-grid"><div><p class="eyebrow">Creative testing audit</p><h2 data-i18n="audit_title">Agenda tu llamada de estrategia.</h2><p class="lead" data-i18n="audit_copy">Revisamos cómo tu marca convierte ideas en anuncios, señal y nuevos aprendizajes. Te mostramos dónde se rompe el ciclo.</p><ul class="audit-points"><li>Tu research y estrategia</li><li>Tus conceptos y creativos</li><li>Tu estructura de testing en Meta</li><li>Tu proceso de producción</li><li>Tu sistema de aprendizaje</li></ul></div><form class="form" id="audit-form"><div class="fields"><div class="field-group"><label for="name">Nombre *</label><input id="name" name="name" autocomplete="name" required></div><div class="field-group"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field-group full"><label for="website">Website / Tienda</label><input id="website" name="website" type="url" placeholder="https://tumarca.com"></div><div class="field-group"><label for="monthly_revenue">Facturación mensual</label><select id="monthly_revenue" name="monthly_revenue"><option value="" selected disabled>Selecciona tu facturación</option><option value="under-10k">Menos de $10,000/mes</option><option value="10k-30k">$10,000 - $30,000/mes</option><option value="30k-75k">$30,000 - $75,000/mes</option><option value="75k-150k">$75,000 - $150,000/mes</option><option value="150k-plus">$150,000+/mes</option></select></div><div class="field-group"><label for="monthly_spend">Gasto mensual en ads</label><select id="monthly_spend" name="monthly_spend"><option value="" selected disabled>Selecciona tu gasto actual</option><option value="under-5k">Menos de $5,000/mes</option><option value="5k-15k">$5,000 - $15,000/mes</option><option value="15k-30k">$15,000 - $30,000/mes</option><option value="30k-50k">$30,000 - $50,000/mes</option><option value="50k-plus">$50,000+/mes</option></select></div><div class="field-group full"><span class="group-label">Canales actuales</span><div class="checks"><label class="check"><input type="checkbox" name="current_channels" value="meta"> Meta</label><label class="check"><input type="checkbox" name="current_channels" value="tiktok"> TikTok</label><label class="check"><input type="checkbox" name="current_channels" value="google"> Google</label><label class="check"><input type="checkbox" name="current_channels" value="organic"> Orgánico</label><label class="check"><input type="checkbox" name="current_channels" value="email-sms"> Email/SMS</label><label class="check"><input type="checkbox" name="current_channels" value="other"> Otro</label></div></div><div class="field-group full"><label for="creative_setup">Setup actual</label><select id="creative_setup" name="creative_setup"><option value="" selected disabled>¿Quién opera adquisición hoy?</option><option value="in-house">Equipo interno</option><option value="agency">Agencia</option><option value="freelancers">Freelancers / Contractors</option><option value="founder">Lo hago yo mismo</option><option value="hybrid">Combinación de lo anterior</option></select></div><div class="field-group full"><label for="bottleneck">Mayor cuello de botella creativo</label><textarea id="bottleneck" name="bottleneck" placeholder="Ej. producimos mucho, pero no sabemos qué ideas vale la pena testear..."></textarea></div></div><button class="submit" type="submit" data-i18n="submit">Solicitar auditoría →</button><p class="status" role="status" aria-live="polite"></p></form></div></section>
   </main>
   <footer><div class="wrap"><div class="foot-top"><div><img src="assets/adflow-lockup-ivory.svg" alt="Adflow"><p data-i18n="foot_tagline">Sistemas de testeo creativo para marcas que invierten en Meta.</p></div><div class="foot-col"><h4 data-i18n="foot_nav">Navegación</h4><a href="#method" data-i18n="nav_method">Método</a><a href="#outputs" data-i18n="nav_output">Qué producimos</a><a href="#resultados" data-i18n="nav_results">Resultados</a><a href="#fit" data-i18n="nav_fit">Para quién</a><a href="#audit" data-i18n="nav_audit">Auditoría</a></div><div class="foot-col"><h4 data-i18n="foot_contact">Contacto</h4><a href="mailto:support@tryadflow.co">support@tryadflow.co</a><address class="foot-entity">Adflow Systems LLC<br>8 The Green, Suite B<br>Dover, Delaware 19901<br>United States</address></div></div><div class="foot-bottom"><span>&copy; 2026 Adflow Systems LLC</span><span class="push"></span><a href="privacy.html" data-i18n="foot_privacy">Aviso de Privacidad</a><a href="terms.html" data-i18n="foot_terms">Términos y Condiciones</a><a href="refunds.html" data-i18n="foot_refunds">Pagos y cancelaciones</a></div></div></footer>
   <script>
-    const translations={es:{},en:{case1_n:'Case 01',case2_n:'Case 02',case3_n:'Case 03',case4_n:'Case 04',nav_results:'Results',cases_eyebrow:'Results',cases_title:'The numbers talk.<br>We just put them in order.',cases_copy:'Four ecommerce brands in Mexico. Same system: hypotheses, production, signal, next cycle. Figures are in Mexican pesos, pulled straight from the client dashboard.',case_story:'The story:',case_result:'The result:',case_after:'After Adflow:',case1_tag:'Work footwear · Mexico',case1_story:'We walked in and their ROAS was 20.77. Sounded perfect. The problem is that number came from spending $4,400 a month harvesting demand that already existed — not from a system bringing in new customers. We lowered the ROAS on purpose.',case1_result:'$91K → <b>$1.24M MXN/month</b> (~$69K USD) in 8 months.',case1_a1:'8.09 ROAS while sustaining 35x the spend',case1_a2:'7.32 new-customer ROAS',case1_a3:'52% net margin held through the entire scale-up',case1_cap:'Client dashboard · December 2025 · account anonymized',case2_tag:'Apparel · Mexico',case2_story:'Zero. Zero live campaigns, zero Shopify sales, zero trained pixel, zero history to inherit. Everything that got built came from the system, not from the account.',case2_result:'$0 → <b>$2.17M MXN/month</b> (~$120K USD) in 11 months.',case2_a1:'$693K MXN in the first month running ads, 5.21 ROAS',case2_a2:'Broke a million pesos a month by month five',case2_a3:'73% net margin in the peak month',case2_cap:'Client dashboard · November 2025 · account anonymized',case3_tag:'Fragrance · Mexico',case3_story:'There was nothing to fix. They had product, margin and a trained pixel spending $4K USD a month. What they did not have was creative velocity. That was the only thing we changed.',case3_result:'<b>$13.03M MXN/month</b> (~$723K USD). 130x in 7 months.',case3_a1:'CPA down 48% while spend went up 861%',case3_a2:'$8.58M MXN in net profit in a single month',case3_a3:'66% margin at eight-figure scale',case3_cap:'Client dashboard · November 2024 · account anonymized',case4_tag:'Sneakers · Mexico',case4_story:'3.13 ROAS and −3% growth. The classic trap: mistaking survival for health. No testing framework, no creative diversity — and the ROAS hid how fragile the account was.',case4_result:'From stagnant sales to <b>$828K MXN/month</b> (~$46K USD).',case4_a1:'44x the spend with no loss in efficiency: 5.77 ROAS',case4_a2:'$609K MXN in net profit per month',case4_a3:'74% net margin',case4_cap:'Client dashboard · November 2025 · account anonymized',cases_note:'Brand names withheld by agreement with each client. Screenshots come straight from each account’s analytics dashboard, cropped only to leave out the brand name. No figure was altered.',foot_tagline:'Creative testing systems for brands advertising on Meta.',foot_nav:'Navigation',foot_contact:'Contact',foot_privacy:'Privacy Policy',foot_terms:'Terms and Conditions',foot_refunds:'Billing &amp; cancellations',nav_method:'Method',nav_output:'What we make',nav_fit:'Who it’s for',nav_audit:'Audit',cta:'Request an audit',see_method:'See how it works',hero_title:'Creative intelligence<br><span class="signal-grad">in motion.</span>',hero_copy:'We turn creative strategy, production and media buying into an acquisition system that finds what sells, what scales and what keeps growth profitable.',output_eyebrow:'Creative output / testing surface',output_title:'Ideas in motion.<br>Signal that returns.',output_copy:'UGC, hooks, statics, demos and founder-led: distinct expressions of hypotheses worth testing.',problem_eyebrow:'The real problem',problem_title:'Brands don’t run out of ads.',problem_statement:'They run out of <em>new ideas</em> worth testing.',p1t:'Creative fatigue',p1c:'Concepts lose force and the team arrives late to the next angle.',p2t:'Surface-level variations',p2c:'Changing a color or first frame does not create a new reason to buy.',p3t:'Production without hypotheses',p3c:'More assets, without a clear question the market can answer.',p4t:'Learning gets lost',p4c:'Every month starts over when signal does not feed the next brief.',method_title:'Creative intelligence in motion.',method_copy:'A living cycle connecting what we think, what we make and what the market proves.',m1:'Market, competitors, tensions, desires and objections.',m2:'Hypotheses, concepts, angles and hooks with clear intent.',m3:'Each idea becomes distinct, native executions.',m4:'Structure that exposes ideas to real, comparable signal.',m5:'Evidence changes briefs, ads and the next cycle.',testing_eyebrow:'What we test',testing_title:'Ideas and messages.<br>Not just edits.',receive_eyebrow:'What clients receive',receive_title:'An operated creative learning system.',receive_copy:'Not a content catalog: a connected sequence of decisions, production, signal and new cycles.',compare_title:'Output matters.<br>Learning compounds.',fit_eyebrow:'Who it’s for',fit_title:'For ecommerce brands ready to learn faster.',fit_yes:'It’s for you if',fit_no:'It’s not for you if',audit_title:'Book a creative audit.',audit_copy:'We review how your brand turns ideas into ads, signal and new learning. We show you where the cycle breaks.',submit:'Request audit →'}};
+    const translations={es:{},en:{case1_n:'Case 01',case2_n:'Case 02',case3_n:'Case 03',case4_n:'Case 04',nav_results:'Results',cases_eyebrow:'Results',cases_title:'The numbers talk.<br>We just put them in order.',cases_copy:'Four ecommerce brands in Mexico. Same system: hypotheses, production, signal, next cycle. Figures are in Mexican pesos, pulled straight from the client dashboard.',case_story:'The story:',case_result:'The result:',case_after:'After Adflow:',case1_tag:'Work footwear · Mexico',case1_story:'We walked in and their ROAS was 20.77. Sounded perfect. The problem is that number came from spending $4,400 a month harvesting demand that already existed — not from a system bringing in new customers. We lowered the ROAS on purpose.',case1_result:'$91K → <b>$1.24M MXN/month</b> (~$69K USD) in 8 months.',case1_a1:'8.09 ROAS while sustaining 35x the spend',case1_a2:'7.32 new-customer ROAS',case1_a3:'52% net margin held through the entire scale-up',case1_cap:'Client dashboard · December 2025 · account anonymized',case2_tag:'Apparel · Mexico',case2_story:'Zero. Zero live campaigns, zero Shopify sales, zero trained pixel, zero history to inherit. Everything that got built came from the system, not from the account.',case2_result:'$0 → <b>$2.17M MXN/month</b> (~$120K USD) in 11 months.',case2_a1:'$693K MXN in the first month running ads, 5.21 ROAS',case2_a2:'Broke a million pesos a month by month five',case2_a3:'73% net margin in the peak month',case2_cap:'Client dashboard · November 2025 · account anonymized',case3_tag:'Fragrance · Mexico',case3_story:'There was nothing to fix. They had product, margin and a trained pixel spending $4K USD a month. What they did not have was creative velocity. That was the only thing we changed.',case3_result:'<b>$13.03M MXN/month</b> (~$723K USD). 130x in 7 months.',case3_a1:'CPA down 48% while spend went up 861%',case3_a2:'$8.58M MXN in net profit in a single month',case3_a3:'66% margin at eight-figure scale',case3_cap:'Client dashboard · November 2024 · account anonymized',case4_tag:'Sneakers · Mexico',case4_story:'3.13 ROAS and −3% growth. The classic trap: mistaking survival for health. No testing framework, no creative diversity — and the ROAS hid how fragile the account was.',case4_result:'From stagnant sales to <b>$828K MXN/month</b> (~$46K USD).',case4_a1:'44x the spend with no loss in efficiency: 5.77 ROAS',case4_a2:'$609K MXN in net profit per month',case4_a3:'74% net margin',case4_cap:'Client dashboard · November 2025 · account anonymized',cases_note:'Brand names withheld by agreement with each client. Screenshots come straight from each account’s analytics dashboard, cropped only to leave out the brand name. No figure was altered.',foot_tagline:'Creative testing systems for brands advertising on Meta.',foot_nav:'Navigation',foot_contact:'Contact',foot_privacy:'Privacy Policy',foot_terms:'Terms and Conditions',foot_refunds:'Billing &amp; cancellations',nav_method:'Method',nav_output:'What we make',nav_fit:'Who it’s for',nav_audit:'Audit',cta:'Book your strategy call',see_method:'Learn how it works',hero_title:'Creative intelligence<br><span class="signal-grad">in motion.</span>',hero_copy:'We turn creative strategy, production and media buying into an acquisition system that finds what sells, what scales and what keeps growth profitable.',output_eyebrow:'Creative output / testing surface',output_title:'Ideas in motion.<br>Signal that returns.',output_copy:'UGC, hooks, statics, demos and founder-led: distinct expressions of hypotheses worth testing.',problem_eyebrow:'The real problem',problem_title:'Brands don’t run out of ads.',problem_statement:'They run out of <em>new ideas</em> worth testing.',p1t:'Creative fatigue',p1c:'Concepts lose force and the team arrives late to the next angle.',p2t:'Surface-level variations',p2c:'Changing a color or first frame does not create a new reason to buy.',p3t:'Production without hypotheses',p3c:'More assets, without a clear question the market can answer.',p4t:'Learning gets lost',p4c:'Every month starts over when signal does not feed the next brief.',method_title:'Creative intelligence in motion.',method_copy:'A living cycle connecting what we think, what we make and what the market proves.',m1:'Market, competitors, tensions, desires and objections.',m2:'Hypotheses, concepts, angles and hooks with clear intent.',m3:'Each idea becomes distinct, native executions.',m4:'Structure that exposes ideas to real, comparable signal.',m5:'Evidence changes briefs, ads and the next cycle.',testing_eyebrow:'What we test',testing_title:'Ideas and messages.<br>Not just edits.',receive_eyebrow:'What clients receive',receive_title:'An operated creative learning system.',receive_copy:'Not a content catalog: a connected sequence of decisions, production, signal and new cycles.',compare_title:'Output matters.<br>Learning compounds.',fit_eyebrow:'Who it’s for',fit_title:'For ecommerce brands ready to learn faster.',fit_yes:'It’s for you if',fit_no:'It’s not for you if',audit_title:'Book your strategy call.',audit_copy:'We review how your brand turns ideas into ads, signal and new learning. We show you where the cycle breaks.',submit:'Request audit →'}};
             translations.es.m4='Estructura de testing y campañas para exponer ideas a señal real y comparable.';
     translations.es.m5='La evidencia cambia los briefs, las campañas y el siguiente ciclo.';
     translations.en.m4='A Meta testing and campaign structure that exposes ideas to real, comparable signal.';
@@ -836,6 +856,72 @@
         });
       },{rootMargin:'250px 0px'});
       tiles.forEach(el=>io.observe(el));
+    })();
+
+    // ===== Modal del VSL (Wistia) =====
+    // Los scripts de Wistia se inyectan en la PRIMERA apertura: el sitio no
+    // carga ningun script externo de entrada y no queremos pagar ese costo
+    // por un video que puede que nadie abra.
+    (()=>{
+      const MEDIA='v9tbahv5p8';
+      // Este script vive a mitad del body; el modal se declara mas abajo,
+      // asi que hay que esperar a que el DOM termine de parsearse.
+      const arranca=()=>{
+      const modal=document.getElementById('vsl-modal');
+      const mount=document.getElementById('vsl-mount');
+      const openers=document.querySelectorAll('[data-open-vsl]');
+      if(!modal||!mount||!openers.length)return;
+      let cargado=false,previo=null;
+
+      const inyectar=()=>{
+        if(cargado)return; cargado=true;
+        const st=document.createElement('style');
+        st.textContent=`wistia-player[media-id='${MEDIA}']:not(:defined){background:center/contain no-repeat `
+          +`url('https://fast.wistia.com/embed/medias/${MEDIA}/swatch');display:block;filter:blur(5px);padding-top:56.25%}`;
+        document.head.appendChild(st);
+        const s1=document.createElement('script');
+        s1.src='https://fast.wistia.com/player.js'; s1.async=true; document.head.appendChild(s1);
+        const s2=document.createElement('script');
+        s2.src=`https://fast.wistia.com/embed/${MEDIA}.js`; s2.async=true; s2.type='module';
+        document.head.appendChild(s2);
+        const el=document.createElement('wistia-player');
+        el.setAttribute('media-id',MEDIA);
+        el.setAttribute('aspect','1.7777777777777777');
+        el.setAttribute('player-color','ff4b2e');  // si no, los controles salen verde limon
+        mount.appendChild(el);
+      };
+      const player=()=>mount.querySelector('wistia-player');
+
+      const abrir=ev=>{
+        if(ev)ev.preventDefault();
+        previo=document.activeElement;
+        inyectar();
+        modal.hidden=false;
+        document.body.style.overflow='hidden';
+        modal.querySelector('.video-modal-close').focus();
+        // el componente tarda en definirse en la primera apertura
+        let intentos=0;
+        const arrancar=()=>{
+          const p=player();
+          if(p&&typeof p.play==='function'){try{p.play()}catch(e){}return;}
+          if(++intentos<20)setTimeout(arrancar,200);
+        };
+        setTimeout(arrancar,300);
+      };
+      const cerrar=()=>{
+        const p=player();
+        if(p&&typeof p.pause==='function'){try{p.pause()}catch(e){}}
+        modal.hidden=true;
+        document.body.style.overflow='';
+        if(previo&&previo.focus)previo.focus();
+      };
+
+      openers.forEach(b=>b.addEventListener('click',abrir));
+      modal.querySelectorAll('[data-vsl-close]').forEach(x=>x.addEventListener('click',cerrar));
+      document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)cerrar();});
+      };
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arranca);
+      else arranca();
     })();
     const statement=document.querySelector('[data-i18n="problem_statement"]');statement.innerHTML='Se quedan sin <span class="marked-idea">nuevas ideas'+AnnotationUnderline('red',false)+'</span> que valga la pena testear.<span class="bottleneck-label">THE REAL BOTTLENECK</span>';
     translations.es.problem_statement=statement.innerHTML;
@@ -1168,5 +1254,12 @@
 
   </script>
   <script src="assets/signal-cursor.js" defer></script>
+<div class="video-modal" id="vsl-modal" hidden role="dialog" aria-modal="true" aria-label="Video: cómo funciona Adflow">
+  <div class="video-modal-backdrop" data-vsl-close></div>
+  <div class="video-modal-panel">
+    <button class="video-modal-close" type="button" data-vsl-close aria-label="Cerrar video">&#10005;</button>
+    <div class="video-modal-frame" id="vsl-mount"></div>
+  </div>
+</div>
 </body>
 </html>
